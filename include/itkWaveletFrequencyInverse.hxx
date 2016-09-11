@@ -227,7 +227,7 @@ void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
       }
 
     /******* Update base region for next level *********/
-    unsigned int scaleFactorPerLevel = std::pow(this->m_ScaleFactor, level + 1);
+    unsigned int scaleFactorPerLevel = std::pow(static_cast<double>(this->m_ScaleFactor), static_cast<int>(level + 1));
     for (unsigned int idim = 0; idim < TInputImage::ImageDimension; idim++)
       {
       // inputIndex[idim] = baseIndex[idim] * scaleFactorPerLevel;

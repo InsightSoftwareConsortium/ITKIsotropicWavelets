@@ -42,17 +42,18 @@ VowIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 ::EvaluateMagnitude(const FunctionValueType & freq_norm_in_hz) const
 {
   // freq_in_rad_per_sec = freq_norm_in_hz * 2 * pi
+  // Dev: std::log2 is c++11 only.  std::log2(x) = std::log(x)/vnl_math::ln2
   if( freq_norm_in_hz >= 1/8.0 && freq_norm_in_hz < 1/4.0 )
     return static_cast<TFunctionValue>(
         sqrt(0.5 +
-          std::tan(this->m_Kappa * (1 + 2 * std::log2(4 * freq_norm_in_hz))) /
+          std::tan(this->m_Kappa * (1 + (2 / vnl_math::ln2) * std::log(4 * freq_norm_in_hz))) /
           2*std::tan(this->m_Kappa))
         );
 
   if(freq_norm_in_hz >= 1/4.0  && freq_norm_in_hz <= 1/2.0)
     return static_cast<TFunctionValue>(
         sqrt(0.5 -
-          std::tan(this->m_Kappa * (1 + 2 * std::log2(2 * freq_norm_in_hz))) /
+          std::tan(this->m_Kappa * (1 + (2 / vnl_math::ln2) * std::log(2 * freq_norm_in_hz))) /
           2*std::tan(this->m_Kappa))
         );
   return 0;
@@ -64,8 +65,8 @@ VowIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 ::EvaluateForwardLowPassFilter(const FunctionValueType & freq_norm_in_hz) const
 {
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, this->m_HighPassSubBands) *
-    std::pow(2.0, 2*this->m_HighPassSubBands - 1);
+    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands)) *
+    std::pow(2.0, static_cast<int>(2*this->m_HighPassSubBands - 1));
   if ( value > 0.25 )
     return this->EvaluateMagnitude(value);
   return 1;
@@ -77,8 +78,8 @@ VowIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 ::EvaluateForwardHighPassFilter(const FunctionValueType & freq_norm_in_hz) const
 {
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, this->m_HighPassSubBands) *
-    std::pow(2.0, this->m_HighPassSubBands - 1);
+    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands)) *
+    std::pow(2.0, static_cast<int>(this->m_HighPassSubBands - 1));
   if ( value < 0.25 )
     return this->EvaluateMagnitude(value);
   return 1;
@@ -96,8 +97,8 @@ const
     throw itk::ExceptionObject(__FILE__, __LINE__,
             "Invalid SubBand", ITK_LOCATION);
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, this->m_HighPassSubBands) *
-    std::pow(2.0, 2*this->m_HighPassSubBands - 1 - j);
+    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands)) *
+    std::pow(2.0, static_cast<int>(2*this->m_HighPassSubBands - 1 - j));
   return this->EvaluateMagnitude(value);
 }
 

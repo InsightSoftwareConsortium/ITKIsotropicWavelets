@@ -1,3 +1,7 @@
+# Vim stuff
+Session.vim
+*.swp
+*.swo
 # Compiled Object files
 *.slo
 *.lo

@@ -51,23 +51,23 @@ int itkWaveletFrequencyInverseTest(int argc, char** argv)
   typedef float                            PixelType;
   typedef itk::Image<PixelType, dimension> ImageType;
   typedef itk::ImageFileReader<ImageType>  ReaderType;
-  typename ReaderType::Pointer reader = ReaderType::New();
+  ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(inputImage);
   reader->Update();
   reader->UpdateLargestPossibleRegion();
 
   // Perform FFT on input image.
   typedef itk::ForwardFFTImageFilter<ImageType> FFTFilterType;
-  typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
+  FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput(reader->GetOutput());
-  typedef typename FFTFilterType::OutputImageType ComplexImageType;
+  typedef FFTFilterType::OutputImageType ComplexImageType;
 
   // Set the WaveletFunctionType and the WaveletFilterBank
   // typedef itk::HeldIsotropicWavelet<PixelType> WaveletFunctionType;
   typedef itk::VowIsotropicWavelet<> WaveletFunctionType;
   typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType> WaveletFilterBankType;
   typedef itk::WaveletFrequencyForward<ComplexImageType, ComplexImageType, WaveletFilterBankType> ForwardWaveletType;
-  typename ForwardWaveletType::Pointer forwardWavelet = ForwardWaveletType::New();
+  ForwardWaveletType::Pointer forwardWavelet = ForwardWaveletType::New();
   unsigned int high_sub_bands = inputBands;
   unsigned int levels = inputLevels;
   forwardWavelet->SetHighPassSubBands(high_sub_bands);
@@ -84,13 +84,13 @@ int itkWaveletFrequencyInverseTest(int argc, char** argv)
 
   // Inverse Wavelet Transform
   typedef itk::WaveletFrequencyInverse<ComplexImageType, ComplexImageType, WaveletFilterBankType> InverseWaveletType;
-  typename InverseWaveletType::Pointer inverseWavelet = InverseWaveletType::New();
+  InverseWaveletType::Pointer inverseWavelet = InverseWaveletType::New();
   inverseWavelet->SetHighPassSubBands(high_sub_bands);
   inverseWavelet->SetLevels(levels);
   inverseWavelet->SetInputs(forwardWavelet->GetOutputs());
   inverseWavelet->Update();
   typedef itk::InverseFFTImageFilter<ComplexImageType, ImageType> InverseFFTFilterType;
-  typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
+  InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
   inverseFFT->SetInput(inverseWavelet->GetOutput());
   inverseFFT->Update();
 
