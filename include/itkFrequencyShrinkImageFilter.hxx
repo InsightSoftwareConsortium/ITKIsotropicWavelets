@@ -129,14 +129,14 @@ FrequencyShrinkImageFilter<TImageType>
 
   const typename TImageType::IndexType indexRequested = outputPtr->GetLargestPossibleRegion().GetIndex();
   // Manage ImageDimension array linearly:{{{
-  std::array<unsigned int , ImageDimension> nsizes;
+  FixedArray<unsigned int , ImageDimension> nsizes;
   unsigned int numberOfRegions = 1;
   for (unsigned int dim = 0; dim < ImageDimension; ++dim)
     {
     nsizes[dim] = 2;
     numberOfRegions *= nsizes[dim];
     }
-  std::array<unsigned int, ImageDimension> subIndices;
+  FixedArray<unsigned int, ImageDimension> subIndices;
   /// }}}
 
   // Prepare filter to paste the different regions into output.
