@@ -46,27 +46,27 @@ int itkRieszFrequencyFilterBankGeneratorTest(int argc, char** argv)
     typedef double                           PixelType;
     typedef itk::Image<PixelType, dimension> ImageType;
     typedef itk::ImageFileReader<ImageType>  ReaderType;
-    typename ReaderType::Pointer reader = ReaderType::New();
+    ReaderType::Pointer reader = ReaderType::New();
     reader->SetFileName(inputImage);
     reader->Update();
     reader->UpdateLargestPossibleRegion();
 
     // Perform FFT on input image.
     typedef itk::ForwardFFTImageFilter<ImageType> FFTFilterType;
-    typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
+    FFTFilterType::Pointer fftFilter = FFTFilterType::New();
     fftFilter->SetInput(reader->GetOutput());
     fftFilter->Update();
-    typedef typename FFTFilterType::OutputImageType ComplexImageType;
+    typedef FFTFilterType::OutputImageType ComplexImageType;
 
     // typedef itk::RieszFrequencyFunction<> FunctionType;
     typedef itk::RieszFrequencyFilterBankGenerator< ComplexImageType> RieszFilterBankType;
-    typename RieszFilterBankType::Pointer filterBank = RieszFilterBankType::New();
+    RieszFilterBankType::Pointer filterBank = RieszFilterBankType::New();
     filterBank->SetSize(fftFilter->GetOutput()->GetLargestPossibleRegion().GetSize());
     filterBank->Update();
 
     //Get real part of complex image for visualization
     typedef itk::ComplexToRealImageFilter<ComplexImageType, ImageType> ComplexToRealFilter;
-    typename ComplexToRealFilter::Pointer complexToRealFilter = ComplexToRealFilter::New();
+    ComplexToRealFilter::Pointer complexToRealFilter = ComplexToRealFilter::New();
     std::cout << "Real Part of ComplexImage:"<< std::endl;
     for (unsigned int dir = 0; dir < ImageType::ImageDimension; dir++)
     {
