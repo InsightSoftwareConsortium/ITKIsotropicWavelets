@@ -190,6 +190,7 @@ template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBa
   void WaveletFrequencyForward<TInputImage, TOutputImage, TWaveletFilterBank>
 ::GenerateOutputInformation()
 {
+  // TODO CLEAN THIS SHIT
   // call the superclass's implementation of this method
   Superclass::GenerateOutputInformation();
 
@@ -199,22 +200,25 @@ template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBa
   if (!inputPtr)
     itkExceptionMacro(<< "Input has not been set");
 
-  typename InputImageType::PointType inputOrigin = inputPtr->GetOrigin();
-  typename InputImageType::SpacingType inputSpacing =
-    inputPtr->GetSpacing();
-  typename InputImageType::DirectionType inputDirection =
-    inputPtr->GetDirection();
   typename InputImageType::SizeType inputSize =
     inputPtr->GetLargestPossibleRegion().GetSize();
   typename InputImageType::IndexType inputStartIndex =
     inputPtr->GetLargestPossibleRegion().GetIndex();
+  // TODO document that inputOrigin and inputSpacing is lost and should be restored at the end of the inverse wavelet transform.
+  // typename InputImageType::PointType inputOrigin = inputPtr->GetOrigin();
+  // typename InputImageType::SpacingType inputSpacing = inputPtr->GetSpacing();
+  // typename InputImageType::DirectionType inputDirection = inputPtr->GetDirection();
+
+  typename OutputImageType::PointType outputOrigin(0);
+  typename OutputImageType::SpacingType outputSpacing(1);
+  // typename OutputImageType::DirectionType outputDirection = inputDirection;
 
   OutputImagePointer outputPtr;
-  typename OutputImageType::PointType low_passOrigin;
-  typename OutputImageType::SpacingType low_passSpacing;
   typename OutputImageType::SizeType low_passSize;
   typename OutputImageType::IndexType low_passStartIndex;
-  typename OutputImageType::DirectionType low_passDirection = inputDirection;
+  typename OutputImageType::PointType low_passOrigin;
+  typename OutputImageType::SpacingType low_passSpacing;
+  // typename OutputImageType::DirectionType low_passDirection = inputDirection;
 
   // we need to compute the output spacing, the output image size,
   // and the output image start index
@@ -234,9 +238,9 @@ template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBa
       largestPossibleRegion.SetIndex(inputStartIndex);
 
       outputPtr->SetLargestPossibleRegion(largestPossibleRegion);
-      outputPtr->SetOrigin(inputOrigin);
-      outputPtr->SetSpacing(inputSpacing);
-      outputPtr->SetDirection(inputDirection);
+      outputPtr->SetOrigin(outputOrigin);
+      outputPtr->SetSpacing(outputSpacing);
+      // outputPtr->SetDirection(outputDirection);
       }
 
     // Calculate size of low_pass per level
@@ -252,15 +256,15 @@ template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBa
       low_passStartIndex[idim] = static_cast<IndexValueType>(
         std::ceil(static_cast<double>(inputStartIndex[idim]) / this->m_ScaleFactor));
       // Spacing
-      low_passSpacing[idim] = inputSpacing[idim];
+      low_passSpacing[idim] = outputSpacing[idim];
       // Origin.
-      low_passOrigin[idim] = inputOrigin[idim];
+      low_passOrigin[idim] = outputOrigin[idim];
       }
 
     // Update InputSize with low_passSize.
     inputSize  = low_passSize;
-    inputOrigin = low_passOrigin;
-    inputSpacing = low_passSpacing;
+    // inputOrigin = low_passOrigin;
+    // inputSpacing = low_passSpacing;
     // inputDirection = low_passDirection;
 
     if(level == this->m_Levels - 1 )
@@ -271,9 +275,9 @@ template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBa
       largestPossibleRegion.SetSize(low_passSize);
       largestPossibleRegion.SetIndex(low_passStartIndex);
       outputPtr->SetLargestPossibleRegion(largestPossibleRegion);
-      outputPtr->SetOrigin(low_passOrigin);
-      outputPtr->SetSpacing(low_passSpacing);
-      outputPtr->SetDirection(low_passDirection);
+      outputPtr->SetOrigin(outputOrigin);
+      outputPtr->SetSpacing(outputSpacing);
+      // outputPtr->SetDirection(low_passDirection);
       }
     }
 }
@@ -436,6 +440,25 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
   castFilter->SetInput(input);
   castFilter->Update();
   OutputImagePointer inputPerLevel = castFilter->GetOutput();
+  typedef itk::ChangeInformationImageFilter<OutputImageType> ChangeInformationFilterType;
+  typename ChangeInformationFilterType::Pointer changeInputInfoFilter = ChangeInformationFilterType::New();
+  auto origin_old = inputPerLevel->GetOrigin();
+  auto spacing_old = inputPerLevel->GetSpacing();
+  auto origin_new = origin_old;
+  origin_new.Fill(0);
+  auto spacing_new = spacing_old;
+  spacing_new.Fill(1);
+  changeInputInfoFilter->SetInput(inputPerLevel);
+  changeInputInfoFilter->ChangeDirectionOff();
+  changeInputInfoFilter->ChangeRegionOff();
+  changeInputInfoFilter->ChangeSpacingOn();
+  changeInputInfoFilter->ChangeOriginOn();
+  changeInputInfoFilter->UseReferenceImageOff();
+  changeInputInfoFilter->SetOutputOrigin(origin_new);
+  changeInputInfoFilter->SetOutputSpacing(spacing_new);
+  changeInputInfoFilter->Update();
+  inputPerLevel = changeInputInfoFilter->GetOutput();
+
   for (unsigned int level = 0; level < this->m_Levels; ++ level)
     {
     /******* Calculate FilterBank with the right size per level. *****/
@@ -443,6 +466,10 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     typename WaveletFilterBankType::Pointer filterBank = WaveletFilterBankType::New();
     filterBank->SetHighPassSubBands(this->m_HighPassSubBands);
     filterBank->SetSize(inputPerLevel->GetLargestPossibleRegion().GetSize() );
+    // TODO remove or not.
+    // filterBank->SetOrigin(inputPerLevel->GetOrigin() );
+    // filterBank->SetSpacing(inputPerLevel->GetSpacing() );
+    // filterBank->SetDirection(inputPerLevel->GetDirection() );
     filterBank->Update();
 
     /******* set HighPass bands *****/
@@ -480,15 +507,16 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     shrinkFilter->Update();
     // inputPerLevel = shrinkFilter->GetOutput();
     // Ignore modifications of origin and spacing of shrink filters.
-    typedef itk::ChangeInformationImageFilter<OutputImageType> ChangeInformationFilterType;
     typename ChangeInformationFilterType::Pointer changeInfoFilter = ChangeInformationFilterType::New();
     changeInfoFilter->SetInput(shrinkFilter->GetOutput());
     changeInfoFilter->ChangeDirectionOff();
     changeInfoFilter->ChangeRegionOff();
     changeInfoFilter->ChangeSpacingOn();
     changeInfoFilter->ChangeOriginOn();
-    changeInfoFilter->UseReferenceImageOn();
-    changeInfoFilter->SetReferenceImage(inputPerLevel.GetPointer()); // Use input image as reference.
+    changeInfoFilter->UseReferenceImageOff();
+    // changeInfoFilter->SetReferenceImage(inputPerLevel.GetPointer()); // Use input image as reference.
+    changeInfoFilter->SetOutputOrigin(origin_new);
+    changeInfoFilter->SetOutputSpacing(spacing_new);
     if (level == this->m_Levels - 1) // Set low_pass output (index=0)
       {
       changeInfoFilter->GraftOutput(this->GetOutput(0));

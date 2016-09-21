@@ -1,3 +1,5 @@
+#KWSTYLE
+*.kws
 # Vim stuff
 Session.vim
 *.swp

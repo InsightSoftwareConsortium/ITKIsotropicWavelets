@@ -50,7 +50,7 @@ MonogenicSignalFrequencyImageFilter<TInputImage, TFrequencyImageRegionConstItera
   InputFrequencyImageRegionConstIterator inFreqIt(this->GetInput() , outputRegionForThread);
   ImageRegionIterator< OutputImageType >    outIt(this->GetOutput(), outputRegionForThread);
 
-  typedef itk::RieszFrequencyFunction<
+  typedef RieszFrequencyFunction<
     typename InputImageType::PixelType::value_type,
              ImageDimension> RieszFunctionType;
   typename RieszFunctionType::Pointer evaluator = RieszFunctionType::New();

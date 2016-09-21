@@ -42,11 +42,11 @@ HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 {
   // freq_in_rad_per_sec = freq_norm_in_hz * 2 * pi
   if(freq_norm_in_hz > 0.125 && freq_norm_in_hz <= 0.25 )
-    return static_cast<TFunctionValue>(std::cos(2.0 * itk::Math::pi  *
+    return static_cast<TFunctionValue>(std::cos(2.0 * Math::pi  *
         this->ComputePolynom(freq_norm_in_hz, this->m_PolynomialOrder)));
 
   if(freq_norm_in_hz > 0.25 && freq_norm_in_hz <= 0.5 )
-    return static_cast<TFunctionValue>(std::sin(2.0 * itk::Math::pi  *
+    return static_cast<TFunctionValue>(std::sin(2.0 * Math::pi  *
         this->ComputePolynom(freq_norm_in_hz / 2.0, this->m_PolynomialOrder)));
 
   return 0;
@@ -87,7 +87,7 @@ const
   if (j == this->m_HighPassSubBands) return this->EvaluateForwardHighPassFilter(freq_norm_in_hz);
   if (j == 0) return this->EvaluateForwardLowPassFilter(freq_norm_in_hz);
   if (j > this->m_HighPassSubBands || j < 0)
-    throw itk::ExceptionObject(__FILE__, __LINE__,
+    throw ExceptionObject(__FILE__, __LINE__,
             "Invalid SubBand", ITK_LOCATION);
   FunctionValueType value =
     std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands) ) *
@@ -189,7 +189,7 @@ HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
     break;
   }
   default: {
-    throw itk::ExceptionObject(__FILE__, __LINE__,
+    throw ExceptionObject(__FILE__, __LINE__,
       "Choose order of polynom less than 6", ITK_LOCATION);
   }
   }

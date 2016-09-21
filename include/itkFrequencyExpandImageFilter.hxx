@@ -149,7 +149,7 @@ FrequencyExpandImageFilter< TImageType >
 
   for (unsigned int n = 0; n < numberOfRegions; ++n)
     {
-    subIndices = itk::Ind2Sub<ImageDimension>(n, nsizes);
+    subIndices = Ind2Sub<ImageDimension>(n, nsizes);
     RegionType zoneRegion;
     typename ImageType::SizeType zoneSize;
     typename ImageType::IndexType  inputIndex  = indexRequested;
