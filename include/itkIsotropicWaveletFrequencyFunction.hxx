@@ -27,7 +27,8 @@ namespace itk
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::IsotropicWaveletFrequencyFunction()
-  : m_HighPassSubBands(1)
+  : m_HighPassSubBands(1),
+    m_FreqCutOff(0.25)
 {}
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
@@ -63,7 +64,7 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
   FunctionValueType value =
     std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands)) *
     std::pow(2.0, static_cast<int>(2*this->m_HighPassSubBands - 1));
-  if ( value > 0.25 )
+  if ( value > this->m_FreqCutOff )
     return this->EvaluateMagnitude(value);
   return 1;
 }
@@ -76,7 +77,7 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
   FunctionValueType value =
     std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands)) *
     std::pow(2.0, static_cast<int>(this->m_HighPassSubBands - 1));
-  if ( value < 0.25 )
+  if ( value < this->m_FreqCutOff )
     return this->EvaluateMagnitude(value);
   return 1;
 }

@@ -67,7 +67,7 @@ public:
 
   /** Output type for the function. */
   typedef typename Superclass::FunctionValueType FunctionValueType;
-  typedef typename Superclass::OutputType OutputType;
+  typedef typename Superclass::OutputType        OutputType;
 
   /** Evaluate Magnitude of frequency point. Evaluate function calls this. */
   virtual FunctionValueType EvaluateMagnitude(const TFunctionValue& freq_norm_in_hz) const ITK_OVERRIDE = 0;
@@ -104,7 +104,7 @@ protected:
   /** Number of HighPassSubBands in the high filter decomposition.
    * Default to just one HighPass filter (no subbands) */
   unsigned int m_HighPassSubBands;
-
+  FunctionValueType m_FreqCutOff;
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(IsotropicWaveletFrequencyFunction);
 };

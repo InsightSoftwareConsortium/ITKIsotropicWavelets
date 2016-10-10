@@ -92,8 +92,7 @@ private:
   void operator=(const Self &) ITK_DELETE_FUNCTION;
 
   /** kappa value, default is optimal:0.75 */
- TFunctionValue m_Kappa;
-
+ FunctionValueType m_Kappa;
 };
 } // end namespace itk
 

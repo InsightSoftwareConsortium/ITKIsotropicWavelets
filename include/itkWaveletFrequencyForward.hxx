@@ -89,7 +89,6 @@ WaveletFrequencyForward<TInputImage, TOutputImage, TWaveletFilterBank>
 ::GetOutputLowPass()
 {
   return this->GetOutput(0);
-
 }
 
 template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
@@ -442,11 +441,15 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
   OutputImagePointer inputPerLevel = castFilter->GetOutput();
   typedef itk::ChangeInformationImageFilter<OutputImageType> ChangeInformationFilterType;
   typename ChangeInformationFilterType::Pointer changeInputInfoFilter = ChangeInformationFilterType::New();
-  auto origin_old = inputPerLevel->GetOrigin();
-  auto spacing_old = inputPerLevel->GetSpacing();
-  auto origin_new = origin_old;
+  //TODO solve the origin/spacing issue
+  // For multiplication purposes between the filterbank and the inputimage, both images have to have same Information/Metadata.
+  // current a) ignore the input information and work with default values. CONS: the user have to restore it explicitly after reconstruction.
+  // b) set the information of the filter bank to be the same. CONS: the metadata/information could be misleading working in the frequency space.
+  typename InputImageType::PointType origin_old = inputPerLevel->GetOrigin();
+  typename InputImageType::SpacingType spacing_old = inputPerLevel->GetSpacing();
+  typename InputImageType::PointType origin_new = origin_old;
   origin_new.Fill(0);
-  auto spacing_new = spacing_old;
+  typename InputImageType::SpacingType spacing_new = spacing_old;
   spacing_new.Fill(1);
   changeInputInfoFilter->SetInput(inputPerLevel);
   changeInputInfoFilter->ChangeDirectionOff();
@@ -477,9 +480,15 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     for(unsigned int band = 0; band < this->m_HighPassSubBands; ++band)
       {
       unsigned int n_output = 1 + level * this->m_HighPassSubBands + band;
+      // This is to normalize the multi-band approach. TODO is this generic? or depend on wavelet? Related with sub-band dilations. 2^(1/k) instead of Dyadic dilations.
+      typename MultiplyFilterType::Pointer multiplyByAnalysisBandFactor = MultiplyFilterType::New();
+      multiplyByAnalysisBandFactor->SetInput1(highPassImages[band]);
+      multiplyByAnalysisBandFactor->SetConstant(std::pow(2.0, ( level + band/static_cast<double>(this->m_HighPassSubBands) )*ImageDimension/2.0 ) );
+      multiplyByAnalysisBandFactor->InPlaceOn();
+      multiplyByAnalysisBandFactor->Update();
 
       typename MultiplyFilterType::Pointer multiplyHighBandFilter = MultiplyFilterType::New();
-      multiplyHighBandFilter->SetInput1(highPassImages[band]);
+      multiplyHighBandFilter->SetInput1(multiplyByAnalysisBandFactor->GetOutput());
       multiplyHighBandFilter->SetInput2(inputPerLevel);
       multiplyHighBandFilter->InPlaceOn();
       multiplyHighBandFilter->GraftOutput(this->GetOutput(n_output));

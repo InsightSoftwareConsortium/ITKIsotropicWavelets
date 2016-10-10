@@ -104,9 +104,9 @@ public:
   itkGetConstMacro( GaussianWindowRadius, FloatType );
   itkSetMacro( GaussianWindowSigma, FloatType );
   itkGetConstMacro( GaussianWindowSigma, FloatType );
+  itkGetConstMacro(NC,unsigned int)
   itkSetMacro( ApplySoftThreshold, bool );
   itkGetConstMacro( ApplySoftThreshold, bool );
-  itkGetConstMacro(NC,unsigned int)
   itkGetConstMacro(EigenVectorsImage, typename EigenVectorsImageType::Pointer);
   itkGetConstMacro(EigenValuesImage, typename EigenValuesImageType::Pointer);
 

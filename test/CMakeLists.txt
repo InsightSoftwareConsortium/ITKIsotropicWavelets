@@ -4,6 +4,7 @@ set(Libraries
 
 set(IsotropicWaveletsTests
     itkFrequencyImageRegionIteratorWithIndexTest.cxx
+    itkIsotropicWaveletFrequencyFunctionTest.cxx
     itkWaveletFrequencyFilterBankGeneratorTest.cxx
     itkRieszFrequencyFilterBankGeneratorTest.cxx
     itkFrequencyExpandTest.cxx
@@ -40,23 +41,23 @@ itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest1
   COMMAND IsotropicWaveletsTestDriver
     itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/collagen_64x64x16.tiff}
     ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest1.tiff
-    1)
+    1 "Held")
 itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2
   COMMAND IsotropicWaveletsTestDriver
   itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/collagen_64x64x16.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2.tiff
-  2)
+  2 "Held")
 # 2D:
 itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2D1
   COMMAND IsotropicWaveletsTestDriver
     itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_gray_540x420.tiff}
     ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2D1.tiff
-    1)
+    1 "Held" 2)
   itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2D2
   COMMAND IsotropicWaveletsTestDriver
   itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_gray_540x420.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2D2.tiff
-  2)
+  2 "Held" 2)
 ## Riesz Related
 # RieszGenerator
 itk_add_test(NAME itkRieszFrequencyFilterBankGeneratorTest
@@ -112,82 +113,77 @@ itk_add_test(NAME itkWaveletFrequencyInverseTest
   COMMAND IsotropicWaveletsTestDriver
     --compare DATA{Input/collagen_64x64x16.tiff}
               ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest.tiff
-    #TODO, justify following tolerance, beyond the unsigned to float conversion.
-    # There is a lost of information because FrequencyShrinker, which does not interpolate. But not enough.
-    --compareIntensityTolerance 50
   itkWaveletFrequencyInverseTest
   DATA{Input/collagen_64x64x16.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest.tiff
   1 1
+  "Held"
   )
 
-itk_add_test(NAME itkWaveletFrequencyInverseTestMultiLevel
+itk_add_test(NAME itkWaveletFrequencyInverseTestMultiLevelMultiBand
   COMMAND IsotropicWaveletsTestDriver
+    --compare DATA{Input/collagen_64x64x16.tiff}
+    ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTestMultiLevelMultiBand.tiff
   itkWaveletFrequencyInverseTest
   DATA{Input/collagen_64x64x16.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2.tiff
-  2 1
+  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTestMultiLevelMultiBand.tiff
+  2 5
+  "Held"
   )
 #2D
 itk_add_test(NAME itkWaveletFrequencyInverseTest2D
   COMMAND IsotropicWaveletsTestDriver
     --compare DATA{Input/checkershadow_gray_540x420.tiff}
     ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2D.tiff
-    #TODO, justify following tolerance, beyond the unsigned to float conversion.
-    # There is a lost of information because FrequencyShrinker, which does not interpolate. But not enough.
-    --compareIntensityTolerance 50
   itkWaveletFrequencyInverseTest
   DATA{Input/checkershadow_gray_540x420.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2D.tiff
-  1 1 2)
-
-itk_add_test(NAME itkWaveletFrequencyInverseTes2DtMultiLevel
-  COMMAND IsotropicWaveletsTestDriver
-  itkWaveletFrequencyInverseTest
-  DATA{Input/checkershadow_gray_540x420.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2DMultiLevel.tiff
-  2 1 2)
+  1 1
+  "Held"
+  2)
 
 itk_add_test(NAME itkWaveletFrequencyInverseTest2DMultiLevelMultiBand
   COMMAND IsotropicWaveletsTestDriver
+    --compare DATA{Input/checkershadow_Lch_512x512.tiff}
+    ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2DMultiLevelMultiBand.tiff
   itkWaveletFrequencyInverseTest
-  DATA{Input/checkershadow_gray_540x420.tiff}
+  DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2DMultiLevelMultiBand.tiff
-  2 5 2)
+  5 5
+  "Held"
+  2)
 # RieszWavelet Phase Analysis
+set(DefaultWavelet Held)
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/collagen_32x32x16.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest.tiff
-  1 1 )
-
-itk_add_test(NAME itkRieszWaveletPhaseAnalysisTestMultiBand
-  COMMAND IsotropicWaveletsTestDriver
-  itkRieszWaveletPhaseAnalysisTest DATA{Input/collagen_32x32x16.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTestMultiBand.tiff
-  1 5 )
-
-itk_add_test(NAME itkRieszWaveletPhaseAnalysisTestMultiLevel
+  1 1 ${DefaultWavelet} )
+itk_add_test(NAME itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/collagen_64x64x16.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTestMultiLevel.tiff
-  2 1 )
-# itk_add_test(NAME itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand
-#   COMMAND IsotropicWaveletsTestDriver
-#   itkRieszWaveletPhaseAnalysisTest DATA{Input/collagen_64x64x16.tiff}
-#   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand.tiff
-#   2 5 )
+  ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand.tiff
+  2 5 ${DefaultWavelet})
 ###
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2D
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_gray_540x420.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2D.tiff
-  1 1 2 )
+  1 1 ${DefaultWavelet} 2 )
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand
   COMMAND IsotropicWaveletsTestDriver
-  itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_gray_540x420.tiff}
+  itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand.tiff
-  2 2 2 )
+  5 5 ${DefaultWavelet} 2 )
+#IsotropicWaveletFrequencyFunctionTest
+itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionTest
+  COMMAND IsotropicWaveletsTestDriver itkIsotropicWaveletFrequencyFunctionTest
+  ${ITK_TEST_OUTPUT_DIR}/profileMotherWavelet
+  "unused"
+  5
+  "Held"
+  3
+  )
 # FrequencyIterator
 itk_add_test(NAME itkFrequencyImageRegionIteratorWithIndexTest
   COMMAND IsotropicWaveletsTestDriver itkFrequencyImageRegionIteratorWithIndexTest)

@@ -110,6 +110,8 @@ public:
     const DirectionType & direction ) const;
   /// Number of Components of input VectorImage. ImageDimension + 1. Helper.
   itkGetConstMacro(NC,unsigned int)
+  itkSetMacro( ApplySoftThreshold, bool );
+  itkGetConstMacro( ApplySoftThreshold, bool );
 protected:
   MonogenicPhaseAnalysisSoftThresholdImageFilter();
   ~MonogenicPhaseAnalysisSoftThresholdImageFilter() {}
@@ -122,6 +124,7 @@ protected:
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(MonogenicPhaseAnalysisSoftThresholdImageFilter);
   unsigned int         m_NC; // Number of Components of input image (Helper)
+  bool                 m_ApplySoftThreshold;
   OutputImagePixelType m_MeanAmp;
   OutputImagePixelType m_SigmaAmp;
   OutputImagePixelType m_Threshold;
