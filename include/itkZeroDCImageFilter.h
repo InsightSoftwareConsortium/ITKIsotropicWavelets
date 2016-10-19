@@ -19,6 +19,8 @@
 #define itkZeroDCImageFilter_h
 
 #include <itkImageToImageFilter.h>
+#include <itkSubtractImageFilter.h>
+#include <itkStatisticsImageFilter.h>
 
 namespace itk
 {
@@ -69,6 +71,13 @@ public:
                    ( Concept::HasNumericTraits< typename TImageType::PixelType > ) );
   // End concept checking
 #endif
+  typedef itk::StatisticsImageFilter<TImageType> StatisticsFilterType;
+  typedef itk::SubtractImageFilter<ImageType> SubtractFilterType;
+  typedef typename StatisticsFilterType::RealType RealType;
+  RealType GetMean() const
+    {
+    return m_StatisticsFilter->GetMean();
+    }
 
 protected:
   ZeroDCImageFilter();
@@ -77,8 +86,9 @@ protected:
   void GenerateData() ITK_OVERRIDE;
 
 private:
-  ZeroDCImageFilter(const Self &) ITK_DELETE_FUNCTION;
-  void operator=(const Self &) ITK_DELETE_FUNCTION;
+  ITK_DISALLOW_COPY_AND_ASSIGN(ZeroDCImageFilter);
+  typename StatisticsFilterType::Pointer m_StatisticsFilter;
+  typename SubtractFilterType::Pointer m_SubtractFilter;
 };
 } // end namespace itk
 

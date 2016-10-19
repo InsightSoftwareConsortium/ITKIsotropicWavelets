@@ -35,7 +35,7 @@
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
-// #include "itkNumberToString.h"
+#include "itkNumberToString.h"
 
 //Visualize for dev/debug purposes. Set in cmake file. Require VTK
 #if ITK_VISUALIZE_TESTS != 0
@@ -71,7 +71,7 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   zeroDCFilter->Update();
 
   // Perform FFT on input image.
-  typedef itk::ForwardFFTImageFilter<ImageType> FFTForwardFilterType;
+  typedef itk::ForwardFFTImageFilter<typename ZeroDCFilterType::OutputImageType> FFTForwardFilterType;
   typename FFTForwardFilterType::Pointer fftForwardFilter = FFTForwardFilterType::New();
   fftForwardFilter->SetInput(zeroDCFilter->GetOutput());
   fftForwardFilter->Update();
@@ -95,8 +95,8 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   typedef itk::VectorInverseFFTImageFilter<VectorMonoOutputType> VectorInverseFFTType;
 
   // Input to the PhaseAnalysisEigenValues
-  typedef MonogenicPhaseAnalysisSoftThresholdImageFilter<typename VectorInverseFFTType::OutputImageType> PhaseAnalysisFilter;
-  // typedef MonogenicPhaseAnalysisEigenValuesImageFilter<typename VectorInverseFFTType::OutputImageType> PhaseAnalysisFilter;
+  // typedef MonogenicPhaseAnalysisSoftThresholdImageFilter<typename VectorInverseFFTType::OutputImageType> PhaseAnalysisFilter;
+  typedef MonogenicPhaseAnalysisEigenValuesImageFilter<typename VectorInverseFFTType::OutputImageType> PhaseAnalysisFilter;
 
   typename ForwardWaveletType::OutputsType analysisWavelets = forwardWavelet->GetOutputs();
   typename ForwardWaveletType::OutputsType modifiedWavelets;
@@ -104,17 +104,17 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   for (unsigned int nout = 0; nout < forwardWavelet->GetNumberOfOutputs(); ++nout)
     {
     std::cout << "************Nout: "<< nout << " / " <<noutputs << std::endl;
-    if(nout == 0) // TODO check this. avoid phase analysis in last approximation (low_pass).
+    if(nout == -1) // TODO check this. avoid phase analysis in last approximation (low_pass).
       {
       modifiedWavelets.push_back(analysisWavelets[nout]);
     //TODO remove this visualize
-// #if ITK_VISUALIZE_TESTS != 0
-//     typedef itk::InverseFFTImageFilter<ComplexImageType> FFTInverseFilterType;
-//     typename FFTInverseFilterType::Pointer fftInv = FFTInverseFilterType::New();
-//     fftInv->SetInput(analysisWavelets[nout]);
-//     fftInv->Update();
-//     Testing::ViewImage(fftInv->GetOutput(),  "Wavelet coef 0 (LowPass) Original" );
-// #endif
+#if ITK_VISUALIZE_TESTS != 0
+    typedef itk::InverseFFTImageFilter<ComplexImageType> FFTInverseFilterType;
+    typename FFTInverseFilterType::Pointer fftInv = FFTInverseFilterType::New();
+    fftInv->SetInput(analysisWavelets[nout]);
+    fftInv->Update();
+    Testing::ViewImage(fftInv->GetOutput(),  "Wavelet coef 0 (LowPass) Original" );
+#endif
       continue;
       }
     typename MonogenicSignalFrequencyFilterType::Pointer monoFilter = MonogenicSignalFrequencyFilterType::New();
@@ -128,19 +128,20 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     phaseAnalyzer->SetInput(vecInverseFFT->GetOutput());
     phaseAnalyzer->SetApplySoftThreshold(true);
     phaseAnalyzer->Update();
-    fftForwardPhaseFilter->SetInput(phaseAnalyzer->GetOutput(0));
+    fftForwardPhaseFilter->SetInput(phaseAnalyzer->GetOutput(2));
     fftForwardPhaseFilter->Update();
     modifiedWavelets.push_back(fftForwardPhaseFilter->GetOutput());
     modifiedWavelets.back()->DisconnectPipeline();
     //TODO remove this visualize
-// #if ITK_VISUALIZE_TESTS != 0
-//     typedef itk::InverseFFTImageFilter<ComplexImageType> FFTInverseFilterType;
-//     typename FFTInverseFilterType::Pointer fftInv = FFTInverseFilterType::New();
-//     fftInv->SetInput(analysisWavelets[nout]);
-//     fftInv->Update();
-//     Testing::ViewImage(fftInv->GetOutput(),  "Wavelet coef " + n2s(nout) + "Original" );
-//     Testing::ViewImage(phaseAnalyzer->GetOutput(0), "Wavelet coef " + n2s(nout) + "PhaseAnalyzed" );
-// #endif
+#if ITK_VISUALIZE_TESTS != 0
+    typedef itk::InverseFFTImageFilter<ComplexImageType> FFTInverseFilterType;
+    typename FFTInverseFilterType::Pointer fftInv = FFTInverseFilterType::New();
+    fftInv->SetInput(analysisWavelets[nout]);
+    fftInv->Update();
+    // Testing::ViewImage(fftInv->GetOutput(),  "Wavelet coef " + n2s(nout) + "Original" );
+    itk::NumberToString<unsigned int> n2s;
+    Testing::ViewImage(phaseAnalyzer->GetOutput(0), "Wavelet coef " + n2s(nout) + "PhaseAnalyzed" );
+#endif
     }
 
   typedef itk::WaveletFrequencyInverse<ComplexImageType, ComplexImageType, WaveletFilterBankType> InverseWaveletType;

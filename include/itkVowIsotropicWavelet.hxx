@@ -27,10 +27,8 @@ namespace itk
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 VowIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 ::VowIsotropicWavelet()
-// Value mentioned in original article. Not recommended to modify.
  :m_Kappa(0.75)
 {
-  // this->m_FreqCutOff = 0.5;
 }
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >

@@ -23,7 +23,10 @@
 namespace itk
 {
 /** \class IsotropicWaveletFrequencyFunction
- * Abstract class for IsotropicWaveletFrequencyFunction.
+ * Abstract class for IsotropicWaveletFrequencyFunction, subclass of
+ * \sa IsotropicFrequencyFunction implementing a M-Band decomposition of frequencies.
+ * (There are at least one high-pass and one low-pass decomposition)
+
  * The interface consists on EvaluateAlgo functions.
  * Where Algo can be:
  *  Function: MotherWavelet response.
@@ -34,6 +37,7 @@ namespace itk
  *   HighPassFilter
  *   SubBandFilter
  *
+ * Note that for Isotropic Wavelet, forward and inverse responses are usually the same.
  *  Data member m_HighPassSubBand refers to the numbers of bands in the highpass filter. Default to 1, just one highpass filter, so no band analysis.
  *
  *  If using EvaluateAlgoYYYSubBandFilter(unsigned int k). Implement it like this:
@@ -41,7 +45,7 @@ namespace itk
  *  k = m_HighPassSubBand return high-pass response.
  *  0 < k < m_HighPassSubBand calls the high pass subbands.
  *
- * For an example \sa itkHeldWavelet
+ * For an example \sa itkHeldIsotropicWavelet
  *
  * \ingroup SpatialFunctions
  * \ingroup IsotropicWavelets
@@ -103,7 +107,9 @@ protected:
   virtual void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
   /** Number of HighPassSubBands in the high filter decomposition.
    * Default to just one HighPass filter (no subbands) */
-  unsigned int m_HighPassSubBands;
+  unsigned int      m_HighPassSubBands;
+  /** Cut off frequency for low and high pass frequency.
+   * Default to 0.25 Hz ( pi/2 rad/s ) but can be changed in child classes. */
   FunctionValueType m_FreqCutOff;
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(IsotropicWaveletFrequencyFunction);

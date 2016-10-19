@@ -90,6 +90,8 @@ namespace itk
  * OR
  * I(N/2) == I((N+1)/2) if N=odd. Nyquist has pos and neg components.
  *
+ * Note that this filter doesn't require the input to be hermitian.
+
  * This code was contributed in the Insight Journal paper:
  * https://hdl.handle.net....
  *

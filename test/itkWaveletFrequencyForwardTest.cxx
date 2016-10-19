@@ -25,6 +25,8 @@
 #include "itkWaveletFrequencyFilterBankGenerator.h"
 #include "itkHeldIsotropicWavelet.h"
 #include "itkVowIsotropicWavelet.h"
+#include "itkSimoncelliIsotropicWavelet.h"
+#include "itkShannonIsotropicWavelet.h"
 #include "itkForwardFFTImageFilter.h"
 #include "itkInverseFFTImageFilter.h"
 #include <itkComplexToRealImageFilter.h>
@@ -42,7 +44,7 @@ std::string append_to_filename(const std::string& filename, const std::string & 
   return filename.substr(0,found_dot) + appendix + filename.substr(found_dot);
 }
 
-template <unsigned int N>
+template <unsigned int N, typename TWaveletFunction>
 int runWaveletFrequencyForwardTest( const std::string& inputImage,
     const std::string& outputImage,
     const unsigned int& inputLevels,
@@ -64,8 +66,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
   typedef typename FFTFilterType::OutputImageType ComplexImageType;
 
   // Set the WaveletFunctionType and the WaveletFilterBank
-  // typedef itk::HeldIsotropicWavelet<PixelType> WaveletFunctionType;
-  typedef itk::VowIsotropicWavelet<PixelType> WaveletFunctionType;
+  typedef TWaveletFunction WaveletFunctionType;
   typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType> WaveletFilterBankType;
   typedef itk::WaveletFrequencyForward<ComplexImageType, ComplexImageType, WaveletFilterBankType> ForwardWaveletType;
   typename ForwardWaveletType::Pointer forwardWavelet = ForwardWaveletType::New();
@@ -216,34 +217,62 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
 
 int itkWaveletFrequencyForwardTest(int argc, char *argv[])
 {
-  if( argc < 5 || argc > 6 )
+  if( argc < 6 || argc > 7 )
     {
     std::cerr << "Usage: " << argv[0] <<
-      " inputImage outputImage inputLevels inputBands [dimension]" << std::endl;
+      " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
   const string inputImage  = argv[1];
   const string outputImage = argv[2];
   const unsigned int inputLevels = atoi(argv[3]);
   const unsigned int inputBands  = atoi(argv[4]);
-
+  const string waveletFunction  = argv[5];
   unsigned int dimension = 3;
-  if( argc == 6 )
-  {
-    dimension = atoi( argv[5] );
-  }
+  if( argc == 7 )
+    {
+    dimension = atoi( argv[6] );
+    }
 
+  typedef itk::HeldIsotropicWavelet<>       HeldWavelet;
+  typedef itk::VowIsotropicWavelet<>        VowWavelet;
+  typedef itk::SimoncelliIsotropicWavelet<> SimoncelliWavelet;
+  typedef itk::ShannonIsotropicWavelet<>    ShannonWavelet;
   if( dimension == 2 )
-  {
-    return runWaveletFrequencyForwardTest<2>(inputImage, outputImage, inputLevels, inputBands);
-  }
+    {
+    if (waveletFunction == "Held")
+      return runWaveletFrequencyForwardTest<2, HeldWavelet>(inputImage, outputImage, inputLevels, inputBands);
+    else if (waveletFunction == "Vow")
+      return runWaveletFrequencyForwardTest<2, VowWavelet>(inputImage, outputImage, inputLevels, inputBands);
+    else if (waveletFunction == "Simoncelli")
+      return runWaveletFrequencyForwardTest<2, SimoncelliWavelet>(inputImage, outputImage, inputLevels, inputBands);
+    else if (waveletFunction == "Shannon")
+      return runWaveletFrequencyForwardTest<2, ShannonWavelet>(inputImage, outputImage, inputLevels, inputBands);
+    else
+      {
+      std::cerr << argv[5] << " is an unknown wavelet type " << std::endl;
+      return EXIT_FAILURE;
+      }
+    }
   else if( dimension == 3 )
-  {
-    return runWaveletFrequencyForwardTest<3>(inputImage, outputImage, inputLevels, inputBands);
-  }
+    {
+    if (waveletFunction == "Held")
+      return runWaveletFrequencyForwardTest<3, HeldWavelet>(inputImage, outputImage, inputLevels, inputBands);
+    else if (waveletFunction == "Vow")
+      return runWaveletFrequencyForwardTest<3, VowWavelet>(inputImage, outputImage, inputLevels, inputBands);
+    else if (waveletFunction == "Simoncelli")
+      return runWaveletFrequencyForwardTest<3, SimoncelliWavelet>(inputImage, outputImage, inputLevels, inputBands);
+    else if (waveletFunction == "Shannon")
+      return runWaveletFrequencyForwardTest<3, ShannonWavelet>(inputImage, outputImage, inputLevels, inputBands);
+    else
+      {
+      std::cerr << argv[5] << " is an unknown wavelet type " << std::endl;
+      return EXIT_FAILURE;
+      }
+    }
   else
-  {
+    {
     std::cerr << "Error: only 2 or 3 dimensions allowed, " << dimension << " selected." << std::endl;
     return EXIT_FAILURE;
-  }
+    }
 }

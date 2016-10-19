@@ -480,15 +480,16 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     for(unsigned int band = 0; band < this->m_HighPassSubBands; ++band)
       {
       unsigned int n_output = 1 + level * this->m_HighPassSubBands + band;
-      // This is to normalize the multi-band approach. TODO is this generic? or depend on wavelet? Related with sub-band dilations. 2^(1/k) instead of Dyadic dilations.
-      typename MultiplyFilterType::Pointer multiplyByAnalysisBandFactor = MultiplyFilterType::New();
-      multiplyByAnalysisBandFactor->SetInput1(highPassImages[band]);
-      multiplyByAnalysisBandFactor->SetConstant(std::pow(2.0, ( level + band/static_cast<double>(this->m_HighPassSubBands) )*ImageDimension/2.0 ) );
-      multiplyByAnalysisBandFactor->InPlaceOn();
-      multiplyByAnalysisBandFactor->Update();
+      // This is to normalize the multi-band approach. TODO is this generic? or depend on wavelet? Related with sub-band dilations. 2^(1/k) instead of Dyadic dilations. In any case it should be decoupled from this and put it in the WaveletFilterBankGenerator.
+      // typename MultiplyFilterType::Pointer multiplyByAnalysisBandFactor = MultiplyFilterType::New();
+      // multiplyByAnalysisBandFactor->SetInput1(highPassImages[band]);
+      // multiplyByAnalysisBandFactor->SetConstant(std::pow(2.0, ( level + band/static_cast<double>(this->m_HighPassSubBands) )*ImageDimension/2.0 ) );
+      // multiplyByAnalysisBandFactor->InPlaceOn();
+      // multiplyByAnalysisBandFactor->Update();
 
       typename MultiplyFilterType::Pointer multiplyHighBandFilter = MultiplyFilterType::New();
-      multiplyHighBandFilter->SetInput1(multiplyByAnalysisBandFactor->GetOutput());
+      // multiplyHighBandFilter->SetInput1(multiplyByAnalysisBandFactor->GetOutput());
+      multiplyHighBandFilter->SetInput1(highPassImages[band]);
       multiplyHighBandFilter->SetInput2(inputPerLevel);
       multiplyHighBandFilter->InPlaceOn();
       multiplyHighBandFilter->GraftOutput(this->GetOutput(n_output));
