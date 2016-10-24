@@ -87,12 +87,12 @@ int runFrequencyShrinkTest(const std::string & inputImage, const std::string & o
     if (!fftIsHermitian)
       {
       std::cerr <<"fft is not Hermitian" << std::endl;
-      // return EXIT_FAILURE;
+      return EXIT_FAILURE;
       }
     if (!shrinkIsHermitian)
       {
       std::cerr <<"shrink is not Hermitian" << std::endl;
-      // return EXIT_FAILURE;
+      return EXIT_FAILURE;
       }
   /***************** Hermitian property *****************************/
     {
