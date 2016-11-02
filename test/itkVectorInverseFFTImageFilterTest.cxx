@@ -79,7 +79,7 @@ int itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
   vecInverseFFT->Update();
 
   typedef itk::VectorIndexSelectionCastImageFilter<VectorInverseFFTType::OutputImageType, FFTInverseFilterType::OutputImageType> VectorCastFilterType;
-  typename VectorCastFilterType::Pointer vectorCastFilter = VectorCastFilterType::New();
+  VectorCastFilterType::Pointer vectorCastFilter = VectorCastFilterType::New();
   vectorCastFilter->SetInput(vecInverseFFT->GetOutput());
 
   typedef itk::Testing::ComparisonImageFilter<
