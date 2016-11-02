@@ -61,9 +61,9 @@ int runIsotropicWaveletFrequencyFunctionTest(
   double init = 0.0;
   double end = 1.0;
   size_t points = 1000;
-  std::vector<double> w_array = itk::Testing::linSpaceForIWFF(init,end,points);
+  std::vector< double > w_array = itk::Testing::linSpaceForIWFF(init,end,points);
   // Generate profile data for sub-bands and mother wavelet itself
-  std::vector<std::vector<double>> subBandsResults;
+  std::vector< std::vector< double > > subBandsResults;
   for(unsigned int k = 0; k<inputBands + 2; ++k)
     {
     std::vector<double> bandResults;
