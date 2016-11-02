@@ -68,7 +68,7 @@ int itkMonogenicPhaseAnalysisSoftThresholdImageFilterTest(int argc, char* argv[]
   typedef MonogenicSignalFrequencyFilterType::OutputImageType VectorMonoOutputType;
 
   typedef itk::VectorInverseFFTImageFilter<VectorMonoOutputType> VectorInverseFFTType;
-  typename VectorInverseFFTType::Pointer vecInverseFFT = VectorInverseFFTType::New();
+  VectorInverseFFTType::Pointer vecInverseFFT = VectorInverseFFTType::New();
   vecInverseFFT->SetInput(monoFilter->GetOutput());
   vecInverseFFT->Update();
   // Input to the PhaseAnalysisSoftThreshold

@@ -31,7 +31,7 @@ CreateTestDriver(IsotropicWavelets "${Libraries}" "${IsotropicWaveletsTests}")
 
 #ITK_VISUALIZE_TESTS is passed to source code.
 #change it to 1 to visualize images, for dev purposes.
-set(ITK_VISUALIZE_TESTS 1)
+option(ITK_VISUALIZE_TESTS "Visualize images in tests for development purposes." OFF)
 target_compile_definitions(IsotropicWaveletsTestDriver PRIVATE ITK_VISUALIZE_TESTS=${ITK_VISUALIZE_TESTS})
 # NOTE: If ITK_VISUALIZE_TESTS != 0, require Module_ITKVtkGlue = ON
 if(ITK_VISUALIZE_TESTS AND NOT ITKVtkGlue_ENABLED)
