@@ -39,7 +39,7 @@ CreateTestDriver(IsotropicWavelets "${Libraries}" "${IsotropicWaveletsTests}")
 target_compile_definitions(IsotropicWaveletsTestDriver PRIVATE ITK_VISUALIZE_TESTS=${ITK_VISUALIZE_TESTS})
 # NOTE: If ITK_VISUALIZE_TESTS != 0, require Module_ITKVtkGlue = ON
 if(ITK_VISUALIZE_TESTS AND NOT ITKVtkGlue_ENABLED)
-  message( FATAL_ERROR "ITK_VISUALIZE_TESTS is set, but Module_ITKVtkGlue is not enabled. Set Module_ITKVtkGlue = ON or set ITK_VISUALIZE_TESTS to 0 to avoid this error." )
+  message( FATAL_ERROR "ITK_VISUALIZE_TESTS is set, but Module_ITKVtkGlue is not enabled. Set Module_ITKVtkGlue = ON or set ITK_VISUALIZE_TESTS = OFF to avoid this error." )
 endif()
 
 # Wavelet Generator
