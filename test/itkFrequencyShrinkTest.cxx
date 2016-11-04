@@ -38,10 +38,9 @@ using namespace std;
 using namespace itk;
 
 //Visualize for dev/debug purposes. Set in cmake file. Require VTK
-#if ITK_VISUALIZE_TESTS != 0
+#ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
-
 
 template<unsigned int N>
 int runFrequencyShrinkTest(const std::string & inputImage, const std::string & outputImage)
@@ -214,7 +213,7 @@ int runFrequencyShrinkTest(const std::string & inputImage, const std::string & o
     return EXIT_FAILURE;
     }
 
-#if ITK_VISUALIZE_TESTS != 0
+#ifdef ITK_VISUALIZE_TESTS
   Testing::ViewImage(zeroDCFilter->GetOutput(), "Original");
   Testing::ViewImage(inverseFFT->GetOutput(), "FrequencyShrinker");
   //Compare with regular shrink filter.

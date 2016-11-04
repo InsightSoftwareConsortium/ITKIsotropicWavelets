@@ -32,7 +32,7 @@
 #include <itkComplexToRealImageFilter.h>
 #include "itkNumberToString.h"
 //Visualize for dev/debug purposes. Set in cmake file. Require VTK
-#if ITK_VISUALIZE_TESTS != 0
+#ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
 using namespace std;
@@ -161,7 +161,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
 
         inverseFFT->SetInput(forwardWavelet->GetOutput(n_output) );
         inverseFFT->Update();
-#if ITK_VISUALIZE_TESTS != 0
+#ifdef ITK_VISUALIZE_TESTS
         Testing::ViewImage(inverseFFT->GetOutput(),
           "Approx coef. n_out: " + n2s(n_output) + " level: " + n2s(levels) + ", band:0/" + n2s(inputBands));
 #endif
@@ -188,7 +188,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
 
       inverseFFT->SetInput(forwardWavelet->GetOutput(n_output) );
       inverseFFT->Update();
-#if ITK_VISUALIZE_TESTS != 0
+#ifdef ITK_VISUALIZE_TESTS
     std::pair<unsigned int, unsigned int> pairLvBand =
       forwardWavelet->OutputIndexToLevelBand(n_output);
       Testing::ViewImage(inverseFFT->GetOutput(),
