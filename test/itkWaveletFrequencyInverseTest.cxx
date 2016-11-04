@@ -31,7 +31,7 @@
 #include "itkForwardFFTImageFilter.h"
 #include "itkInverseFFTImageFilter.h"
 #include <itkComplexToRealImageFilter.h>
-#if ITK_VISUALIZE_TESTS != 0
+#ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
 using namespace std;
@@ -103,7 +103,7 @@ int runWaveletFrequencyInverseTest( const std::string& inputImage,
     std::cerr << error << std::endl;
     return EXIT_FAILURE;
     }
-#if ITK_VISUALIZE_TESTS != 0
+#ifdef ITK_VISUALIZE_TESTS
   Testing::ViewImage(reader->GetOutput(), "Original");
   Testing::ViewImage(inverseFFT->GetOutput(), "InverseWavelet");
 #endif
