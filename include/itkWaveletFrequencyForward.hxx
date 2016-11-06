@@ -189,7 +189,6 @@ template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBa
   void WaveletFrequencyForward<TInputImage, TOutputImage, TWaveletFilterBank>
 ::GenerateOutputInformation()
 {
-  // TODO CLEAN THIS SHIT
   // call the superclass's implementation of this method
   Superclass::GenerateOutputInformation();
 
@@ -203,10 +202,8 @@ template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBa
     inputPtr->GetLargestPossibleRegion().GetSize();
   typename InputImageType::IndexType inputStartIndex =
     inputPtr->GetLargestPossibleRegion().GetIndex();
-  // TODO document that inputOrigin and inputSpacing is lost and should be restored at the end of the inverse wavelet transform.
-  // typename InputImageType::PointType inputOrigin = inputPtr->GetOrigin();
-  // typename InputImageType::SpacingType inputSpacing = inputPtr->GetSpacing();
-  // typename InputImageType::DirectionType inputDirection = inputPtr->GetDirection();
+  /** inputOrigin and inputSpacing is lost and should be restored
+   * at the end of the inverse wavelet transform. */
 
   typename OutputImageType::PointType outputOrigin(0);
   typename OutputImageType::SpacingType outputSpacing(1);
@@ -262,9 +259,6 @@ template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBa
 
     // Update InputSize with low_passSize.
     inputSize  = low_passSize;
-    // inputOrigin = low_passOrigin;
-    // inputSpacing = low_passSpacing;
-    // inputDirection = low_passDirection;
 
     if(level == this->m_Levels - 1 )
       {

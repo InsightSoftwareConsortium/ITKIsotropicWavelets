@@ -348,8 +348,8 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
       addFilter->Update();
       reconstructed = addFilter->GetOutput();
 
-      this->UpdateProgress( static_cast< float >( m_TotalInputs - n_input - 1 ) //TODO
-        / static_cast< float >( m_TotalInputs ) );
+      this->UpdateProgress(static_cast<float>(m_TotalInputs - n_input - 1) /
+                           static_cast<float>(m_TotalInputs));
       }
 
     /******* LowPass band *****/
