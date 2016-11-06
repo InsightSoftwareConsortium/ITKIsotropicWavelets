@@ -485,7 +485,7 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
       //  2^(1/#bands) instead of Dyadic dilations.
       typename MultiplyFilterType::Pointer multiplyByAnalysisBandFactor = MultiplyFilterType::New();
       multiplyByAnalysisBandFactor->SetInput1(highPassImages[band]);
-      double expFactorHigh = - static_cast<int>(band + 1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0 ;
+      double expFactorHigh = - static_cast<int>(band + 1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
       // double expFactorHigh = - static_cast<double>(1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
       multiplyByAnalysisBandFactor->SetConstant(std::pow(2.0,expFactorHigh));
       multiplyByAnalysisBandFactor->InPlaceOn();
@@ -519,7 +519,7 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     /***** Dilation factor (assume dilation is dyadic -2-). After this, high pass bands don't need dilation by level (only by band)  **/
       typename MultiplyFilterType::Pointer multiplyLowByDilationLevelFactor = MultiplyFilterType::New();
     multiplyLowByDilationLevelFactor->SetInput1(shrinkFilter->GetOutput());
-    double expFactorLow = - static_cast<double>(ImageDimension)/2.0 ;
+    double expFactorLow = - static_cast<double>(ImageDimension)/2.0;
     multiplyLowByDilationLevelFactor->SetConstant(std::pow(2.0, expFactorLow));
     multiplyLowByDilationLevelFactor->InPlaceOn();
     multiplyLowByDilationLevelFactor->Update();

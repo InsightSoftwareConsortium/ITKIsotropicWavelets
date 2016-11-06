@@ -71,8 +71,8 @@ public:
                    ( Concept::HasNumericTraits< typename TImageType::PixelType > ) );
   // End concept checking
 #endif
-  typedef itk::StatisticsImageFilter<TImageType> StatisticsFilterType;
-  typedef itk::SubtractImageFilter<ImageType> SubtractFilterType;
+  typedef itk::StatisticsImageFilter<TImageType>  StatisticsFilterType;
+  typedef itk::SubtractImageFilter<ImageType>     SubtractFilterType;
   typedef typename StatisticsFilterType::RealType RealType;
   RealType GetMean() const
     {
@@ -88,7 +88,7 @@ protected:
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(ZeroDCImageFilter);
   typename StatisticsFilterType::Pointer m_StatisticsFilter;
-  typename SubtractFilterType::Pointer m_SubtractFilter;
+  typename SubtractFilterType::Pointer   m_SubtractFilter;
 };
 } // end namespace itk
 

@@ -125,7 +125,7 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
         if( not_equal )
           {
           ++not_zero_complex_error;
-          accum_square_difference+= imag_value * imag_value;
+          accum_square_difference += imag_value * imag_value;
           }
 
         ++complexInverseIt;
@@ -133,7 +133,11 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
       // accum_square_difference /= not_zero_complex_error;
       if ( not_zero_complex_error > 0 )
         {
-        std::cout << "Dev note: After the FFT filter the image is not hermitian. #Not_zero_imag_value Pixels: " << not_zero_complex_error << " accumSquareDifference: " << accum_square_difference <<std::endl;
+        std::cout << "Dev note: After the FFT filter the image is not "
+                     "hermitian. #Not_zero_imag_value Pixels: "
+                  << not_zero_complex_error
+                  << " accumSquareDifference: " << accum_square_difference
+                  << std::endl;
         }
       }
     // Check that complex part is almost 0 filter is correct after expand
@@ -158,21 +162,25 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
         if( not_equal )
           {
           ++not_zero_complex_error;
-          accum_square_difference+= imag_value * imag_value;
+          accum_square_difference += imag_value * imag_value;
           }
         ++complexInverseIt;
         }
       // accum_square_difference /= not_zero_complex_error;
       if ( not_zero_complex_error > 0 )
         {
-        std::cout << "Dev note: After the EXPAND filter the image is not hermitian. #Not_zero_imag_value Pixels: " << not_zero_complex_error << " accumSquareDifference: " << accum_square_difference <<std::endl;
+        std::cout << "Dev note: After the EXPAND filter the image is not "
+                     "hermitian. #Not_zero_imag_value Pixels: "
+                  << not_zero_complex_error
+                  << " accumSquareDifference: " << accum_square_difference
+                  << std::endl;
         }
       }
     }
     /*************End Hermitian property *****************************/
 
   // Write Output for comparisson
-  typedef itk::Image<float,dimension> FloatImageType;
+  typedef itk::Image<float,dimension>                       FloatImageType;
   typedef itk::CastImageFilter< ImageType, FloatImageType > CastType;
   typename CastType::Pointer castFilter = CastType::New();
   castFilter->SetInput(inverseFFT->GetOutput());

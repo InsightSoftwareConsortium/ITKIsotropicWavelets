@@ -334,9 +334,9 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
       //  2^(1/#bands) instead of Dyadic dilations.
       typename MultiplyFilterType::Pointer multiplyByReconstructionBandFactor = MultiplyFilterType::New();
       multiplyByReconstructionBandFactor->SetInput1(multiplyHighBandFilter->GetOutput());
-      double expFactorHigh = static_cast<int>(band + 1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0 ;
+      double expFactorHigh = static_cast<int>(band + 1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
       // double expFactorHigh = static_cast<double>(1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
-      multiplyByReconstructionBandFactor->SetConstant(std::pow(2.0, expFactorHigh)) ;
+      multiplyByReconstructionBandFactor->SetConstant(std::pow(2.0, expFactorHigh));
       multiplyByReconstructionBandFactor->InPlaceOn();
       multiplyByReconstructionBandFactor->Update();
 
@@ -362,7 +362,7 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
     /******* Scale low pass by factor per Level before addition *****/
     typename MultiplyFilterType::Pointer multiplyLowByReconstructLevelFactor = MultiplyFilterType::New();
     multiplyLowByReconstructLevelFactor->SetInput1(multiplyLowPass->GetOutput());
-    double expFactorLow = static_cast<double>(ImageDimension)/2.0 ;
+    double expFactorLow = static_cast<double>(ImageDimension)/2.0;
     multiplyLowByReconstructLevelFactor->SetConstant(std::pow(2.0, expFactorLow));
     multiplyLowByReconstructLevelFactor->InPlaceOn();
     multiplyLowByReconstructLevelFactor->Update();
