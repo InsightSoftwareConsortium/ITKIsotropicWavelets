@@ -165,7 +165,7 @@ MonogenicPhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
 }
 
 template< typename TInputImage, typename TOutputImage >
-itk::FixedArray<
+FixedArray<
   typename MonogenicPhaseAnalysisSoftThresholdImageFilter<TInputImage, TOutputImage>::OutputImagePixelType,
   MonogenicPhaseAnalysisSoftThresholdImageFilter<TInputImage, TOutputImage>::ImageDimension - 1 >
 MonogenicPhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
@@ -174,7 +174,8 @@ MonogenicPhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
 {
   // the angles of the polar coordinates of the normed vector:
   // V = (R1*f, ..., Rn*f) / RieszNorm
-  itk::FixedArray< OutputImagePixelType, ImageDimension - 1> out(0);
+  FixedArray< OutputImagePixelType, ImageDimension - 1> out;
+  out.Fill( NumericTraits< OutputImagePixelType >::ZeroValue() );
   OutputImagePixelType rNorm = sqrt(rieszNormSquare);
   OutputImagePixelType r1Unitary = monoPixel[1] / rNorm;
   for(unsigned int i = 0; i < ImageDimension - 1; i++)
