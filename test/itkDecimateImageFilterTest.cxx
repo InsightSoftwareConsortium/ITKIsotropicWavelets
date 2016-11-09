@@ -25,11 +25,11 @@
 #include "itkViewImage.h"
 #endif
 
-template <unsigned int ImageDimension>
+template <unsigned int N>
 int runDecimateImageFilterTest()
 {
-  typedef float PixelType;
-  typedef itk::Image<PixelType,ImageDimension> ImageType;
+  typedef float                   PixelType;
+  typedef itk::Image<PixelType,N> ImageType;
   bool testPassed = true;
 
   //=============================================================
@@ -65,8 +65,8 @@ int runDecimateImageFilterTest()
   try
     {
     // update with 2,2 shrink factor
-    unsigned int factors[ImageDimension];
-    for (unsigned int i = 0; i < ImageDimension; i++)
+    unsigned int factors[N];
+    for (unsigned int i = 0; i < N; i++)
       factors[i] = 2;
     std::cout << "== Testing with shrink factors " << factors[0] << " " << factors[1] << " == " << std::endl;
     decimator->SetShrinkFactors(factors);
@@ -80,7 +80,7 @@ int runDecimateImageFilterTest()
       decimator->GetOutput()->GetLargestPossibleRegion() );
     for (outIt.GoToBegin(); !outIt.IsAtEnd(); ++outIt)
       {
-      int trueValue = outIt.GetIndex()[0]*factors[0]*10 ;
+      int trueValue = outIt.GetIndex()[0]*factors[0]*10;
       if (outIt.Get() != static_cast< int >( trueValue ) )
         {
         std::cout << "Wrong pixel value at " << outIt.GetIndex() << " of " << outIt.Get() << " . Should be " << trueValue << std::endl;

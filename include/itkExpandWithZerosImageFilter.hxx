@@ -153,7 +153,7 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
         typename InputImageType::IndexType inputIndex;
         for ( unsigned int j = 0; j < ImageDimension; j++ )
           {
-          inputIndex[j] = outputIndex[j] / m_ExpandFactors[j] ;
+          inputIndex[j] = outputIndex[j] / m_ExpandFactors[j];
           }
         outIt.Set( static_cast< OutputPixelType >(
             inputPtr->GetPixel(inputIndex) ) );

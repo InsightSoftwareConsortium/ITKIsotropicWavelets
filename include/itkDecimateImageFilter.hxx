@@ -135,7 +135,7 @@ DecimateImageFilter< TInputImage, TOutputImage >
       for ( unsigned int j = 0; j < ImageDimension; j++ )
         {
         // inputIndex[j] = (outputIndex[j] -  outputOriginIndex[j]) * m_ShrinkFactors[j] + inputOriginIndex[j] ;
-        inputIndex[j] = outputIndex[j] * m_ShrinkFactors[j] ;
+        inputIndex[j] = outputIndex[j] * m_ShrinkFactors[j];
         }
       outIt.Set( static_cast< typename TOutputImage::PixelType >(
           inputPtr->GetPixel(inputIndex) ) );

@@ -122,10 +122,10 @@ private:
   FrequencyExpandViaInverseFFTImageFilter(const Self &) ITK_DELETE_FUNCTION;
   void operator=(const Self &) ITK_DELETE_FUNCTION;
 
-  ExpandFactorsType   m_ExpandFactors;
+  ExpandFactorsType                      m_ExpandFactors;
   typename InverseFFTFilterType::Pointer m_InverseFFT;
   typename ForwardFFTFilterType::Pointer m_ForwardFFT;
-  typename ExpandFilterType::Pointer m_Expander;
+  typename ExpandFilterType::Pointer     m_Expander;
 };
 } // end namespace itk
 

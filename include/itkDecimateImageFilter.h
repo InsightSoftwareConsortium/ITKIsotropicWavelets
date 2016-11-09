@@ -45,7 +45,7 @@ class DecimateImageFilter :
 {
 public:
   /** Standard class typedefs. */
-  typedef DecimateImageFilter                         Self;
+  typedef DecimateImageFilter                          Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;

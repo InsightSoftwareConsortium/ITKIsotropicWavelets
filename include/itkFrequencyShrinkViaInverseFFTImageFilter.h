@@ -112,10 +112,10 @@ private:
   FrequencyShrinkViaInverseFFTImageFilter(const Self&) ITK_DELETE_FUNCTION;
   void operator=(const Self&) ITK_DELETE_FUNCTION;
 
-  ShrinkFactorsType m_ShrinkFactors;
+  ShrinkFactorsType                      m_ShrinkFactors;
   typename InverseFFTFilterType::Pointer m_InverseFFT;
   typename ForwardFFTFilterType::Pointer m_ForwardFFT;
-  typename ShrinkFilterType::Pointer m_Shrinker;
+  typename ShrinkFilterType::Pointer     m_Shrinker;
 
 };
 
