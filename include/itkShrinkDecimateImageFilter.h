@@ -15,8 +15,8 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef itkDecimateImageFilter_h
-#define itkDecimateImageFilter_h
+#ifndef itkShrinkDecimateImageFilter_h
+#define itkShrinkDecimateImageFilter_h
 
 #include "itkShrinkImageFilter.h"
 #include "itkEnableIf.h"
@@ -24,7 +24,7 @@
 namespace itk
 {
 
-/** \class DecimateImageFilter
+/** \class ShrinkDecimateImageFilter
  * \brief Reduce the size of an image by an integer factor in each
  * dimension just cutting off samples without any interpolation.
  * The first index is always kept.
@@ -37,15 +37,15 @@ namespace itk
  * pixel of the output matches that of the input.
  *
  * \ingroup ITKImageGrid
- * \ingroup IsotropicWavelet
+ * \ingroup IsotropicWavelets
  */
 template <typename TInputImage, typename TOutputImage>
-class DecimateImageFilter :
+class ShrinkDecimateImageFilter :
   public ImageToImageFilter<TInputImage,TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef DecimateImageFilter                          Self;
+  typedef ShrinkDecimateImageFilter                          Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
@@ -54,7 +54,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(DecimateImageFilter, ImageToImageFilter);
+  itkTypeMacro(ShrinkDecimateImageFilter, ImageToImageFilter);
 
   /** Typedef to images */
   typedef TOutputImage                          OutputImageType;
@@ -89,8 +89,8 @@ public:
 
   virtual void GenerateOutputInformation() ITK_OVERRIDE;
 
-  /** DecimateImageFilter needs a larger input requested region than the output
-   * requested region.  As such, DecimateImageFilter needs to provide an
+  /** ShrinkDecimateImageFilter needs a larger input requested region than the output
+   * requested region.  As such, ShrinkDecimateImageFilter needs to provide an
    * implementation for GenerateInputRequestedRegion() in order to inform the
    * pipeline execution model.
    * \sa ProcessObject::GenerateInputRequestedRegion() */
@@ -107,14 +107,14 @@ public:
 #endif
 
 protected:
-  DecimateImageFilter();
+  ShrinkDecimateImageFilter();
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   void ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread,
                             ThreadIdType threadId ) ITK_OVERRIDE;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(DecimateImageFilter);
+  ITK_DISALLOW_COPY_AND_ASSIGN(ShrinkDecimateImageFilter);
 
   ShrinkFactorsType m_ShrinkFactors;
 
@@ -139,7 +139,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkDecimateImageFilter.hxx"
+#include "itkShrinkDecimateImageFilter.hxx"
 #endif
 
 #endif
