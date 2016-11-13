@@ -12,7 +12,7 @@ set(IsotropicWaveletsTests
     itkFrequencyShrinkMultiLevelTest.cxx
     itkFrequencyExpandAndShrinkTest.cxx
     itkExpandWithZerosImageFilterTest.cxx
-    itkDecimateImageFilterTest.cxx
+    itkShrinkDecimateImageFilterTest.cxx
     itkInd2SubTest.cxx
     itkWaveletFrequencyForwardTest.cxx
     itkWaveletFrequencyInverseTest.cxx
@@ -209,11 +209,11 @@ itk_add_test(NAME itkExpandWithZerosImageFilterTest2D
   COMMAND IsotropicWaveletsTestDriver itkExpandWithZerosImageFilterTest 2)
 itk_add_test(NAME itkExpandWithZerosImageFilterTest3D
   COMMAND IsotropicWaveletsTestDriver itkExpandWithZerosImageFilterTest 3)
-## Decimate (in spatial domain)
-itk_add_test(NAME itkDecimateImageFilterTest2D
-  COMMAND IsotropicWaveletsTestDriver itkDecimateImageFilterTest 2)
-itk_add_test(NAME itkDecimateImageFilterTest3D
-  COMMAND IsotropicWaveletsTestDriver itkDecimateImageFilterTest 3)
+## ShrinkDecimate (in spatial domain)
+itk_add_test(NAME itkShrinkDecimateImageFilterTest2D
+  COMMAND IsotropicWaveletsTestDriver itkShrinkDecimateImageFilterTest 2)
+itk_add_test(NAME itkShrinkDecimateImageFilterTest3D
+  COMMAND IsotropicWaveletsTestDriver itkShrinkDecimateImageFilterTest 3)
 ### FrequencyExpandAndShrink
 itk_add_test(NAME itkFrequencyExpandAndShrinkTest2D
   COMMAND IsotropicWaveletsTestDriver itkFrequencyExpandAndShrinkTest
