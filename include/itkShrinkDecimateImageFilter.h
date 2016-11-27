@@ -45,7 +45,7 @@ class ShrinkDecimateImageFilter :
 {
 public:
   /** Standard class typedefs. */
-  typedef ShrinkDecimateImageFilter                          Self;
+  typedef ShrinkDecimateImageFilter                    Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;

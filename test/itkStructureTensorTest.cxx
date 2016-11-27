@@ -34,10 +34,10 @@ template <unsigned int N>
 int runStructureTensorTest()
 {
   const unsigned int ImageDimension = N;
-  typedef itk::Image<double, ImageDimension>           ImageType;
-  typedef itk::Index<ImageDimension>             IndexType;
-  typedef itk::Size<ImageDimension>              SizeType;
-  typedef itk::ImageRegion<ImageDimension>       RegionType;
+  typedef itk::Image<double, ImageDimension> ImageType;
+  typedef itk::Index<ImageDimension>         IndexType;
+  typedef itk::Size<ImageDimension>          SizeType;
+  typedef itk::ImageRegion<ImageDimension>   RegionType;
 
   SizeType size;
   size.Fill(64);

@@ -32,7 +32,9 @@
 namespace itk
 {
 /** \class StructureTensor
- * The input of StructureTensor is a VectorImage, where each component represents a kind of basis to the same underlying image (for example, the basis might be: partial derivatives, Riesz basis, and so on).
+ * TODO This is bad and outdated. Fix after test is written.
+ * The input of StructureTensor is a VectorImage, where each component represents a kind of basis to the same underlying image
+ * (for example, the basis might be: partial derivatives, Riesz basis, and so on).
  * At each pixel of the images, a gaussian window of radius chosen by user (r=2), is used to delimit the local neighborhood of each pixel to look for the structure.
  * At each pixel of each input image, we have a neighborhood of size = radius*2 + 1. This can be seen as a matrix M x M where M = NumberOfComponents or size of input vector.
  * \f[
@@ -74,7 +76,7 @@ public:
   /** Some convenient typedefs. */
   typedef typename Superclass::InputImageType  InputImageType;
   typedef typename Superclass::OutputImageType OutputImageType;
-  typedef double FloatType;
+  typedef double                               FloatType;
 
   typedef typename InputImageType::Pointer        InputImagePointer;
   typedef typename InputImageType::ConstPointer   InputImageConstPointer;
@@ -96,9 +98,9 @@ public:
   // itkConceptMacro( OutputPixelTypeIsFloatCheck,
   //                ( Concept::IsFloatingPoint< typename TOutputImage::PixelType > ) );
 #endif
-  typedef OutputImageType EigenMatrixImageType;
-  typedef itk::VariableSizeMatrix<FloatType>         EigenMatrixType;
-  typedef itk::Array<FloatType>                      EigenValuesType;
+  typedef OutputImageType                                               EigenMatrixImageType;
+  typedef itk::VariableSizeMatrix<FloatType>                            EigenMatrixType;
+  typedef itk::Array<FloatType>                                         EigenValuesType;
   typedef itk::SymmetricEigenAnalysis<EigenMatrixType, EigenValuesType> SymmetricEigenAnalysisType;
 
   void SetInputs(const std::vector<InputImagePointer> &inputs);
@@ -118,11 +120,6 @@ protected:
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(StructureTensor);
-  /** Disallow use of SetInput, user should call SetInputs instead */
-  virtual void SetInput(const InputImageType* input) ITK_OVERRIDE
-    {
-    Superclass::SetInput(input);
-    };
   //User can select value
   unsigned int m_GaussianWindowRadius;
   FloatType    m_GaussianWindowSigma;

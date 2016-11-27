@@ -475,8 +475,9 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     filterBank->Update();
 
     /***** Dilation factor (assume dilation is dyadic -2-). **/
-    double expLevelFactor = - static_cast<double>(level*ImageDimension)/2.0;
-    std::cout << expLevelFactor << " ExpLevelFactor, level: " << level << " 2^expLevelFactor: " << std::pow(2.0,expLevelFactor) << std::endl;;
+    // double expLevelFactor = - static_cast<double>(level*ImageDimension)/2.0;
+    double expLevelFactor = 0;
+    std::cout << expLevelFactor << " ExpLevelFactor, level: " << level << " 2^expLevelFactor: " << std::pow(2.0,expLevelFactor) << std::endl;
 
     /******* Set HighPass bands *****/
     std::vector<OutputImagePointer> highPassImages = filterBank->GetOutputsHighPassBands();
@@ -491,7 +492,8 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
       // double expFactorHigh = - static_cast<int>(band + 1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
       // double expFactorHigh = - static_cast<double>(1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
       // double expBandFactor = expLevelFactor;// + static_cast<double>(ImageDimension)/2.0;
-      double expBandFactor = expLevelFactor - static_cast<int>(band)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
+      // double expBandFactor = expLevelFactor - static_cast<int>(band)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
+      double expBandFactor = 0;
       multiplyByAnalysisBandFactor->SetConstant(std::pow(2.0,expBandFactor));
       multiplyByAnalysisBandFactor->InPlaceOn();
       multiplyByAnalysisBandFactor->Update();
@@ -541,8 +543,8 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
 #endif
 
     /******* DownSample stored low band for the next Level iteration *****/
-    typedef itk::FrequencyShrinkViaInverseFFTImageFilter<OutputImageType> ShrinkFilterType;
-    // typedef itk::FrequencyShrinkImageFilter<OutputImageType> ShrinkFilterType;
+    // typedef itk::FrequencyShrinkViaInverseFFTImageFilter<OutputImageType> ShrinkFilterType;
+    typedef itk::FrequencyShrinkImageFilter<OutputImageType> ShrinkFilterType;
     typename ShrinkFilterType::Pointer shrinkFilter = ShrinkFilterType::New();
     shrinkFilter->SetInput(inputPerLevel);
     shrinkFilter->SetShrinkFactors(2);
@@ -572,7 +574,7 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
       // Apply dilation factor on low band only in the last level.
       typename MultiplyFilterType::Pointer multiplyByDilationLevelFactor = MultiplyFilterType::New();
       multiplyByDilationLevelFactor->SetInput1(changeInfoFilter->GetOutput());
-    std::cout << expLevelFactor << " ExpLevelFactor, level: " << level << " 2^expLevelFactor: " << std::pow(2.0,expLevelFactor) << std::endl;;
+    std::cout << expLevelFactor << " ExpLevelFactor, level: " << level << " 2^expLevelFactor: " << std::pow(2.0,expLevelFactor) << std::endl;
       multiplyByDilationLevelFactor->SetConstant(std::pow(2.0, expLevelFactor));
       multiplyByDilationLevelFactor->InPlaceOn();
       multiplyByDilationLevelFactor->GraftOutput(this->GetOutput(0));

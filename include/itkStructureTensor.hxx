@@ -176,14 +176,12 @@ StructureTensor< TInputImage >
         for (unsigned int n = m; n < nInputs; ++n)
           {
           if (r == 0)
-            eigenMatrix[m][n] +=
-              gaussianIt.GetCenterPixel() +
+            eigenMatrix[m][n] += gaussianIt.GetCenterPixel() +
               inputIts[m].GetCenterPixel() + inputIts[n].GetCenterPixel();
           else
             for (unsigned int axis = 0; axis < ImageDimension; ++axis)
               {
-              eigenMatrix[m][n] +=
-                gaussianIt.GetNext(axis, r) +
+              eigenMatrix[m][n] += gaussianIt.GetNext(axis, r) +
                 inputIts[m].GetNext(axis,r) + inputIts[n].GetNext(axis,r) +
                 gaussianIt.GetPrevious(axis, r) +
                 inputIts[m].GetPrevious(axis, r) + inputIts[n].GetPrevious(axis, r);
