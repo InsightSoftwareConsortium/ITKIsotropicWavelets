@@ -23,6 +23,7 @@ set(IsotropicWaveletsTests
     itkRieszWaveletPhaseAnalysisTest.cxx
     itkFFTPadPositiveIndexImageFilterTest.cxx
     itkZeroDCImageFilterTest.cxx
+    itkStructureTensorTest.cxx
   )
 
 if(ITKVtkGlue_ENABLED)
@@ -64,12 +65,12 @@ itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2
 # 2D:
 itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2D1
   COMMAND IsotropicWaveletsTestDriver
-    itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_gray_540x420.tiff}
+    itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_Lch_512x512.tiff}
     ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2D1.tiff
     1 "Held" 2)
   itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2D2
   COMMAND IsotropicWaveletsTestDriver
-  itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_gray_540x420.tiff}
+  itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2D2.tiff
   2 "Held" 2)
 ## Riesz Related
@@ -100,9 +101,14 @@ itk_add_test(NAME itkMonogenicPhaseAnalysisEigenValuesImageFilterTest
 
 itk_add_test(NAME itkMonogenicPhaseAnalysisEigenValuesImageFilterTest2D
   COMMAND IsotropicWaveletsTestDriver
-  itkMonogenicPhaseAnalysisEigenValuesImageFilterTest DATA{Input/checkershadow_gray_540x420.tiff}
+  itkMonogenicPhaseAnalysisEigenValuesImageFilterTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkMonogenicPhaseAnalysisEigenValuesImageFilterTest2D.tiff
   2
+  )
+# StructureTensor
+itk_add_test(NAME itkStructureTensorTest
+  COMMAND IsotropicWaveletsTestDriver
+  itkStructureTensorTest
   )
 # VectorInverseFFT
 itk_add_test(NAME itkVectorInverseFFTImageFilterTest
@@ -118,7 +124,7 @@ itk_add_test(NAME itkWaveletFrequencyForwardTest
 
 itk_add_test(NAME itkWaveletFrequencyForwardTest2D
   COMMAND IsotropicWaveletsTestDriver
-  itkWaveletFrequencyForwardTest DATA{Input/checkershadow_gray_540x420.tiff}
+  itkWaveletFrequencyForwardTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyForwardTest2D.tiff
   1 1 "Held" 2)
 
@@ -147,10 +153,10 @@ itk_add_test(NAME itkWaveletFrequencyInverseTestMultiLevelMultiBand
 #2D
 itk_add_test(NAME itkWaveletFrequencyInverseTest2D
   COMMAND IsotropicWaveletsTestDriver
-    --compare DATA{Input/checkershadow_gray_540x420.tiff}
+    --compare DATA{Input/checkershadow_Lch_512x512.tiff}
     ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2D.tiff
   itkWaveletFrequencyInverseTest
-  DATA{Input/checkershadow_gray_540x420.tiff}
+  DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2D.tiff
   1 1
   "Held"
@@ -181,7 +187,7 @@ itk_add_test(NAME itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand
 ###
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2D
   COMMAND IsotropicWaveletsTestDriver
-  itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_gray_540x420.tiff}
+  itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2D.tiff
   1 1 ${DefaultWavelet} 2 )
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand
@@ -257,7 +263,7 @@ itk_add_test(NAME itkFrequencyShrinkEvenTest
 itk_add_test(NAME itkFFTPadPositiveIndexImageFilterTest
   COMMAND IsotropicWaveletsTestDriver
   itkFFTPadPositiveIndexImageFilterTest
-    DATA{Input/checkershadow_gray_540x420.tiff}
+    DATA{Input/checkershadow_Lch_512x512.tiff}
     ${ITK_TEST_OUTPUT_DIR}/itkFFTPadPositiveIndexImageFilterTest.tiff
     )
 ## ZeroDC
