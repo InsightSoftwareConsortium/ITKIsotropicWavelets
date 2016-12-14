@@ -153,10 +153,10 @@ protected:
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(StructureTensor);
   //User can select value
-  unsigned int m_GaussianWindowRadius;
-  FloatType    m_GaussianWindowSigma;
+  unsigned int                         m_GaussianWindowRadius;
+  FloatType                            m_GaussianWindowSigma;
   typename GaussianSourceType::Pointer m_GaussianSource;
-  std::vector<InputImagePointer> m_SquareSmoothedImages;
+  std::vector<InputImagePointer>       m_SquareSmoothedImages;
 
 };
 } // end namespace itk

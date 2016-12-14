@@ -85,7 +85,7 @@ StructureTensor< TInputImage >
     }
   // If sigma and radius have changed, update m_GaussianSource
   if ( this->m_GaussianSource->GetSigma() != sigma ||
-       this->m_GaussianSource->GetMean()  != mean)
+       this->m_GaussianSource->GetMean() != mean)
     {
     /******* Set GaussianImageSource ********/
     Size<ImageDimension> domainKernelSize;
@@ -200,13 +200,13 @@ StructureTensor< TInputImage >
       // Copy to Output
       outIt.Set(eigenMatrixOut);
       ++outIt;
-      for (unsigned int i = 0; i < inputIts.size() ; ++i)
+      for (unsigned int i = 0; i < inputIts.size(); ++i)
         {
         ++inputIts[i];
         }
       } // end outIt Line
     outIt.NextLine();
-    for (unsigned int i = 0; i < inputIts.size() ; ++i)
+    for (unsigned int i = 0; i < inputIts.size(); ++i)
       inputIts[i].NextLine();
     } // end outIt
 }
