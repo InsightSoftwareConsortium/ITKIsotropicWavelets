@@ -6,13 +6,15 @@ set(IsotropicWaveletsTests
     #### Frequency Manipulation ###
     # Iterator with Index.
     itkFrequencyImageRegionIteratorWithIndexTest.cxx
-    # Frequency resize
+    # BandPass Filter
+    itkFrequencyBandPassImageFilterTest.cxx
+    # Resize
     itkFrequencyExpandTest.cxx
     itkFrequencyShrinkTest.cxx
-    itkFrequencyShrinkMultiLevelTest.cxx
     itkFrequencyExpandAndShrinkTest.cxx
       # Frequency resize Helpers
       itkInd2SubTest.cxx
+    ###########################
     # Spatial domain resize without interpolation
     itkExpandWithZerosImageFilterTest.cxx
     itkShrinkDecimateImageFilterTest.cxx
@@ -21,19 +23,23 @@ set(IsotropicWaveletsTests
     itkZeroDCImageFilterTest.cxx
     # Alternative FFT padding
     itkFFTPadPositiveIndexImageFilterTest.cxx
-    # TODO: Convert to example:
+    # Output data for each wavelet to visualize with python.
+    # TODO: Add unit test for each IsoWavelet?
     itkIsotropicWaveletFrequencyFunctionTest.cxx
-    # Generators:
+    #Isotropic Wavelet
     itkWaveletFrequencyFilterBankGeneratorTest.cxx
-    itkRieszFrequencyFilterBankGeneratorTest.cxx
-    #Useful functionalities
     itkWaveletFrequencyForwardTest.cxx
     itkWaveletFrequencyInverseTest.cxx
-    itkRieszWaveletPhaseAnalysisTest.cxx
-    # TODO overlap with riesz wavelet analysis
+    # Phase Analysis
     itkPhaseAnalysisSoftThresholdImageFilterTest.cxx
-    itkStructureTensorTest.cxx
+    # Riesz / Monogenic
+    itkRieszFrequencyFilterBankGeneratorTest.cxx
     itkMonogenicSignalFrequencyImageFilterTest.cxx
+    # StructureTensor
+    itkStructureTensorTest.cxx
+    # TODO Wavelet + Riesz + PhaseAnalysis. This is not an unit test. Convert to example or application.
+    itkRieszWaveletPhaseAnalysisTest.cxx
+    # TODO add Steerable framework?
   )
 
 if(ITKVtkGlue_ENABLED)
@@ -207,6 +213,9 @@ itk_add_test(NAME itkFrequencyImageRegionIteratorWithIndexTest
 ##Ind2Sub
 itk_add_test(NAME itkInd2SubTest
   COMMAND IsotropicWaveletsTestDriver itkInd2SubTest)
+## BandPass
+itk_add_test(NAME itkFrequencyBandPassImageFilterTest
+  COMMAND IsotropicWaveletsTestDriver itkFrequencyBandPassImageFilterTest)
 ## ExpandWithZeros (in spatial domain)
 itk_add_test(NAME itkExpandWithZerosImageFilterTest2D
   COMMAND IsotropicWaveletsTestDriver itkExpandWithZerosImageFilterTest 2)
