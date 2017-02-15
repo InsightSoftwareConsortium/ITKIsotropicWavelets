@@ -24,11 +24,10 @@
 
 namespace itk
 {
-
 template<class TImageType>
 FrequencyBandPassImageFilter< TImageType >
 ::FrequencyBandPassImageFilter()
-: m_LowFrequencyThreshold(0),
+  : m_LowFrequencyThreshold(0),
   m_HighFrequencyThreshold(0.5), // Nyquist in hertz
   m_PassBand(true),
   m_PassLowFrequencyThreshold(true),
@@ -42,11 +41,12 @@ FrequencyBandPassImageFilter< TImageType >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  os << indent << "FrequencyThresholds: Low: " << this->m_LowFrequencyThreshold <<
-    ", High: " << this->m_HighFrequencyThreshold << std::endl;
-  os << indent << (this->m_PassBand? "PassBand " : "StopBand ") << std::endl;
-  os << indent << "   PassLowFrequencyThreshold? " << (this->m_PassLowFrequencyThreshold? "Yes" : "No ") << std::endl;
-  os << indent << "   PassHighFrequencyThreshold? " << (this->m_PassHighFrequencyThreshold? "Yes" : "No ") << std::endl;
+  os << indent << "FrequencyThresholds: Low: " << this->m_LowFrequencyThreshold
+     << ", High: " << this->m_HighFrequencyThreshold << std::endl;
+  os << indent << (this->m_PassBand ? "PassBand " : "StopBand ") << std::endl;
+  os << indent << "   PassLowFrequencyThreshold? " << (this->m_PassLowFrequencyThreshold ? "Yes" : "No ") << std::endl;
+  os << indent << "   PassHighFrequencyThreshold? " << (this->m_PassHighFrequencyThreshold ? "Yes" : "No ")
+     << std::endl;
 }
 
 template<class TImageType>
@@ -55,7 +55,7 @@ FrequencyBandPassImageFilter< TImageType >
 ::SetPassBand(const bool pass_low_threshold, const bool pass_high_threshold)
 {
   this->m_PassBand = true;
-  this->m_PassLowFrequencyThreshold = pass_low_threshold;
+  this->m_PassLowFrequencyThreshold  = pass_low_threshold;
   this->m_PassHighFrequencyThreshold = pass_high_threshold;
   this->Modified();
 }
@@ -66,7 +66,7 @@ FrequencyBandPassImageFilter< TImageType >
 ::SetStopBand(const bool stop_low_threshold, const bool stop_high_threshold)
 {
   this->m_PassBand = false;
-  this->m_PassLowFrequencyThreshold = !stop_low_threshold;
+  this->m_PassLowFrequencyThreshold  = !stop_low_threshold;
   this->m_PassHighFrequencyThreshold = !stop_high_threshold;
   this->Modified();
 }
@@ -86,39 +86,40 @@ template<class TImageType>
 void
 FrequencyBandPassImageFilter< TImageType >
 ::SetFrequencyThresholdsInRadians( const FrequencyValueType& freq_in_radians_low,
-                                  const FrequencyValueType& freq_in_radians_high)
-{ 
+                                   const FrequencyValueType& freq_in_radians_high)
+{
   this->SetFrequencyThresholds(
     freq_in_radians_low / (2 * itk::Math::pi),
     freq_in_radians_high / (2 * itk::Math::pi));
 }
 
-template <class TImageType>
+template<class TImageType>
 void
 FrequencyBandPassImageFilter<TImageType>
 ::BeforeThreadedGenerateData()
 {
   if( this->m_LowFrequencyThreshold > this->m_HighFrequencyThreshold)
-    itkExceptionMacro("FrequencyThresholds wrong: " <<
-        this->m_LowFrequencyThreshold  << " , " << this->m_HighFrequencyThreshold);
+    itkExceptionMacro("FrequencyThresholds wrong: "
+                      << this->m_LowFrequencyThreshold  << " , " << this->m_HighFrequencyThreshold);
 
   ImageAlgorithm::Copy(this->GetInput(), this->GetOutput(),
                        this->GetInput()->GetLargestPossibleRegion(),
                        this->GetOutput()->GetLargestPossibleRegion() );
 }
 
-template <class TImageType>
+template<class TImageType>
 void
 FrequencyBandPassImageFilter<TImageType>
 ::ThreadedGenerateData(
   const ImageRegionType & outputRegionForThread,
-        ThreadIdType )
+  ThreadIdType )
 {
   ImagePointer outputPtr = this->GetOutput();
 
   FrequencyIteratorType freqIt(outputPtr, outputRegionForThread);
+
   freqIt.GoToBegin();
-  FrequencyValueType f;;
+  FrequencyValueType f;
   while( !freqIt.IsAtEnd())
     {
     f = sqrt(freqIt.GetFrequencyModuloSquare());
@@ -152,7 +153,6 @@ FrequencyBandPassImageFilter<TImageType>
     ++freqIt;
     }
 }
-
 } // end namespace itk
 
 #endif

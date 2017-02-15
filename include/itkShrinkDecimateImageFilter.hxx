@@ -26,7 +26,6 @@
 
 namespace itk
 {
-
 template< class TInputImage, class TOutputImage >
 ShrinkDecimateImageFilter< TInputImage, TOutputImage >
 ::ShrinkDecimateImageFilter()
@@ -61,7 +60,10 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
 
   for ( j = 0; j < ImageDimension; j++ )
     {
-    if ( factor != m_ShrinkFactors[j] ) { break; }
+    if ( factor != m_ShrinkFactors[j] )
+      {
+      break;
+      }
     }
   if ( j < ImageDimension )
     {
@@ -101,7 +103,7 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
                        ThreadIdType threadId)
 {
   // Get the input and output pointers
-  OutputImagePointer outputPtr = this->GetOutput();
+  OutputImagePointer outputPtr    = this->GetOutput();
   const InputImageType * inputPtr = this->GetInput();
 
   // Iterator for walking the output
@@ -119,7 +121,7 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
   ProgressReporter progress( this, threadId, static_cast<SizeValueType>( numberOfLinesToProcess ) );
 
   const typename OutputImageType::IndexType outputOriginIndex = outputPtr->GetLargestPossibleRegion().GetIndex();
-  const typename InputImageType::IndexType inputOriginIndex = inputPtr->GetLargestPossibleRegion().GetIndex();
+  const typename InputImageType::IndexType  inputOriginIndex  = inputPtr->GetLargestPossibleRegion().GetIndex();
   // Walk the output region, and interpolate the input image
   while ( !outIt.IsAtEnd() )
     {
@@ -138,7 +140,7 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
         inputIndex[j] = outputIndex[j] * m_ShrinkFactors[j];
         }
       outIt.Set( static_cast< typename TOutputImage::PixelType >(
-          inputPtr->GetPixel(inputIndex) ) );
+                   inputPtr->GetPixel(inputIndex) ) );
       ++outIt;
       }
     outIt.NextLine();
@@ -146,31 +148,31 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
     }
 }
 
-template <class TInputImage, class TOutputImage>
+template<class TInputImage, class TOutputImage>
 void
-ShrinkDecimateImageFilter<TInputImage,TOutputImage>
+ShrinkDecimateImageFilter<TInputImage, TOutputImage>
 ::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  InputImagePointer  inputPtr = const_cast<TInputImage *> (this->GetInput() );
+  InputImagePointer  inputPtr  = const_cast<TInputImage *>(this->GetInput() );
   OutputImagePointer outputPtr = this->GetOutput();
 
   // Compute the input requested region (size and start index)
   // Use the image transformations to insure an input requested region
   // that will provide the proper range
-  const typename TOutputImage::SizeType& outputRequestedRegionSize = outputPtr->GetRequestedRegion().GetSize();
+  const typename TOutputImage::SizeType&  outputRequestedRegionSize = outputPtr->GetRequestedRegion().GetSize();
   const typename TOutputImage::IndexType& outputRequestedRegionStartIndex = outputPtr->GetRequestedRegion().GetIndex();
 
-  typename TInputImage::IndexType  inputIndex0;
-  typename TInputImage::SizeType   inputSize;
+  typename TInputImage::IndexType inputIndex0;
+  typename TInputImage::SizeType  inputSize;
 
-  for ( unsigned int i=0; i < TInputImage::ImageDimension; ++i )
+  for ( unsigned int i = 0; i < TInputImage::ImageDimension; ++i )
     {
-    inputIndex0[i] = outputRequestedRegionStartIndex[i]*m_ShrinkFactors[i];
-    inputSize[i] = outputRequestedRegionSize[i]*m_ShrinkFactors[i];
+    inputIndex0[i] = outputRequestedRegionStartIndex[i] * m_ShrinkFactors[i];
+    inputSize[i]   = outputRequestedRegionSize[i] * m_ShrinkFactors[i];
     }
 
   typename TInputImage::RegionType inputRequestedRegion;
@@ -178,7 +180,7 @@ ShrinkDecimateImageFilter<TInputImage,TOutputImage>
   inputRequestedRegion.SetSize( inputSize );
 
   // actually if we need to crop an exceptions should be thrown!
-  //inputRequestedRegion.Crop( inputPtr->GetLargestPossibleRegion() );
+  // inputRequestedRegion.Crop( inputPtr->GetLargestPossibleRegion() );
 
   if ( !inputPtr->GetLargestPossibleRegion().IsInside( inputRequestedRegion.GetIndex() ) ||
        !inputPtr->GetLargestPossibleRegion().IsInside( inputRequestedRegion.GetUpperIndex() ) )
@@ -190,9 +192,9 @@ ShrinkDecimateImageFilter<TInputImage,TOutputImage>
   inputPtr->SetRequestedRegion( inputRequestedRegion );
 }
 
-template <class TInputImage, class TOutputImage>
+template<class TInputImage, class TOutputImage>
 void
-ShrinkDecimateImageFilter<TInputImage,TOutputImage>
+ShrinkDecimateImageFilter<TInputImage, TOutputImage>
 ::GenerateOutputInformation()
 {
   // Call the superclass' implementation of this method
@@ -209,35 +211,34 @@ ShrinkDecimateImageFilter<TInputImage,TOutputImage>
 
   // Compute the output spacing, the output image size, and the
   // output image start index
-  const typename TInputImage::SpacingType & inputSpacing = inputPtr->GetSpacing();
-  const typename TInputImage::SizeType &   inputSize = inputPtr->GetLargestPossibleRegion().GetSize();
-  const typename TInputImage::IndexType &  inputStartIndex = inputPtr->GetLargestPossibleRegion().GetIndex();
+  const typename TInputImage::SpacingType & inputSpacing    = inputPtr->GetSpacing();
+  const typename TInputImage::SizeType &    inputSize       = inputPtr->GetLargestPossibleRegion().GetSize();
+  const typename TInputImage::IndexType &   inputStartIndex = inputPtr->GetLargestPossibleRegion().GetIndex();
 
-  ContinuousIndex<double,ImageDimension> inputIndexOutputOrigin;
+  ContinuousIndex<double, ImageDimension> inputIndexOutputOrigin;
 
   typename TOutputImage::SpacingType outputSpacing(inputSpacing);
-  typename TOutputImage::SizeType outputSize;
-  typename TOutputImage::PointType outputOrigin;
-  typename TOutputImage::IndexType outputStartIndex;
+  typename TOutputImage::SizeType    outputSize;
+  typename TOutputImage::PointType   outputOrigin;
+  typename TOutputImage::IndexType   outputStartIndex;
 
   for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
     outputSpacing[i] *= m_ShrinkFactors[i];
 
-    inputIndexOutputOrigin[i] = 0.5*(m_ShrinkFactors[i]-1);
+    inputIndexOutputOrigin[i] = 0.5 * (m_ShrinkFactors[i] - 1);
 
-    outputStartIndex[i] = Math::Ceil<SizeValueType>(inputStartIndex[i]/static_cast<double>( m_ShrinkFactors[i]) );
+    outputStartIndex[i] = Math::Ceil<SizeValueType>(inputStartIndex[i] / static_cast<double>( m_ShrinkFactors[i]) );
 
     // Round down so that all output pixels fit input input region
     outputSize[i] =
-      Math::Floor<SizeValueType>( (double)(inputSize[i] - outputStartIndex[i]*m_ShrinkFactors[i]+inputStartIndex[i])
+      Math::Floor<SizeValueType>( (double)(inputSize[i] - outputStartIndex[i] * m_ShrinkFactors[i] + inputStartIndex[i])
                                   / (double)m_ShrinkFactors[i]);
 
     if ( outputSize[i] < 1 )
       {
       itkExceptionMacro("InputImage is too small! An output pixel does not map to a whole input bin.");
       }
-
     }
 
   inputPtr->TransformContinuousIndexToPhysicalPoint(inputIndexOutputOrigin, outputOrigin);
@@ -251,9 +252,7 @@ ShrinkDecimateImageFilter<TInputImage,TOutputImage>
   outputLargestPossibleRegion.SetIndex(outputStartIndex);
 
   outputPtr->SetLargestPossibleRegion(outputLargestPossibleRegion);
-
 }
-
 } // end namespace itk
 
 #endif

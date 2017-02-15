@@ -40,7 +40,7 @@
 using namespace std;
 using namespace itk;
 
-//Visualize for dev/debug purposes. Set in cmake file. Require VTK
+// Visualize for dev/debug purposes. Set in cmake file. Require VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
@@ -49,6 +49,7 @@ template<unsigned int N>
 int runFrequencyExpandAndShrinkTest(const std::string & inputImage, const std::string & outputImage)
 {
   const unsigned int dimension = N;
+
   typedef double                           PixelType;
   typedef itk::Image<PixelType, dimension> ImageType;
   typedef itk::ImageFileReader<ImageType>  ReaderType;
@@ -69,7 +70,7 @@ int runFrequencyExpandAndShrinkTest(const std::string & inputImage, const std::s
   typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput(zeroDCFilter->GetOutput());
   fftFilter->Update();
-  typedef typename FFTFilterType::OutputImageType ComplexImageType;
+  typedef typename FFTFilterType::OutputImageType                 ComplexImageType;
   typedef itk::InverseFFTImageFilter<ComplexImageType, ImageType> InverseFFTFilterType;
   /*********** EXPAND ***************/
   typedef itk::FrequencyExpandImageFilter<ComplexImageType> ExpandType;
@@ -117,12 +118,12 @@ int runFrequencyExpandAndShrinkTest(const std::string & inputImage, const std::s
   inverseFFT2->SetInput(shrinkViaInverseFFTFilter->GetOutput());
   inverseFFT2->Update();
 #ifdef ITK_VISUALIZE_TESTS
-    itk::Testing::ViewImage(inverseFFT1->GetOutput(), "ExpandAndShrink via frequency manipulation");
-    itk::Testing::ViewImage(inverseFFT2->GetOutput(), "ExpandAndShrink ViaInverseFFT");
+  itk::Testing::ViewImage(inverseFFT1->GetOutput(), "ExpandAndShrink via frequency manipulation");
+  itk::Testing::ViewImage(inverseFFT2->GetOutput(), "ExpandAndShrink ViaInverseFFT");
 #endif
 
   // Write last output for comparisson
-  typedef itk::Image<float,dimension>                       FloatImageType;
+  typedef itk::Image<float, dimension>                      FloatImageType;
   typedef itk::CastImageFilter< ImageType, FloatImageType > CastType;
   typename CastType::Pointer castFilter = CastType::New();
   castFilter->SetInput(inverseFFT2->GetOutput());
@@ -157,8 +158,8 @@ int itkFrequencyExpandAndShrinkTest(int argc, char* argv[])
     std::cerr << "Usage: " << argv[0] << " inputImage outputImage [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
-  const string       inputImage  = argv[1];
-  const string       outputImage = argv[2];
+  const string inputImage  = argv[1];
+  const string outputImage = argv[2];
 
   unsigned int dimension = 3;
   if (argc == 4)

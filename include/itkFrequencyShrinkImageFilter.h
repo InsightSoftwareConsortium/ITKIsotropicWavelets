@@ -23,7 +23,6 @@
 
 namespace itk
 {
-
 /** \class FrequencyShrinkImageFilter
  * \brief Reduce the size of an image in the frequency domain by an integer
  * factor --fixed to 2 at the moment-- in each dimension.
@@ -73,16 +72,16 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template <typename TImageType>
-class FrequencyShrinkImageFilter :
+template<typename TImageType>
+class FrequencyShrinkImageFilter:
   public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   /** Standard class typedefs. */
-  typedef FrequencyShrinkImageFilter                Self;
-  typedef ImageToImageFilter<TImageType,TImageType> Superclass;
-  typedef SmartPointer<Self>                        Pointer;
-  typedef SmartPointer<const Self>                  ConstPointer;
+  typedef FrequencyShrinkImageFilter                 Self;
+  typedef ImageToImageFilter<TImageType, TImageType> Superclass;
+  typedef SmartPointer<Self>                         Pointer;
+  typedef SmartPointer<const Self>                   ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -112,6 +111,7 @@ public:
    * a minimum value of 1. Default is 1 for all dimensions. */
   itkSetMacro(ShrinkFactors, ShrinkFactorsType);
   void SetShrinkFactors(unsigned int factor);
+
   void SetShrinkFactor(unsigned int i, unsigned int factor);
 
   /** Get the shrink factors. */
@@ -144,9 +144,7 @@ private:
   void operator=(const Self&) ITK_DELETE_FUNCTION;
 
   ShrinkFactorsType m_ShrinkFactors;
-
 };
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION

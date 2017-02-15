@@ -27,7 +27,7 @@
 #include "itkInverseFFTImageFilter.h"
 
 #include "itkVectorInverseFFTImageFilter.h"
-//Visualize for dev/debug purposes. Set in cmake file. Require VTK
+// Visualize for dev/debug purposes. Set in cmake file. Require VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
@@ -83,7 +83,7 @@ int itkPhaseAnalysisSoftThresholdImageFilterTest(int argc, char* argv[])
   PhaseAnalysisSoftThresholdFilter::OutputImageType::Pointer phase    = phaseAnalyzer->GetOutputPhase();
 
 #ifdef ITK_VISUALIZE_TESTS
-    Testing::ViewImage(cosPhase.GetPointer(), "PhaseAnalyzer(Soft) output:");
+  Testing::ViewImage(cosPhase.GetPointer(), "PhaseAnalyzer(Soft) output:");
 #endif
 
   return EXIT_SUCCESS;

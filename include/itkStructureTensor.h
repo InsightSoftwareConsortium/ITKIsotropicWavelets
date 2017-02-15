@@ -71,18 +71,18 @@ and
 template<typename TInputImage>
 class StructureTensor:
   public ImageToImageFilter<
-      TInputImage,
-      Image<itk::VariableSizeMatrix<double>, TInputImage::ImageDimension> >
-  {
+    TInputImage,
+    Image<itk::VariableSizeMatrix<double>, TInputImage::ImageDimension> >
+{
 public:
   /** Some convenient typedefs. */
   /** Standard class typedefs. */
-  typedef StructureTensor  Self;
+  typedef StructureTensor Self;
   typedef ImageToImageFilter<
     TInputImage,
     Image<itk::VariableSizeMatrix<double>, TInputImage::ImageDimension> > Superclass;
-  typedef SmartPointer< Self >                          Pointer;
-  typedef SmartPointer< const Self >                    ConstPointer;
+  typedef SmartPointer< Self >       Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
 
   /** ImageDimension constants */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -109,14 +109,13 @@ public:
   typedef typename InputImageType::SpacingType    SpacingType;
   typedef typename InputImageRegionType::SizeType SizeType;
 
-
-  typedef typename OutputImageType::Pointer                        OutputImagePointer;
-  typedef typename OutputImageType::ConstPointer                   OutputImageConstPointer;
-  typedef typename OutputImageType::RegionType                     OutputImageRegionType;
-  typedef typename OutputImageType::PixelType                      OutputImagePixelType;
+  typedef typename OutputImageType::Pointer      OutputImagePointer;
+  typedef typename OutputImageType::ConstPointer OutputImageConstPointer;
+  typedef typename OutputImageType::RegionType   OutputImageRegionType;
+  typedef typename OutputImageType::PixelType    OutputImagePixelType;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
- /// This ensure that PixelType is float||double, and not complex.
+  /// This ensure that PixelType is float||double, and not complex.
   // itkConceptMacro( OutputPixelTypeIsFloatCheck,
   //                ( Concept::IsFloatingPoint< typename TOutputImage::PixelType > ) );
 #endif
@@ -124,16 +123,19 @@ public:
   typedef itk::VariableSizeMatrix<FloatType>                            EigenMatrixType;
   typedef itk::Array<FloatType>                                         EigenValuesType;
   typedef itk::SymmetricEigenAnalysis<EigenMatrixType, EigenValuesType> SymmetricEigenAnalysisType;
-  typedef GaussianImageSource< FloatImageType > GaussianSourceType;
+  typedef GaussianImageSource< FloatImageType >                         GaussianSourceType;
 
-  void SetInputs(const std::vector<InputImagePointer> &inputs);
+  void SetInputs(const std::vector<InputImagePointer> & inputs);
+
   itkSetMacro( GaussianWindowRadius, FloatType );
   itkGetConstMacro( GaussianWindowRadius, FloatType );
   itkSetMacro( GaussianWindowSigma, FloatType );
   itkGetConstMacro( GaussianWindowSigma, FloatType );
   itkGetConstMacro( GaussianSource, typename GaussianSourceType::Pointer );
   InputImagePointer ComputeProjectionImage(unsigned int eigen_number) const;
+
   InputImagePointer ComputeProjectionImageWithLargestResponse() const;
+
   InputImagePointer ComputeCoherencyImage() const;
 
 protected:
@@ -142,22 +144,23 @@ protected:
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   virtual void BeforeThreadedGenerateData() ITK_OVERRIDE;
+
   virtual void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-                            ThreadIdType threadId) ITK_OVERRIDE;
+                                    ThreadIdType threadId) ITK_OVERRIDE;
+
   /** Assuming that row>=column */
   static unsigned int LowerTriangleToLinearIndex(unsigned int r, unsigned int c)
   {
-    return r + (c + 1) * c/2;
+    return r + (c + 1) * c / 2;
   }
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(StructureTensor);
-  //User can select value
+  // User can select value
   unsigned int                         m_GaussianWindowRadius;
   FloatType                            m_GaussianWindowSigma;
   typename GaussianSourceType::Pointer m_GaussianSource;
   std::vector<InputImagePointer>       m_SquareSmoothedImages;
-
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION

@@ -34,8 +34,8 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template< typename TFunctionValue = double,
-          unsigned int VImageDimension = 3,
-          typename TInput = Point< SpacePrecisionType, VImageDimension > >
+  unsigned int VImageDimension    = 3,
+  typename TInput = Point< SpacePrecisionType, VImageDimension > >
 class IsotropicFrequencyFunction:
   public FrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
@@ -59,10 +59,11 @@ public:
   inline double Magnitude(const TInput & point) const
   {
     double accum(0);
+
     for (size_t d = 0; d < VImageDimension; ++d)
-    {
+      {
       accum += point[d] * point[d];
-    }
+      }
     return sqrt(accum);
   };
 
@@ -81,7 +82,7 @@ public:
   // virtual FunctionValueType EvaluateInverse(const TFunctionValue& freq_in_hz) const = 0;
 
 protected:
-  IsotropicFrequencyFunction(){};
+  IsotropicFrequencyFunction() {};
   virtual ~IsotropicFrequencyFunction() {};
   virtual void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE
   {

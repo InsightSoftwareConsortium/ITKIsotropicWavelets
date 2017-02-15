@@ -19,15 +19,17 @@
 #define itkViewImage_h
 #include <cstddef>
 #include <string>
-namespace itk {
-namespace Testing {
-    template<typename T >
-      void ViewImage(const T* img, const std::string& win_title = "itkView",
-          size_t win_x = 600, size_t win_y = 600);
+namespace itk
+{
+namespace Testing
+{
+template<typename T >
+void ViewImage(const T* img, const std::string& win_title = "itkView",
+               size_t win_x = 600, size_t win_y = 600);
 
-    template<typename TLeft, typename TRight >
-      void ViewImages(const TLeft* leftImg, const TRight* rightImg,
-          const std::string& win_title = "itkView", size_t win_x = 800, size_t win_y = 800);
+template<typename TLeft, typename TRight >
+void ViewImages(const TLeft* leftImg, const TRight* rightImg,
+                const std::string& win_title = "itkView", size_t win_x = 800, size_t win_y = 800);
 }// namespace Testing
 }// namespace itk
 

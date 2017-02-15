@@ -26,27 +26,26 @@
 
 namespace itk
 {
-
-template <class TInputImage, class TOutputImage>
+template<class TInputImage, class TOutputImage>
 FFTPadPositiveIndexImageFilter<TInputImage, TOutputImage>
 ::FFTPadPositiveIndexImageFilter()
-:m_SizeGreatestPrimeFactor(2),
- m_BoundaryCondition(ITK_NULLPTR)
+  : m_SizeGreatestPrimeFactor(2),
+  m_BoundaryCondition(ITK_NULLPTR)
 {
   m_FFTPadFilter = FFTPadFilterType::New();
   m_FFTPadFilter->ReleaseDataFlagOn();
   m_BoundaryCondition = m_FFTPadFilter->GetBoundaryCondition();
-  m_ChangeInfoFilter = ChangeInfoFilterType::New();
+  m_ChangeInfoFilter  = ChangeInfoFilterType::New();
   m_ChangeInfoFilter->ChangeRegionOn();
 }
 
-template <class TInputImage, class TOutputImage>
+template<class TInputImage, class TOutputImage>
 void
 FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
 ::GenerateInputRequestedRegion()
 {
   // Get pointers to the input and output.
-  InputImageType * inputPtr = const_cast< TInputImage * >( this->GetInput() );
+  InputImageType *  inputPtr  = const_cast< TInputImage * >( this->GetInput() );
   OutputImageType * outputPtr = this->GetOutput();
 
   const typename InputImageType::RegionType & inputLargestPossibleRegion =
@@ -66,7 +65,7 @@ FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
   inputPtr->SetRequestedRegion( inputRequestedRegion );
 }
 
-template <class TInputImage, class TOutputImage>
+template<class TInputImage, class TOutputImage>
 void
 FFTPadPositiveIndexImageFilter<TInputImage, TOutputImage>
 ::GenerateOutputInformation()
@@ -74,13 +73,13 @@ FFTPadPositiveIndexImageFilter<TInputImage, TOutputImage>
   // call the superclass' implementation of this method
   Superclass::GenerateOutputInformation();
 
-  const InputImageType * input0 = this->GetInput();
-  OutputImageType * output0 = this->GetOutput();
+  const InputImageType * input0  = this->GetInput();
+  OutputImageType *      output0 = this->GetOutput();
 
   RegionType region0 = input0->GetLargestPossibleRegion();
-  SizeType size;
-  IndexType index;
-  for( unsigned int i=0; i<ImageDimension; ++i )
+  SizeType   size;
+  IndexType  index;
+  for( unsigned int i = 0; i < ImageDimension; ++i )
     {
     SizeValueType padSize = 0;
     if( m_SizeGreatestPrimeFactor > 1 )
@@ -96,17 +95,16 @@ FFTPadPositiveIndexImageFilter<TInputImage, TOutputImage>
       padSize += ( region0.GetSize()[i] + padSize ) % 2;
       }
     index[i] = region0.GetIndex()[i];
-    size[i] = region0.GetSize()[i] + padSize;
+    size[i]  = region0.GetSize()[i] + padSize;
     }
   RegionType region( index, size );
   output0->SetLargestPossibleRegion( region );
 }
 
-
 template<class TInputImage, class TOutputImage>
 void
 FFTPadPositiveIndexImageFilter<TInputImage, TOutputImage>
-::PrintSelf(std::ostream &os, Indent indent) const
+::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 
@@ -129,8 +127,9 @@ FFTPadPositiveIndexImageFilter<TInputImage, TOutputImage>
   m_FFTPadFilter->Update();
   progress->RegisterInternalFilter(m_FFTPadFilter, 0.5);
 
-  typename OutputImageType::IndexType outputIndex = output->GetLargestPossibleRegion().GetIndex();
-  typename OutputImageType::IndexType negativeIndex = m_FFTPadFilter->GetOutput()->GetLargestPossibleRegion().GetIndex();
+  typename OutputImageType::IndexType outputIndex   = output->GetLargestPossibleRegion().GetIndex();
+  typename OutputImageType::IndexType negativeIndex =
+    m_FFTPadFilter->GetOutput()->GetLargestPossibleRegion().GetIndex();
 
   m_ChangeInfoFilter->SetOutputOffset( outputIndex - negativeIndex);
   itkDebugMacro(<< "Offset difference: " << outputIndex - negativeIndex);
@@ -140,6 +139,5 @@ FFTPadPositiveIndexImageFilter<TInputImage, TOutputImage>
   progress->RegisterInternalFilter(m_ChangeInfoFilter, 0.5);
   this->GraftOutput(m_ChangeInfoFilter->GetOutput());
 }
-
 }// end namespace itk
 #endif

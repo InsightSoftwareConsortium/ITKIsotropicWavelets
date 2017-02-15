@@ -33,7 +33,7 @@ ZeroDCImageFilter< TImageType >
 ::ZeroDCImageFilter()
 {
   m_StatisticsFilter = StatisticsFilterType::New();
-  m_SubtractFilter = SubtractFilterType::New();
+  m_SubtractFilter   = SubtractFilterType::New();
 }
 
 template< typename TImageType>
@@ -42,6 +42,7 @@ ZeroDCImageFilter< TImageType >
 ::GenerateData()
 {
   ImagePointer outputPtr = this->GetOutput();
+
   this->AllocateOutputs();
   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);

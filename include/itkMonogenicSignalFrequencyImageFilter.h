@@ -38,22 +38,21 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template< typename TInputImage,
-          typename TFrequencyImageRegionConstIterator =
-            FrequencyImageRegionConstIteratorWithIndex< TInputImage> >
+  typename TFrequencyImageRegionConstIterator =
+    FrequencyImageRegionConstIteratorWithIndex< TInputImage> >
 class MonogenicSignalFrequencyImageFilter:
   public ImageToImageFilter<
-        TInputImage,
-        VectorImage<typename TInputImage::PixelType,
-                    TInputImage::ImageDimension> >
-  {
+    TInputImage,
+    VectorImage<typename TInputImage::PixelType,
+      TInputImage::ImageDimension> >
+{
 public:
   /** Standard class typedefs. */
-  typedef MonogenicSignalFrequencyImageFilter            Self;
-  typedef ImageToImageFilter< TInputImage,
-      VectorImage<typename TInputImage::PixelType, TInputImage::ImageDimension > >
-                                                         Superclass;
-  typedef SmartPointer< Self >                           Pointer;
-  typedef SmartPointer< const Self >                     ConstPointer;
+  typedef MonogenicSignalFrequencyImageFilter Self;
+  typedef ImageToImageFilter< TInputImage, VectorImage<typename TInputImage::PixelType,
+          TInputImage::ImageDimension > >     Superclass;
+  typedef SmartPointer< Self >                Pointer;
+  typedef SmartPointer< const Self >          ConstPointer;
 
   /** ImageDimension constants */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -67,7 +66,7 @@ public:
                ImageToImageFilter);
 
 #ifdef ITK_USE_CONCEPT_CHECKING
- /// This ensure that InputPixelType is complex<float||double>
+  /// This ensure that InputPixelType is complex<float||double>
   itkConceptMacro( InputPixelTypeIsComplexAndFloatCheck,
                    ( Concept::IsFloatingPoint< typename TInputImage::PixelType::value_type > ) );
 #endif
@@ -84,8 +83,9 @@ protected:
   ~MonogenicSignalFrequencyImageFilter() {}
 
   virtual void GenerateOutputInformation() ITK_OVERRIDE;
+
   virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
-                             ThreadIdType threadId) ITK_OVERRIDE;
+                                     ThreadIdType threadId) ITK_OVERRIDE;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(MonogenicSignalFrequencyImageFilter);

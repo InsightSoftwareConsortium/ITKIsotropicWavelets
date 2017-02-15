@@ -24,18 +24,18 @@
 #include "itkViewImage.h"
 #endif
 
-template <unsigned int N>
+template<unsigned int N>
 int runExpandWithZerosImageFilterTest()
 {
-  typedef float                   PixelType;
-  typedef itk::Image<PixelType,N> ImageType;
+  typedef float                    PixelType;
+  typedef itk::Image<PixelType, N> ImageType;
   bool testPassed = true;
 
-  //=============================================================
+  // =============================================================
 
   std::cout << "Create the input image fill with ones." << std::endl;
   typename ImageType::RegionType region;
-  typename ImageType::SizeType size;
+  typename ImageType::SizeType   size;
   size.Fill(32);
   typename ImageType::IndexType inputIndex;
   inputIndex.Fill(9);
@@ -49,28 +49,29 @@ int runExpandWithZerosImageFilterTest()
   input->Allocate();
   input->FillBuffer(1);
 
-  //=============================================================
+  // =============================================================
 
-  typedef itk::ExpandWithZerosImageFilter<ImageType,ImageType> ExpanderType;
+  typedef itk::ExpandWithZerosImageFilter<ImageType, ImageType> ExpanderType;
   typename ExpanderType::Pointer expander = ExpanderType::New();
 
   unsigned int factors[N];
   for (unsigned int i = 0; i < N; i++)
+    {
     factors[i] = 3;
+    }
 
   expander->SetInput( input );
   expander->SetExpandFactors( factors );
   expander->Print( std::cout );
   expander->Update();
 
-  //=============================================================
+  // =============================================================
 
   std::cout << "Checking the output against expected." << std::endl;
   typedef itk::ImageRegionIteratorWithIndex<ImageType> Iterator;
   Iterator outIter( expander->GetOutput(),
-    expander->GetOutput()->GetBufferedRegion() );
+                    expander->GetOutput()->GetBufferedRegion() );
   typename ImageType::IndexType outStartIndex = expander->GetOutput()->GetLargestPossibleRegion().GetIndex();
-
 
   while( !outIter.IsAtEnd() )
     {
@@ -123,8 +124,8 @@ int itkExpandWithZerosImageFilterTest(int argc, char *argv[])
 {
   if( argc > 2 )
     {
-    std::cerr << "Usage: " << argv[0] <<
-      "[dimension]" << std::endl;
+    std::cerr << "Usage: " << argv[0]
+              << "[dimension]" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -136,11 +137,11 @@ int itkExpandWithZerosImageFilterTest(int argc, char *argv[])
 
   if( dimension == 2 )
     {
-      return runExpandWithZerosImageFilterTest<2>();
+    return runExpandWithZerosImageFilterTest<2>();
     }
   else if( dimension == 3 )
     {
-      return runExpandWithZerosImageFilterTest<3>();
+    return runExpandWithZerosImageFilterTest<3>();
     }
   else
     {

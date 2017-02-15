@@ -23,7 +23,6 @@
 
 namespace itk
 {
-
 /** \class VectorInverseFFTImageFilter
  *
  * \brief Applies InverseFFT to each index of a vector image.
@@ -39,18 +38,18 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template< typename TInputImage,
-          typename TOutputImage =
-            VectorImage< typename TInputImage::PixelType::ComponentType::value_type, TInputImage::ImageDimension> >
-            //the default output assumes input image is vector<complex<float|double>>
+  typename TOutputImage =
+    VectorImage< typename TInputImage::PixelType::ComponentType::value_type, TInputImage::ImageDimension> >
+// the default output assumes input image is vector<complex<float|double>>
 class VectorInverseFFTImageFilter:
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */
-  typedef TInputImage                          InputImageType;
-  typedef typename InputImageType::PixelType   InputPixelType;
-  typedef TOutputImage                         OutputImageType;
-  typedef typename OutputImageType::PixelType  OutputPixelType;
+  typedef TInputImage                         InputImageType;
+  typedef typename InputImageType::PixelType  InputPixelType;
+  typedef TOutputImage                        OutputImageType;
+  typedef typename OutputImageType::PixelType OutputPixelType;
 
   typedef VectorInverseFFTImageFilter                           Self;
   typedef ImageToImageFilter< InputImageType, OutputImageType > Superclass;
@@ -68,8 +67,8 @@ public:
                       InputImageType::ImageDimension);
 
 protected:
-  VectorInverseFFTImageFilter(){}
-  virtual ~VectorInverseFFTImageFilter(){}
+  VectorInverseFFTImageFilter() {}
+  virtual ~VectorInverseFFTImageFilter() {}
   virtual void GenerateData() ITK_OVERRIDE;
 
 private:

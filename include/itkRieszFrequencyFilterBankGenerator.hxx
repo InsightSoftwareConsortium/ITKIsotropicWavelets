@@ -20,27 +20,30 @@
 #include "itkRieszFrequencyFilterBankGenerator.h"
 #include "itkNumericTraits.h"
 
-namespace itk {
-template <typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
+namespace itk
+{
+template<typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
 RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>
 ::RieszFrequencyFilterBankGenerator()
 {
   this->SetNumberOfRequiredOutputs(ImageDimension);
   for (unsigned int dir = 0; dir < ImageDimension; ++dir)
+    {
     this->SetNthOutput(dir, this->MakeOutput(dir));
+    }
 }
 
-
-template <typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
+template<typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
 void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>
-::PrintSelf(std::ostream &os, Indent indent) const
+::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 }
 
 /* ******* Get Outputs *****/
-template <typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
-std::vector<typename RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>::OutputImagePointer>
+template<typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
+std::vector<typename RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction,
+    TFrequencyRegionIterator>::OutputImagePointer>
 RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>
 ::GetOutputs()
 {
@@ -52,14 +55,14 @@ RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegio
   return outputList;
 }
 
-template <typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
+template<typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
 void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>
 ::GenerateData()
 {
   typename RieszFunctionType::Pointer evaluator = RieszFunctionType::New();
 
   /***************** Allocate Outputs *****************/
-  std::vector<OutputImagePointer> outputList;
+  std::vector<OutputImagePointer>   outputList;
   std::vector<OutputRegionIterator> outputItList;
   for (unsigned int dir = 0; dir < ImageDimension; ++dir)
     {
@@ -69,7 +72,7 @@ void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequency
     outputPtr->SetRegions(outputList[0]->GetLargestPossibleRegion());
     outputPtr->Allocate();
     outputPtr->FillBuffer(0);
-    outputItList.push_back(OutputRegionIterator(outputPtr,outputPtr->GetRequestedRegion()));
+    outputItList.push_back(OutputRegionIterator(outputPtr, outputPtr->GetRequestedRegion()));
     outputItList.back().GoToBegin();
     }
 
@@ -89,7 +92,7 @@ void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequency
                   << "  frequencyItIndex: " << frequencyIt.GetIndex()
                   << "  Evaluated Riesz Components: " << evaluatedArray
                   << " outputIndex: " << outputItList[0].GetIndex());
-  }
+    }
 }
-}  // end namespace itk
+} // end namespace itk
 #endif

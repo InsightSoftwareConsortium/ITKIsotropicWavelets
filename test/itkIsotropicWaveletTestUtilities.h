@@ -21,28 +21,31 @@
 #include <complex>
 #include <itkMathDetail.h>
 #include <iomanip>
-namespace itk {
-namespace Testing {
+namespace itk
+{
+namespace Testing
+{
 /** Check if Image is Hermitian f(x) = std:conj(f(-x)).
  * @param cImg ComplexImage
  * @param maxUlp Set ulps, error tolerance for the comparisson of floats/doubles. We are only interested to detect clear errors
  */
-template <typename TValueType, unsigned int N>
+template<typename TValueType, unsigned int N>
 bool ComplexImageIsHermitian(
-    Image<std::complex<TValueType>, N>* cImg,
-    typename itk::Math::Detail::FloatIEEE<TValueType>::IntType maxUlp = 10000000)
-  {
+  Image<std::complex<TValueType>, N>* cImg,
+  typename itk::Math::Detail::FloatIEEE<TValueType>::IntType maxUlp = 10000000)
+{
   bool isHermitian = true;
-  typedef Image<std::complex<TValueType>,N> ComplexImageType;
+
+  typedef Image<std::complex<TValueType>, N> ComplexImageType;
   itk::ImageRegionConstIteratorWithIndex<ComplexImageType> complexIt(
     cImg,
     cImg->GetLargestPossibleRegion());
   complexIt.GoToBegin();
   typename ComplexImageType::IndexType originIndex = cImg->GetLargestPossibleRegion().GetIndex();
-  typename ComplexImageType::IndexType upperIndex = cImg->GetLargestPossibleRegion().GetUpperIndex();
+  typename ComplexImageType::IndexType upperIndex  = cImg->GetLargestPossibleRegion().GetUpperIndex();
   for(; !complexIt.IsAtEnd(); ++complexIt)
     {
-    typename ComplexImageType::IndexType index = complexIt.GetIndex();
+    typename ComplexImageType::IndexType index    = complexIt.GetIndex();
     typename ComplexImageType::IndexType indexOpp = originIndex + (upperIndex - index);
     bool isInNyquistBand(false);
     // DC: 0 ---> 0 ; Nyq: N/2 -> N/2 ;  x ---> N - x
@@ -64,17 +67,20 @@ bool ComplexImageIsHermitian(
       conjugateOpp = std::conj(cImg->GetPixel(indexOpp));
 
     bool equal =
-      itk::Math::FloatAlmostEqual<typename ComplexImageType::PixelType::value_type>( conjugateOpp.real(), complexIt.Get().real(), maxUlp) &&
-      itk::Math::FloatAlmostEqual<typename ComplexImageType::PixelType::value_type>( conjugateOpp.imag(), complexIt.Get().imag(), maxUlp);
+      itk::Math::FloatAlmostEqual<typename ComplexImageType::PixelType::value_type>( conjugateOpp.real(),
+                                                                                     complexIt.Get().real(), maxUlp) &&
+      itk::Math::FloatAlmostEqual<typename ComplexImageType::PixelType::value_type>( conjugateOpp.imag(),
+                                                                                     complexIt.Get().imag(), maxUlp);
     if ( !equal == true )
       {
-      std::cerr << std::setprecision(20)<< "index: " << index << " : "<< complexIt.Get()<<
-        " sym: " << indexOpp << " : " << cImg->GetPixel(indexOpp) << ", conjugate: " << conjugateOpp  <<std::endl;
+      std::cerr << std::setprecision(20) << "index: " << index << " : " << complexIt.Get()
+                << " sym: " << indexOpp << " : " << cImg->GetPixel(indexOpp) << ", conjugate: " << conjugateOpp
+                << std::endl;
       isHermitian = false;
       }
     }
   return isHermitian;
-  }
+}
 } // ns Testing
 } // ns itk
 #endif

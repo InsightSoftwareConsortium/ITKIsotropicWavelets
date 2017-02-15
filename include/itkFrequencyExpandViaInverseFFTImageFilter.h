@@ -29,7 +29,7 @@ namespace itk
  * \brief Expand the size of an image in the frequency domain by an integer
  * factor in each dimension.
  *
- * The input in the frequency domain is converted to the spatial domain using an 
+ * The input in the frequency domain is converted to the spatial domain using an
  * inverseFFT, then a ExpandWithZerosImageFilter is used, and the output is converted back
  * to the frequency domain with a ForwardFFT.
  *
@@ -73,9 +73,12 @@ public:
   /** Typedef to describe the output image region type. */
   typedef typename TImageType::RegionType ImageRegionType;
   /** Typedef of used filters */
-  typedef itk::InverseFFTImageFilter<ImageType> InverseFFTFilterType;
-  typedef itk::ExpandWithZerosImageFilter<typename InverseFFTFilterType::OutputImageType, typename InverseFFTFilterType::OutputImageType> ExpandFilterType;
-  typedef itk::ForwardFFTImageFilter<typename InverseFFTFilterType::OutputImageType, ImageType> ForwardFFTFilterType;
+  typedef itk::InverseFFTImageFilter<ImageType>
+                                                    InverseFFTFilterType;
+  typedef itk::ExpandWithZerosImageFilter<typename InverseFFTFilterType::OutputImageType,
+    typename InverseFFTFilterType::OutputImageType> ExpandFilterType;
+  typedef itk::ForwardFFTImageFilter<typename InverseFFTFilterType::OutputImageType,
+    ImageType>                                      ForwardFFTFilterType;
 
   /** The type of the expand factors representation */
   typedef FixedArray< unsigned int, ImageDimension > ExpandFactorsType;

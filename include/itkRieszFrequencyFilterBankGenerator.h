@@ -26,7 +26,6 @@
 
 namespace itk
 {
-
 /** \class RieszFrequencyFilterBankGenerator
  * \brief Generate filter bank of RieszFrequencyFunction.
  * RieszFrequencyFunction returns a complex value,
@@ -42,11 +41,11 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template <typename TOutputImage,
-          typename TRieszFunction = itk::RieszFrequencyFunction<double, TOutputImage::ImageDimension>,
-          typename TFrequencyRegionIterator = FrequencyImageRegionIteratorWithIndex< TOutputImage> >
-class RieszFrequencyFilterBankGenerator
-: public itk::GenerateImageSource< TOutputImage >
+template<typename TOutputImage,
+  typename TRieszFunction = itk::RieszFrequencyFunction<double, TOutputImage::ImageDimension>,
+  typename TFrequencyRegionIterator = FrequencyImageRegionIteratorWithIndex< TOutputImage> >
+class RieszFrequencyFilterBankGenerator:
+  public itk::GenerateImageSource< TOutputImage >
 {
 public:
   /** Standard typedefs */
@@ -62,14 +61,14 @@ public:
   itkTypeMacro(RieszFrequencyFilterBankGenerator, GenerateImageSourceFilter);
 
   /** Inherit types from Superclass. */
-  typedef typename Superclass::OutputImageType               OutputImageType;
-  typedef typename Superclass::OutputImagePointer            OutputImagePointer;
+  typedef typename Superclass::OutputImageType    OutputImageType;
+  typedef typename Superclass::OutputImagePointer OutputImagePointer;
   /** Basic typedefs */
-  typedef TFrequencyRegionIterator                           OutputRegionIterator;
-  typedef typename OutputImageType::RegionType               OutputImageRegionType;
+  typedef TFrequencyRegionIterator             OutputRegionIterator;
+  typedef typename OutputImageType::RegionType OutputImageRegionType;
   /** RieszFunction types */
-  typedef TRieszFunction                                   RieszFunctionType;
-  typedef typename RieszFunctionType::FunctionValueType    FunctionValueType;
+  typedef TRieszFunction                                RieszFunctionType;
+  typedef typename RieszFunctionType::FunctionValueType FunctionValueType;
 
   /** Dimension */
   itkStaticConstMacro(ImageDimension, unsigned int, TOutputImage::ImageDimension);
@@ -83,6 +82,7 @@ public:
 //   itkConceptMacro( OutputPixelTypeIsComplexAndFloatCheck,
 //                    ( Concept::IsFloatingPoint< typename OutputImageType::PixelType::value_type > ) );
 // #endif
+
 protected:
   RieszFrequencyFilterBankGenerator();
   virtual ~RieszFrequencyFilterBankGenerator() {}
@@ -93,7 +93,6 @@ protected:
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(RieszFrequencyFilterBankGenerator);
-
 }; // end of class
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION

@@ -100,7 +100,8 @@ namespace itk
  *
  */
 template< typename TImage >
-class FrequencyImageRegionConstIteratorWithIndex:public ImageRegionConstIteratorWithIndex< TImage >
+class FrequencyImageRegionConstIteratorWithIndex:
+  public ImageRegionConstIteratorWithIndex< TImage >
 {
 public:
   /** Standard class typedefs. */
@@ -119,10 +120,10 @@ public:
   typedef typename Superclass::PixelType             PixelType;
   typedef typename Superclass::AccessorType          AccessorType;
 
-  typedef typename ImageType::SpacingType            FrequencyType;
-  typedef typename ImageType::SpacingValueType       FrequencyValueType;
+  typedef typename ImageType::SpacingType      FrequencyType;
+  typedef typename ImageType::SpacingValueType FrequencyValueType;
   /** Default constructor. Needed since we provide a cast constructor. */
-  FrequencyImageRegionConstIteratorWithIndex():
+  FrequencyImageRegionConstIteratorWithIndex() :
     ImageRegionConstIteratorWithIndex< TImage >()
   {
     this->InitIndices();
@@ -130,7 +131,7 @@ public:
 
   /** Constructor establishes an iterator to walk a particular image and a
    * particular region of that image. */
-  FrequencyImageRegionConstIteratorWithIndex(const TImage *ptr, const RegionType & region):
+  FrequencyImageRegionConstIteratorWithIndex(const TImage *ptr, const RegionType & region) :
     ImageRegionConstIteratorWithIndex< TImage >(ptr, region)
   {
     this->InitIndices();
@@ -142,7 +143,7 @@ public:
    * provide overloaded APIs that return different types of Iterators, itk
    * returns ImageIterators and uses constructors to cast from an
    * ImageIterator to a ImageRegionIteratorWithIndex. */
-  FrequencyImageRegionConstIteratorWithIndex(const Superclass & it):
+  FrequencyImageRegionConstIteratorWithIndex(const Superclass & it) :
     ImageRegionConstIteratorWithIndex< TImage >(it)
   {
     this->InitIndices();
@@ -153,8 +154,9 @@ public:
    * If first index of the image is not zero, it stills returns values in the same range.
    */
   IndexType GetFrequencyBin() const
-    {
+  {
     IndexType freqInd;
+
     freqInd.Fill(0);
     for (unsigned int dim = 0; dim < TImage::ImageDimension; dim++)
       {
@@ -165,19 +167,20 @@ public:
         freqInd[dim] = this->m_PositionIndex[dim] - (this->m_MaxIndex[dim] + 1);
       }
     return freqInd;
-    }
+  }
 
   /** Note that this method is independent of the region in the constructor.
    */
   FrequencyType GetFrequency() const
   {
     FrequencyType freq;
-    IndexType freqInd = this->GetFrequencyBin();
+    IndexType     freqInd = this->GetFrequencyBin();
+
     for (unsigned int dim = 0; dim < TImage::ImageDimension; dim++)
       {
-      freq[dim] = this->m_Image->GetOrigin()[dim] +
-                  (this->m_Image->GetSpacing()[dim] * freqInd[dim])
-                   / this->m_Image->GetLargestPossibleRegion().GetSize()[dim];
+      freq[dim] = this->m_Image->GetOrigin()[dim]
+        + (this->m_Image->GetSpacing()[dim] * freqInd[dim])
+        / this->m_Image->GetLargestPossibleRegion().GetSize()[dim];
       }
     return freq;
   }
@@ -185,30 +188,30 @@ public:
   FrequencyValueType GetFrequencyModuloSquare() const
   {
     FrequencyValueType w2(0);
-    FrequencyType w( this->GetFrequency() );
+    FrequencyType      w( this->GetFrequency() );
 
     for (unsigned int dim = 0; dim < TImage::ImageDimension; dim++)
-    {
+      {
       w2 += w[dim] * w[dim];
-    }
+      }
     return w2;
   }
 
   typename ImageType::IndexType GetHalfIndex() const
-    {
+  {
     typename ImageType::IndexType half_index;
     for (unsigned int dim = 0; dim < ImageType::ImageDimension; dim++)
       {
       half_index[dim] = static_cast<typename ImageType::IndexValueType>(m_HalfIndex[dim]);
       }
     return half_index;
-    };
+  };
 
 private:
   /** Calculate Nyquist frequency index (m_HalfIndex), and Min/Max indices from LargestPossibleRegion.
    * Called at constructors.  */
   void InitIndices()
-    {
+  {
     this->m_MinIndex =
       this->m_Image->GetLargestPossibleRegion().GetIndex();
     this->m_MaxIndex =
@@ -216,11 +219,12 @@ private:
     for (unsigned int dim = 0; dim < ImageType::ImageDimension; dim++)
       {
       this->m_HalfIndex[dim] = static_cast<FrequencyValueType>(
-        this->m_MinIndex[dim] +
-        std::ceil( (this->m_MaxIndex[dim] - this->m_MinIndex[dim] ) / 2.0 )
-        );
+          this->m_MinIndex[dim]
+          + std::ceil( (this->m_MaxIndex[dim] - this->m_MinIndex[dim] ) / 2.0 )
+          );
       }
-    }
+  }
+
   /**
    * Index corresponding to the first highest frequency (Nyquist) after a FFT transform.
    * If the size of the image is even, the Nyquist frequency = fs/2 is unique and shared

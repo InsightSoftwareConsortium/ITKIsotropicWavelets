@@ -44,7 +44,7 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
     }
   m_InverseFFT = InverseFFTFilterType::New();
   m_ForwardFFT = ForwardFFTFilterType::New();
-  m_Expander = ExpandFilterType::New();
+  m_Expander   = ExpandFilterType::New();
 }
 
 /**
@@ -79,7 +79,10 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
 
   for ( j = 0; j < ImageDimension; j++ )
     {
-    if ( factor != m_ExpandFactors[j] ) { break; }
+    if ( factor != m_ExpandFactors[j] )
+      {
+      break;
+      }
     }
   if ( j < ImageDimension )
     {
@@ -87,7 +90,10 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
     for ( j = 0; j < ImageDimension; j++ )
       {
       m_ExpandFactors[j] = factor;
-      if ( m_ExpandFactors[j] < 1 ) { m_ExpandFactors[j] = 1; }
+      if ( m_ExpandFactors[j] < 1 )
+        {
+        m_ExpandFactors[j] = 1;
+        }
       }
     }
 }
@@ -152,7 +158,7 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
   const typename TImageType::IndexType & outputRequestedRegionStartIndex =
     outputPtr->GetRequestedRegion().GetIndex();
 
-  typename TImageType::SizeType inputRequestedRegionSize;
+  typename TImageType::SizeType  inputRequestedRegionSize;
   typename TImageType::IndexType inputRequestedRegionStartIndex;
 
   /**
@@ -163,11 +169,11 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
     {
     inputRequestedRegionSize[i] =
       (SizeValueType)std::ceil( (double)outputRequestedRegionSize[i]
-                      / (double)m_ExpandFactors[i] ) + 1;
+                                / (double)m_ExpandFactors[i] ) + 1;
 
     inputRequestedRegionStartIndex[i] =
       (SizeValueType)std::floor( (double)outputRequestedRegionStartIndex[i]
-                       / (double)m_ExpandFactors[i] );
+                                 / (double)m_ExpandFactors[i] );
     }
 
   typename TImageType::RegionType inputRequestedRegion;
@@ -206,31 +212,31 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
   // output image start index
   const typename TImageType::SpacingType &
   inputSpacing = inputPtr->GetSpacing();
-  const typename TImageType::SizeType &   inputSize =
+  const typename TImageType::SizeType & inputSize =
     inputPtr->GetLargestPossibleRegion().GetSize();
-  const typename TImageType::IndexType &  inputStartIndex =
+  const typename TImageType::IndexType & inputStartIndex =
     inputPtr->GetLargestPossibleRegion().GetIndex();
   const typename TImageType::PointType &
   inputOrigin = inputPtr->GetOrigin();
 
   typename TImageType::SpacingType outputSpacing;
-  typename TImageType::SizeType outputSize;
-  typename TImageType::IndexType outputStartIndex;
-  typename TImageType::PointType outputOrigin;
+  typename TImageType::SizeType    outputSize;
+  typename TImageType::IndexType   outputStartIndex;
+  typename TImageType::PointType   outputOrigin;
 
   typename TImageType::SpacingType inputOriginShift;
 
   for ( unsigned int i = 0; i < TImageType::ImageDimension; i++ )
     {
-    outputSpacing[i] = inputSpacing[i] / (float)m_ExpandFactors[i];
-    outputSize[i] = inputSize[i] * (SizeValueType)m_ExpandFactors[i];
+    outputSpacing[i]    = inputSpacing[i] / (float)m_ExpandFactors[i];
+    outputSize[i]       = inputSize[i] * (SizeValueType)m_ExpandFactors[i];
     outputStartIndex[i] = inputStartIndex[i] * (IndexValueType)m_ExpandFactors[i];
     const double fraction = (double)( m_ExpandFactors[i] - 1 ) / (double)m_ExpandFactors[i];
     inputOriginShift[i] = -( inputSpacing[i] / 2.0 ) * fraction;
     }
 
-  const typename TImageType::DirectionType inputDirection = inputPtr->GetDirection();
-  const typename TImageType::SpacingType outputOriginShift = inputDirection * inputOriginShift;
+  const typename TImageType::DirectionType inputDirection    = inputPtr->GetDirection();
+  const typename TImageType::SpacingType   outputOriginShift = inputDirection * inputOriginShift;
 
   outputOrigin = inputOrigin + outputOriginShift;
 

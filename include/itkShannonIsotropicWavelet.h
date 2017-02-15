@@ -42,14 +42,14 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template< typename TFunctionValue = double,
-          unsigned int VImageDimension = 3,
-          typename TInput = Point< SpacePrecisionType, VImageDimension > >
+  unsigned int VImageDimension    = 3,
+  typename TInput = Point< SpacePrecisionType, VImageDimension > >
 class ShannonIsotropicWavelet:
   public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
 public:
   /** Standard class typedefs. */
-  typedef ShannonIsotropicWavelet                                                   Self;
+  typedef ShannonIsotropicWavelet                                                      Self;
   typedef IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput > Superclass;
   typedef SmartPointer< Self >                                                         Pointer;
   typedef SmartPointer< const Self >                                                   ConstPointer;
@@ -77,7 +77,6 @@ protected:
 private:
   ShannonIsotropicWavelet(const Self &) ITK_DELETE_FUNCTION;
   void operator=(const Self &) ITK_DELETE_FUNCTION;
-
 };
 } // end namespace itk
 

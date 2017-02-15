@@ -40,17 +40,17 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template< typename TFunctionValue = double,
-          unsigned int VImageDimension = 3,
-          typename TInput = Point< SpacePrecisionType, VImageDimension > >
+  unsigned int VImageDimension    = 3,
+  typename TInput = Point< SpacePrecisionType, VImageDimension > >
 class HeldIsotropicWavelet:
   public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
 public:
   /** Standard class typedefs. */
-  typedef HeldIsotropicWavelet                                        Self;
+  typedef HeldIsotropicWavelet                                                         Self;
   typedef IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput > Superclass;
-  typedef SmartPointer< Self >                                Pointer;
-  typedef SmartPointer< const Self >                          ConstPointer;
+  typedef SmartPointer< Self >                                                         Pointer;
+  typedef SmartPointer< const Self >                                                   ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -74,9 +74,8 @@ public:
   itkSetMacro(PolynomialOrder, unsigned int);
   itkGetConstMacro(PolynomialOrder, unsigned int);
 
-  FunctionValueType ComputePolynom(
-      const FunctionValueType & freq_norm_in_hz,
-      const unsigned int & order) const;
+  FunctionValueType ComputePolynom(const FunctionValueType & freq_norm_in_hz,
+                                   const unsigned int & order) const;
 
 protected:
   HeldIsotropicWavelet();
@@ -89,7 +88,6 @@ private:
 
   /** The order of the polynom. */
   unsigned int m_PolynomialOrder;
-
 };
 } // end namespace itk
 

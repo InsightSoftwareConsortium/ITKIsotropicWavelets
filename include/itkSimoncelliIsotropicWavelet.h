@@ -47,8 +47,8 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template< typename TFunctionValue = double,
-          unsigned int VImageDimension = 3,
-          typename TInput = Point< SpacePrecisionType, VImageDimension > >
+  unsigned int VImageDimension    = 3,
+  typename TInput = Point< SpacePrecisionType, VImageDimension > >
 class SimoncelliIsotropicWavelet:
   public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
@@ -82,7 +82,6 @@ protected:
 private:
   SimoncelliIsotropicWavelet(const Self &) ITK_DELETE_FUNCTION;
   void operator=(const Self &) ITK_DELETE_FUNCTION;
-
 };
 } // end namespace itk
 

@@ -40,11 +40,11 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template<typename TInputImage,
-         typename TOutputImage =
-           Image<typename TInputImage::PixelType::ComponentType, TInputImage::ImageDimension> >
+  typename TOutputImage =
+    Image<typename TInputImage::PixelType::ComponentType, TInputImage::ImageDimension> >
 class PhaseAnalysisSoftThresholdImageFilter:
   public PhaseAnalysisImageFilter< TInputImage, TOutputImage >
-    {
+{
 public:
   /** Standard class typedefs. */
   typedef PhaseAnalysisSoftThresholdImageFilter                Self;
@@ -77,10 +77,10 @@ public:
   typedef SpacingType                               DirectionType;
   typedef typename InputImageType::SpacingValueType FloatType;
 
-  typedef typename OutputImageType::Pointer                      OutputImagePointer;
-  typedef typename OutputImageType::ConstPointer                 OutputImageConstPointer;
-  typedef typename OutputImageType::RegionType                   OutputImageRegionType;
-  typedef typename OutputImageType::PixelType                    OutputImagePixelType;
+  typedef typename OutputImageType::Pointer      OutputImagePointer;
+  typedef typename OutputImageType::ConstPointer OutputImageConstPointer;
+  typedef typename OutputImageType::RegionType   OutputImageRegionType;
+  typedef typename OutputImageType::PixelType    OutputImagePixelType;
 
   itkSetMacro( ApplySoftThreshold, bool );
   itkGetConstMacro( ApplySoftThreshold, bool );
@@ -94,18 +94,21 @@ public:
   {
     return this->GetOutput(2);
   }
+
   OutputImageType * GetOutputCosPhase()
   {
     return this->GetOutput(2);
   }
+
 protected:
   PhaseAnalysisSoftThresholdImageFilter();
   ~PhaseAnalysisSoftThresholdImageFilter() {}
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   virtual void BeforeThreadedGenerateData() ITK_OVERRIDE;
+
   virtual void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-                            ThreadIdType threadId) ITK_OVERRIDE;
+                                    ThreadIdType threadId) ITK_OVERRIDE;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(PhaseAnalysisSoftThresholdImageFilter);

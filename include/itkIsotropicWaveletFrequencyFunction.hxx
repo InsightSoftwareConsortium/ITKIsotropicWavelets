@@ -28,13 +28,15 @@ template< typename TFunctionValue, unsigned int VImageDimension, typename TInput
 IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::IsotropicWaveletFrequencyFunction()
   : m_HighPassSubBands(1),
-    m_FreqCutOff(0.25)
-{}
+  m_FreqCutOff(0.25)
+{
+}
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::~IsotropicWaveletFrequencyFunction()
-{}
+{
+}
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 void
@@ -52,7 +54,7 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
   if(high_pass_bands == 0)
     itkExceptionMacro(
-        "HighPassSubands must be greater than zero. At least one high band must exist.");
+      "HighPassSubands must be greater than zero. At least one high band must exist.");
   this->m_HighPassSubBands = high_pass_bands;
 }
 
@@ -62,8 +64,9 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateForwardLowPassFilter(const FunctionValueType& freq_norm_in_hz) const
 {
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands)) *
-    std::pow(2.0, static_cast<int>(2*this->m_HighPassSubBands - 1));
+    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands))
+    * std::pow(2.0, static_cast<int>(2 * this->m_HighPassSubBands - 1));
+
   if ( value > this->m_FreqCutOff )
     return this->EvaluateMagnitude(value);
   return 1;
@@ -75,8 +78,9 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateForwardHighPassFilter(const FunctionValueType & freq_norm_in_hz) const
 {
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands)) *
-    std::pow(2.0, static_cast<int>(this->m_HighPassSubBands - 1));
+    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands))
+    * std::pow(2.0, static_cast<int>(this->m_HighPassSubBands - 1));
+
   if ( value < this->m_FreqCutOff )
     return this->EvaluateMagnitude(value);
   return 1;
@@ -88,14 +92,16 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateForwardSubBand(const FunctionValueType & freq_norm_in_hz, unsigned int j)
 const
 {
-  if (j == this->m_HighPassSubBands) return this->EvaluateForwardHighPassFilter(freq_norm_in_hz);
-  if (j == 0) return this->EvaluateForwardLowPassFilter(freq_norm_in_hz);
+  if (j == this->m_HighPassSubBands)
+    return this->EvaluateForwardHighPassFilter(freq_norm_in_hz);
+  if (j == 0)
+    return this->EvaluateForwardLowPassFilter(freq_norm_in_hz);
   if (j > this->m_HighPassSubBands || j < 0)
     throw itk::ExceptionObject(__FILE__, __LINE__,
-            "Invalid SubBand", ITK_LOCATION);
+                               "Invalid SubBand", ITK_LOCATION);
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands)) *
-    std::pow(2.0, static_cast<int>(2*this->m_HighPassSubBands - 1 - j));
+    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands))
+    * std::pow(2.0, static_cast<int>(2 * this->m_HighPassSubBands - 1 - j));
   return this->EvaluateMagnitude(value);
 }
 

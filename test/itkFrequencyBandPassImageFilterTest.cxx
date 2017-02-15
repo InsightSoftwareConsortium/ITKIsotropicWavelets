@@ -20,19 +20,19 @@
 using namespace std;
 using namespace itk;
 
-//Visualize for dev/debug purposes. Set in cmake file. Require VTK
+// Visualize for dev/debug purposes. Set in cmake file. Require VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
 
 int itkFrequencyBandPassImageFilterTest(int, char**)
 {
-  typedef float PixelType;
-  typedef itk::Image<PixelType, 3>        ImageType3D;
+  typedef float                    PixelType;
+  typedef itk::Image<PixelType, 3> ImageType3D;
   ImageType3D::SizeType size = { { 20, 40, 80 } };
 
   // Create a test image
-  ImageType3D::Pointer image = ImageType3D::New();
+  ImageType3D::Pointer    image = ImageType3D::New();
   ImageType3D::RegionType region;
   region.SetSize( size );
 
@@ -52,14 +52,14 @@ int itkFrequencyBandPassImageFilterTest(int, char**)
   itk::Testing::ViewImage(bandFilter->GetOutput(),  "PassBand" );
 #endif
   /** StopBand */
-  bandFilter->SetStopBand(false,false);
+  bandFilter->SetStopBand(false, false);
   bandFilter->Update();
 #ifdef ITK_VISUALIZE_TESTS
   itk::Testing::ViewImage(bandFilter->GetOutput(),  "StopBand" );
 #endif
   bandFilter->SetLowFrequencyThreshold(0.2);
   bandFilter->SetHighFrequencyThreshold(0.5);
-  bandFilter->SetPassBand(true,true);
+  bandFilter->SetPassBand(true, true);
   bandFilter->Update();
 #ifdef ITK_VISUALIZE_TESTS
   itk::Testing::ViewImage(bandFilter->GetOutput(),  "HighPass" );

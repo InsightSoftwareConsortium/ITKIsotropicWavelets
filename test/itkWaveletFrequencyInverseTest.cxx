@@ -37,13 +37,14 @@
 using namespace std;
 using namespace itk;
 
-template <unsigned int N, typename TWaveletFunction>
+template<unsigned int N, typename TWaveletFunction>
 int runWaveletFrequencyInverseTest( const std::string& inputImage,
-    const std::string& outputImage,
-    const unsigned int& inputLevels,
-    const unsigned int& inputBands)
+                                    const std::string& outputImage,
+                                    const unsigned int& inputLevels,
+                                    const unsigned int& inputBands)
 {
   const unsigned int dimension = N;
+
   typedef float                            PixelType;
   typedef itk::Image<PixelType, dimension> ImageType;
   typedef itk::ImageFileReader<ImageType>  ReaderType;
@@ -59,8 +60,8 @@ int runWaveletFrequencyInverseTest( const std::string& inputImage,
   typedef typename FFTFilterType::OutputImageType ComplexImageType;
 
   // Set the WaveletFunctionType and the WaveletFilterBank
-  typedef TWaveletFunction WaveletFunctionType;
-  typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType> WaveletFilterBankType;
+  typedef TWaveletFunction                                                                        WaveletFunctionType;
+  typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType>        WaveletFilterBankType;
   typedef itk::WaveletFrequencyForward<ComplexImageType, ComplexImageType, WaveletFilterBankType> ForwardWaveletType;
   typename ForwardWaveletType::Pointer forwardWavelet = ForwardWaveletType::New();
   forwardWavelet->SetHighPassSubBands(inputBands);
@@ -115,15 +116,15 @@ int itkWaveletFrequencyInverseTest(int argc, char *argv[])
 {
   if( argc < 6 || argc > 7 )
     {
-    std::cerr << "Usage: " << argv[0] <<
-      " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
+    std::cerr << "Usage: " << argv[0]
+              << " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
   const string inputImage  = argv[1];
   const string outputImage = argv[2];
   const unsigned int inputLevels = atoi(argv[3]);
   const unsigned int inputBands  = atoi(argv[4]);
-  const string waveletFunction  = argv[5];
+  const string waveletFunction   = argv[5];
   unsigned int dimension = 3;
   if( argc == 7 )
     {

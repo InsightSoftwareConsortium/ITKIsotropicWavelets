@@ -103,10 +103,10 @@ class FrequencyExpandImageFilter:
 {
 public:
   /** Standard class typedefs. */
-  typedef FrequencyExpandImageFilter                    Self;
-  typedef ImageToImageFilter<TImageType, TImageType>    Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef FrequencyExpandImageFilter                 Self;
+  typedef ImageToImageFilter<TImageType, TImageType> Superclass;
+  typedef SmartPointer<Self>                         Pointer;
+  typedef SmartPointer<const Self>                   ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -171,7 +171,7 @@ private:
   FrequencyExpandImageFilter(const Self &) ITK_DELETE_FUNCTION;
   void operator=(const Self &) ITK_DELETE_FUNCTION;
 
-  ExpandFactorsType   m_ExpandFactors;
+  ExpandFactorsType m_ExpandFactors;
 };
 } // end namespace itk
 

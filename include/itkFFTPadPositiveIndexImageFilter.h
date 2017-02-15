@@ -25,7 +25,6 @@
 
 namespace itk
 {
-
 /** \class FFTPadPositiveIndexImageFilter
  * \brief Pad an image to make it suitable for an FFT transformation.
  * The difference with @sa FFTPadImageFilter is that the padded image
@@ -49,9 +48,9 @@ namespace itk
  *
  * \sa FFTPadImageFilter
  */
-template<typename TInputImage, typename TOutputImage=TInputImage>
-class FFTPadPositiveIndexImageFilter :
-    public ImageToImageFilter<TInputImage, TOutputImage>
+template<typename TInputImage, typename TOutputImage = TInputImage>
+class FFTPadPositiveIndexImageFilter:
+  public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
@@ -61,13 +60,13 @@ public:
   typedef SmartPointer<const Self>                      ConstPointer;
 
   /** Some convenient typedefs. */
-  typedef TInputImage                              InputImageType;
-  typedef TOutputImage                             OutputImageType;
-  typedef typename InputImageType::PixelType       InputImagePixelType;
-  typedef typename OutputImageType::PixelType      OutputImagePixelType;
-  typedef typename InputImageType::RegionType      RegionType;
-  typedef typename InputImageType::IndexType       IndexType;
-  typedef typename InputImageType::SizeType        SizeType;
+  typedef TInputImage                         InputImageType;
+  typedef TOutputImage                        OutputImageType;
+  typedef typename InputImageType::PixelType  InputImagePixelType;
+  typedef typename OutputImageType::PixelType OutputImagePixelType;
+  typedef typename InputImageType::RegionType RegionType;
+  typedef typename InputImageType::IndexType  IndexType;
+  typedef typename InputImageType::SizeType   SizeType;
 
   /** ImageDimension constants */
   itkStaticConstMacro(InputImageDimension, unsigned int,
@@ -86,21 +85,24 @@ public:
   /** Runtime information support. */
   itkTypeMacro(FFTPadPositiveIndexImageFilter, ImageToImageFilter);
 
-  typedef itk::ChangeInformationImageFilter<OutputImageType> ChangeInfoFilterType;
+  typedef itk::ChangeInformationImageFilter<OutputImageType>      ChangeInfoFilterType;
   typedef itk::FFTPadImageFilter<InputImageType, OutputImageType> FFTPadFilterType;
   itkGetConstMacro(SizeGreatestPrimeFactor, SizeValueType);
   itkSetMacro(SizeGreatestPrimeFactor, SizeValueType);
   /** Set/get the boundary condition. */
   itkSetMacro(BoundaryCondition, BoundaryConditionPointerType);
   itkGetConstMacro(BoundaryCondition, BoundaryConditionPointerType);
+
 protected:
   FFTPadPositiveIndexImageFilter();
   ~FFTPadPositiveIndexImageFilter() {};
   virtual void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
-  virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
-  virtual void GenerateOutputInformation() ITK_OVERRIDE;
-  virtual void GenerateData() ITK_OVERRIDE;
 
+  virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
+
+  virtual void GenerateOutputInformation() ITK_OVERRIDE;
+
+  virtual void GenerateData() ITK_OVERRIDE;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(FFTPadPositiveIndexImageFilter);
@@ -108,9 +110,7 @@ private:
   typename ChangeInfoFilterType::Pointer m_ChangeInfoFilter;
   SizeValueType                          m_SizeGreatestPrimeFactor;
   BoundaryConditionPointerType           m_BoundaryCondition;
-
 }; // end of class
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION

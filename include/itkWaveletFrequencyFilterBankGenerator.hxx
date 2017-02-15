@@ -20,50 +20,55 @@
 #include "itkWaveletFrequencyFilterBankGenerator.h"
 #include "itkNumericTraits.h"
 
-namespace itk {
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+namespace itk
+{
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::WaveletFrequencyFilterBankGenerator()
   : m_HighPassSubBands(0),
-    m_ScaleFactor(1),
-    m_InverseBank(false)
+  m_ScaleFactor(1),
+  m_InverseBank(false)
 {
   this->SetHighPassSubBands(1);
 }
 
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
 void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::SetInverseBankOn()
 {
   this->SetInverseBank(true);
 }
 
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
 void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::SetHighPassSubBands(unsigned int k)
 {
-  if ( m_HighPassSubBands == k ) return;
+  if ( m_HighPassSubBands == k )
+    return;
 
   this->m_HighPassSubBands = k;
   this->SetNumberOfRequiredOutputs(k + 1);
   this->Modified();
 
   for (unsigned int band = 0; band < this->m_HighPassSubBands + 1; ++band)
+    {
     this->SetNthOutput(band, this->MakeOutput(band));
+    }
 }
 
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
 void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
-::PrintSelf(std::ostream &os, Indent indent) const {
+::PrintSelf(std::ostream & os, Indent indent) const
+{
   Superclass::PrintSelf(os, indent);
 
   os << indent << "HighPassSubBands: " << this->m_HighPassSubBands
-     << indent << "InverseBank: " << (this->m_InverseBank ? "true":"false")
+     << indent << "InverseBank: " << (this->m_InverseBank ? "true" : "false")
      << std::endl;
 }
 
 /* ******* Get Outputs *****/
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
 typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::OutputImagePointer
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
@@ -72,7 +77,7 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
   return this->GetOutput(0);
 }
 
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
 typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::OutputImagePointer
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
@@ -81,7 +86,7 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
   return this->GetOutput(this->m_HighPassSubBands);
 }
 
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
 typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::OutputImagePointer
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
@@ -94,8 +99,9 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
   return this->GetOutput(k);
 }
 
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
-std::vector<typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>::OutputImagePointer>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+std::vector<typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction,
+    TFrequencyRegionIterator>::OutputImagePointer>
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::GetOutputsAll()
 {
@@ -107,8 +113,9 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
   return outputList;
 }
 
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
-std::vector<typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>::OutputImagePointer>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+std::vector<typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction,
+    TFrequencyRegionIterator>::OutputImagePointer>
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::GetOutputsHighPassBands()
 {
@@ -118,10 +125,9 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
     outputList.push_back(this->GetOutputSubBand(band));
     }
   return outputList;
-
 }
 
-template < typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
+template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator>
 void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator>
 ::GenerateData()
 {
@@ -129,7 +135,7 @@ void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequ
   evaluator->SetHighPassSubBands(this->m_HighPassSubBands);
 
   /***************** Allocate Outputs *****************/
-  std::vector<OutputImagePointer> outputList;
+  std::vector<OutputImagePointer>   outputList;
   std::vector<OutputRegionIterator> outputItList;
   for (unsigned int band = 0; band < this->m_HighPassSubBands + 1; ++band)
     {
@@ -143,7 +149,7 @@ void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequ
     outputPtr->SetRegions(outputList[0]->GetLargestPossibleRegion());
     outputPtr->Allocate();
     outputPtr->FillBuffer(0);
-    outputItList.push_back(OutputRegionIterator(outputPtr,outputPtr->GetRequestedRegion()));
+    outputItList.push_back(OutputRegionIterator(outputPtr, outputPtr->GetRequestedRegion()));
     outputItList.back().GoToBegin();
     }
 
@@ -154,7 +160,7 @@ void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequ
   for (frequencyIt.GoToBegin(); !frequencyIt.IsAtEnd(); ++frequencyIt)
     {
     w = static_cast<FunctionValueType>(
-          sqrt(frequencyIt.GetFrequencyModuloSquare())
+        sqrt(frequencyIt.GetFrequencyModuloSquare())
         );
 
     FunctionValueType evaluatedSubBand;
@@ -165,8 +171,8 @@ void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequ
         evaluator->EvaluateInverseSubBand(w * this->m_ScaleFactor, l) :
         evaluator->EvaluateForwardSubBand(w * this->m_ScaleFactor, l);
 
-      outputItList[l].Set( outputItList[l].Get() +
-        static_cast<typename OutputImageType::PixelType::value_type>(evaluatedSubBand));
+      outputItList[l].Set( outputItList[l].Get()
+                           + static_cast<typename OutputImageType::PixelType::value_type>(evaluatedSubBand));
       ++outputItList[l];
       }
     itkDebugMacro(<< "w_vector: " << frequencyIt.GetFrequency()
@@ -174,7 +180,7 @@ void WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequ
                   << "  frequencyItIndex: " << frequencyIt.GetIndex()
                   << "  Evaluate highest subband: " << evaluatedSubBand
                   << " outputIndex: " << outputItList[m_HighPassSubBands].GetIndex());
-  }
+    }
 }
-}  // end namespace itk
+} // end namespace itk
 #endif

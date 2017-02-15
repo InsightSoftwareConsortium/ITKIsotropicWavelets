@@ -23,22 +23,21 @@
 
 namespace itk
 {
-
 /** \class FrequencyBandPassImageFilter
  * \brief Performs a pass filter based on the input frequency.
  *
  * \ingroup IsotropicWavelets
  */
-template <typename TImageType>
-class FrequencyBandPassImageFilter :
+template<typename TImageType>
+class FrequencyBandPassImageFilter:
   public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   /** Standard class typedefs. */
-  typedef FrequencyBandPassImageFilter              Self;
-  typedef ImageToImageFilter<TImageType,TImageType> Superclass;
-  typedef SmartPointer<Self>                        Pointer;
-  typedef SmartPointer<const Self>                  ConstPointer;
+  typedef FrequencyBandPassImageFilter               Self;
+  typedef ImageToImageFilter<TImageType, TImageType> Superclass;
+  typedef SmartPointer<Self>                         Pointer;
+  typedef SmartPointer<const Self>                   ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -67,7 +66,7 @@ public:
 #endif
 
   /** Frequency Iterator types */
-  typedef FrequencyImageRegionIteratorWithIndex<TImageType> FrequencyIteratorType;
+  typedef FrequencyImageRegionIteratorWithIndex<TImageType>  FrequencyIteratorType;
   typedef typename FrequencyIteratorType::FrequencyValueType FrequencyValueType;
 
   /****** Frequency Threshold Getters/Setters *****/
@@ -75,29 +74,36 @@ public:
   itkGetConstReferenceMacro(HighFrequencyThreshold, FrequencyValueType);
   itkSetMacro(LowFrequencyThreshold, FrequencyValueType);
   void SetLowFrequencyThresholdInRadians(const FrequencyValueType& freq_low_in_radians);
+
   itkSetMacro(HighFrequencyThreshold, FrequencyValueType);
   void SetHighFrequencyThresholdInRadians(const FrequencyValueType& freq_high_in_radians);
+
   void SetFrequencyThresholds( const FrequencyValueType& freq_low,
                                const FrequencyValueType& freq_high);
+
   void SetFrequencyThresholdsInRadians( const FrequencyValueType& freq_low_in_radians,
                                         const FrequencyValueType& freq_high_in_radians);
 
   itkSetMacro( PassBand, bool );
   itkGetConstReferenceMacro(PassBand, bool);
   void SetPassBand(const bool pass_low_threshold, const bool pass_high_threshold);
+
   void SetStopBand(const bool stop_low_threshold, const bool stop_high_threshold);
+
   itkSetMacro( PassLowFrequencyThreshold, bool );
   itkGetConstReferenceMacro(PassLowFrequencyThreshold, bool);
   itkSetMacro( PassHighFrequencyThreshold, bool );
   itkGetConstReferenceMacro(PassHighFrequencyThreshold, bool);
+
 protected:
   FrequencyBandPassImageFilter();
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   virtual void BeforeThreadedGenerateData() ITK_OVERRIDE;
-  virtual void ThreadedGenerateData(
-      const ImageRegionType & outputRegionForThread,
-      ThreadIdType threadId) ITK_OVERRIDE;
+
+  virtual void ThreadedGenerateData(const ImageRegionType & outputRegionForThread,
+                                    ThreadIdType threadId) ITK_OVERRIDE;
+
 private:
   FrequencyBandPassImageFilter(const Self&) ITK_DELETE_FUNCTION;
   void operator=(const Self&) ITK_DELETE_FUNCTION;
@@ -114,9 +120,7 @@ private:
   /** The pixel values that correspond to m_HighFrequencyThreshold are passed to the output image,
    * independent of m_PassBand */
   bool m_PassHighFrequencyThreshold;
-
 };
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION

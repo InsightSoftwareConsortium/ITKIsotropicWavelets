@@ -39,7 +39,6 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
     {
     m_ExpandFactors[j] = 1;
     }
-
 }
 
 /**
@@ -59,7 +58,6 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
     os << m_ExpandFactors[j] << ", ";
     }
   os << m_ExpandFactors[j] << "]" << std::endl;
-
 }
 
 /**
@@ -75,7 +73,10 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
 
   for ( j = 0; j < ImageDimension; j++ )
     {
-    if ( factor != m_ExpandFactors[j] ) { break; }
+    if ( factor != m_ExpandFactors[j] )
+      {
+      break;
+      }
     }
   if ( j < ImageDimension )
     {
@@ -83,7 +84,10 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
     for ( j = 0; j < ImageDimension; j++ )
       {
       m_ExpandFactors[j] = factor;
-      if ( m_ExpandFactors[j] < 1 ) { m_ExpandFactors[j] = 1; }
+      if ( m_ExpandFactors[j] < 1 )
+        {
+        m_ExpandFactors[j] = 1;
+        }
       }
     }
 }
@@ -108,7 +112,7 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
                        ThreadIdType threadId)
 {
   // Get the input and output pointers
-  OutputImagePointer outputPtr = this->GetOutput();
+  OutputImagePointer outputPtr    = this->GetOutput();
   const InputImageType * inputPtr = this->GetInput();
 
   // Iterator for walking the output
@@ -156,7 +160,7 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
           inputIndex[j] = outputIndex[j] / m_ExpandFactors[j];
           }
         outIt.Set( static_cast< OutputPixelType >(
-            inputPtr->GetPixel(inputIndex) ) );
+                     inputPtr->GetPixel(inputIndex) ) );
         }
       else
         {
@@ -197,7 +201,7 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
   const typename TOutputImage::IndexType & outputRequestedRegionStartIndex =
     outputPtr->GetRequestedRegion().GetIndex();
 
-  typename TInputImage::SizeType inputRequestedRegionSize;
+  typename TInputImage::SizeType  inputRequestedRegionSize;
   typename TInputImage::IndexType inputRequestedRegionStartIndex;
 
   /**
@@ -208,11 +212,11 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
     {
     inputRequestedRegionSize[i] =
       (SizeValueType)std::ceil( (double)outputRequestedRegionSize[i]
-                      / (double)m_ExpandFactors[i] ) + 1;
+                                / (double)m_ExpandFactors[i] ) + 1;
 
     inputRequestedRegionStartIndex[i] =
       (SizeValueType)std::floor( (double)outputRequestedRegionStartIndex[i]
-                       / (double)m_ExpandFactors[i] );
+                                 / (double)m_ExpandFactors[i] );
     }
 
   typename TInputImage::RegionType inputRequestedRegion;
@@ -251,31 +255,31 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
   // output image start index
   const typename TInputImage::SpacingType &
   inputSpacing = inputPtr->GetSpacing();
-  const typename TInputImage::SizeType &   inputSize =
+  const typename TInputImage::SizeType & inputSize =
     inputPtr->GetLargestPossibleRegion().GetSize();
-  const typename TInputImage::IndexType &  inputStartIndex =
+  const typename TInputImage::IndexType & inputStartIndex =
     inputPtr->GetLargestPossibleRegion().GetIndex();
   const typename TInputImage::PointType &
   inputOrigin = inputPtr->GetOrigin();
 
   typename TOutputImage::SpacingType outputSpacing;
-  typename TOutputImage::SizeType outputSize;
-  typename TOutputImage::IndexType outputStartIndex;
-  typename TOutputImage::PointType outputOrigin;
+  typename TOutputImage::SizeType    outputSize;
+  typename TOutputImage::IndexType   outputStartIndex;
+  typename TOutputImage::PointType   outputOrigin;
 
   typename TInputImage::SpacingType inputOriginShift;
 
   for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
-    outputSpacing[i] = inputSpacing[i] / (float)m_ExpandFactors[i];
-    outputSize[i] = inputSize[i] * (SizeValueType)m_ExpandFactors[i];
+    outputSpacing[i]    = inputSpacing[i] / (float)m_ExpandFactors[i];
+    outputSize[i]       = inputSize[i] * (SizeValueType)m_ExpandFactors[i];
     outputStartIndex[i] = inputStartIndex[i] * (IndexValueType)m_ExpandFactors[i];
     const double fraction = (double)( m_ExpandFactors[i] - 1 ) / (double)m_ExpandFactors[i];
     inputOriginShift[i] = -( inputSpacing[i] / 2.0 ) * fraction;
     }
 
-  const typename TInputImage::DirectionType inputDirection = inputPtr->GetDirection();
-  const typename TOutputImage::SpacingType outputOriginShift = inputDirection * inputOriginShift;
+  const typename TInputImage::DirectionType inputDirection    = inputPtr->GetDirection();
+  const typename TOutputImage::SpacingType  outputOriginShift = inputDirection * inputOriginShift;
 
   outputOrigin = inputOrigin + outputOriginShift;
 

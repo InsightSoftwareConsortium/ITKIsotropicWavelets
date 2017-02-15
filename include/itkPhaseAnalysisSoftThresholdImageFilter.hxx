@@ -23,11 +23,12 @@
 
 #include "itkProgressReporter.h"
 #include "itkStatisticsImageFilter.h"
-namespace itk {
+namespace itk
+{
 template< typename TInputImage, typename TOutputImage >
 PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
 ::PhaseAnalysisSoftThresholdImageFilter()
-: m_ApplySoftThreshold(true),
+  : m_ApplySoftThreshold(true),
   m_NumOfSigmas(2.0),
   m_MeanAmp(0),
   m_SigmaAmp(0),
@@ -60,9 +61,12 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
 ::BeforeThreadedGenerateData()
 {
   unsigned int nC = this->GetInput()->GetNumberOfComponentsPerPixel();
+
   if (nC < 2 )
     {
-    itkExceptionMacro(<<"Number of components of input image ("<<nC<<") is less than 2. PhaseAnalysis require at least 2 components.");
+    itkExceptionMacro(
+        << "Number of components of input image (" << nC
+        << ") is less than 2. PhaseAnalysis require at least 2 components.");
     }
 
   ThreadIdType nbOfThreads = this->GetNumberOfThreads();
@@ -70,7 +74,6 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
   m_Barrier1->Initialize(nbOfThreads);
   m_Barrier2 = Barrier::New();
   m_Barrier2->Initialize(nbOfThreads);
-
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -78,14 +81,15 @@ void
 PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
 ::ThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread,
-        ThreadIdType threadId)
+  ThreadIdType threadId)
 {
   ProgressReporter progress( this, threadId, outputRegionForThread.GetNumberOfPixels() );
+
   Superclass::ThreadedGenerateData(outputRegionForThread, threadId);
 
-  typename OutputImageType::Pointer phasePtr = this->GetOutputPhase();
+  typename OutputImageType::Pointer phasePtr     = this->GetOutputPhase();
   typename OutputImageType::Pointer amplitudePtr = this->GetOutputAmplitude();
-  typename OutputImageType::Pointer outputPtr = this->GetOutputCosPhase();
+  typename OutputImageType::Pointer outputPtr    = this->GetOutputCosPhase();
 
   // Wait for mean/variance calculation. Stats only once.
   if(this->GetApplySoftThreshold())
@@ -97,8 +101,8 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
       typename StatisticsImageFilter::Pointer statsFilter = StatisticsImageFilter::New();
       statsFilter->SetInput(amplitudePtr);
       statsFilter->Update();
-      this->m_MeanAmp = statsFilter->GetMean();
-      this->m_SigmaAmp = sqrt(statsFilter->GetVariance());
+      this->m_MeanAmp   = statsFilter->GetMean();
+      this->m_SigmaAmp  = sqrt(statsFilter->GetVariance());
       this->m_Threshold = this->m_MeanAmp + this->m_NumOfSigmas * this->m_SigmaAmp;
       }
     m_Barrier2->Wait();
@@ -111,7 +115,7 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
   OutputImageRegionConstIterator ampIt(amplitudePtr, outputRegionForThread);
   OutputImageRegionConstIterator phaseIt(phasePtr, outputRegionForThread);
 
-  outIt.GoToBegin(),ampIt.GoToBegin(), phaseIt.GoToBegin();
+  outIt.GoToBegin(), ampIt.GoToBegin(), phaseIt.GoToBegin();
   while(!outIt.IsAtEnd())
     {
     while( !outIt.IsAtEndOfLine() )

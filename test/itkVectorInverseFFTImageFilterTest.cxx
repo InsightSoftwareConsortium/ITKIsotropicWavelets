@@ -37,7 +37,7 @@ int itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
     std::cerr << "Usage: " << argv[0] << " inputImage " << std::endl;
     return EXIT_FAILURE;
     }
-  const string inputImage  = argv[1];
+  const string inputImage = argv[1];
 
   const unsigned int dimension = 3;
   typedef float                            PixelType;
@@ -78,7 +78,8 @@ int itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
   vecInverseFFT->SetInput(composeComplexFilter->GetOutput());
   vecInverseFFT->Update();
 
-  typedef itk::VectorIndexSelectionCastImageFilter<VectorInverseFFTType::OutputImageType, FFTInverseFilterType::OutputImageType> VectorCastFilterType;
+  typedef itk::VectorIndexSelectionCastImageFilter<VectorInverseFFTType::OutputImageType,
+    FFTInverseFilterType::OutputImageType> VectorCastFilterType;
   VectorCastFilterType::Pointer vectorCastFilter = VectorCastFilterType::New();
   vectorCastFilter->SetInput(vecInverseFFT->GetOutput());
 

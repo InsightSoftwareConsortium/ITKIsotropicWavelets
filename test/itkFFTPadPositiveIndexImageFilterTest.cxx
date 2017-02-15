@@ -54,18 +54,17 @@ int itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
 
   fftpad->Update();
   ImageType::IndexType outIndex = fftpad->GetOutput()->GetLargestPossibleRegion().GetIndex();
-  ImageType::SizeType outSize = fftpad->GetOutput()->GetLargestPossibleRegion().GetSize();
-  std::cout <<"Index: " << outIndex <<" Size: " << outSize << std::endl;
-  for (unsigned int i=0; i<Dimension; ++i)
+  ImageType::SizeType  outSize  = fftpad->GetOutput()->GetLargestPossibleRegion().GetSize();
+  std::cout << "Index: " << outIndex << " Size: " << outSize << std::endl;
+  for (unsigned int i = 0; i < Dimension; ++i)
     {
     if(outIndex[i] < 0)
       {
-      std::cerr<< "Negative index " <<std::endl;
+      std::cerr << "Negative index " << std::endl;
       return EXIT_FAILURE;
       }
-
     }
-  WriterType::Pointer writer  = WriterType::New();
+  WriterType::Pointer writer = WriterType::New();
   writer->SetInput(fftpad->GetOutput());
   writer->SetFileName(  argv[2] );
   writer->Update();

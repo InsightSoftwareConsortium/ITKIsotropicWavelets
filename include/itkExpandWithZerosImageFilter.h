@@ -103,7 +103,6 @@ public:
   /** Get the expand factors. */
   itkGetConstReferenceMacro(ExpandFactors, ExpandFactorsType);
 
-
   /** ExpandWithZerosImageFilter produces an image which is a different resolution and
    * with a different pixel spacing than its input image.  As such,
    * ExpandWithZerosImageFilter needs to provide an implementation for
@@ -153,7 +152,7 @@ protected:
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(ExpandWithZerosImageFilter);
 
-  ExpandFactorsType   m_ExpandFactors;
+  ExpandFactorsType m_ExpandFactors;
 };
 } // end namespace itk
 

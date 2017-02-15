@@ -30,8 +30,8 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template< typename TFunctionValue = double,
-          unsigned int VImageDimension = 3,
-          typename TInput = Point< SpacePrecisionType, VImageDimension > >
+  unsigned int VImageDimension    = 3,
+  typename TInput = Point< SpacePrecisionType, VImageDimension > >
 class RieszFrequencyFunction:
   public FrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
@@ -53,30 +53,33 @@ public:
 
   typedef typename Superclass::OutputType FunctionValueType;
   /** Output type for the function. */
-  typedef std::complex<typename Superclass::OutputType> OutputComplexType;
-  typedef itk::FixedArray<std::complex<typename Superclass::OutputType>, VImageDimension>  OutputArrayType;
+  typedef std::complex<typename Superclass::OutputType>                                   OutputComplexType;
+  typedef itk::FixedArray<std::complex<typename Superclass::OutputType>, VImageDimension> OutputArrayType;
 
   /** Evaluate the function at a given frequency point. */
   virtual FunctionValueType Evaluate(const TInput &) const ITK_OVERRIDE
   {
     itkExceptionMacro("Evaluate(TInput&) is not valid for RieszFrequencyFunction."
-        "Use EvaluateArray instead, returning an OutputArrayType,"
-        "or Evaluate(point, dimension) that returns a complex value .");
+                      "Use EvaluateArray instead, returning an OutputArrayType,"
+                      "or Evaluate(point, dimension) that returns a complex value .");
   };
   OutputComplexType Evaluate(const TInput & frequency_point,
-      const unsigned int & dimension) const;
+                             const unsigned int & dimension) const;
+
   OutputArrayType EvaluateArray(const TInput & frequency_point) const;
 
   /** Calculate magnitude (euclidean norm) of input point. **/
   inline double Magnitude(const TInput & point) const
   {
     double accum(0);
+
     for (size_t d = 0; d < VImageDimension; ++d)
-    {
+      {
       accum += point[d] * point[d];
-    }
+      }
     return sqrt(accum);
   }
+
 protected:
   RieszFrequencyFunction();
   virtual ~RieszFrequencyFunction();

@@ -75,9 +75,9 @@ public:
   typedef itk::SubtractImageFilter<ImageType>     SubtractFilterType;
   typedef typename StatisticsFilterType::RealType RealType;
   RealType GetMean() const
-    {
+  {
     return m_StatisticsFilter->GetMean();
-    }
+  }
 
 protected:
   ZeroDCImageFilter();

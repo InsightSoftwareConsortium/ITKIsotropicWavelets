@@ -33,7 +33,7 @@ FrequencyShrinkViaInverseFFTImageFilter< TImageType >
     }
   m_InverseFFT = InverseFFTFilterType::New();
   m_ForwardFFT = ForwardFFTFilterType::New();
-  m_Shrinker = ShrinkFilterType::New();
+  m_Shrinker   = ShrinkFilterType::New();
 }
 
 template<class TImageType>
@@ -60,7 +60,10 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
 
   for ( j = 0; j < ImageDimension; j++ )
     {
-    if ( factor != m_ShrinkFactors[j] ) { break; }
+    if ( factor != m_ShrinkFactors[j] )
+      {
+      break;
+      }
     }
   if ( j < ImageDimension )
     {
@@ -93,7 +96,7 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
 /**
  * Perform an expensive
  */
-template <class TImageType>
+template<class TImageType>
 void
 FrequencyShrinkViaInverseFFTImageFilter<TImageType>
 ::GenerateData()
@@ -112,7 +115,7 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
   this->GraftOutput(m_ForwardFFT->GetOutput());
 }
 
-template <class TImageType>
+template<class TImageType>
 void
 FrequencyShrinkViaInverseFFTImageFilter<TImageType>
 ::GenerateInputRequestedRegion()
@@ -121,7 +124,7 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  ImagePointer  inputPtr = const_cast<TImageType *> (this->GetInput() );
+  ImagePointer inputPtr  = const_cast<TImageType *>(this->GetInput() );
   ImagePointer outputPtr = this->GetOutput();
 
   // The filter chops high frequencys [0 1...H,H-1 H-2...1].
@@ -129,7 +132,7 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
   inputPtr->SetRequestedRegion( inputPtr->GetLargestPossibleRegion() );
 }
 
-template <class TImageType>
+template<class TImageType>
 void
 FrequencyShrinkViaInverseFFTImageFilter<TImageType>
 ::GenerateOutputInformation()
@@ -150,11 +153,11 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
   // output image start index
   const typename TImageType::SpacingType & inputSpacing =
     inputPtr->GetSpacing();
-  const typename TImageType::SizeType &    inputSize =
+  const typename TImageType::SizeType & inputSize =
     inputPtr->GetLargestPossibleRegion().GetSize();
-  const typename TImageType::IndexType &   inputStartIndex =
+  const typename TImageType::IndexType & inputStartIndex =
     inputPtr->GetLargestPossibleRegion().GetIndex();
-  const typename TImageType::PointType &   inputOrigin =
+  const typename TImageType::PointType & inputOrigin =
     inputPtr->GetOrigin();
 
   // ContinuousIndex<double,ImageDimension> inputIndexOutputOrigin;
@@ -186,7 +189,6 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
       {
       itkExceptionMacro("InputImage is too small! An output pixel does not map to a whole input bin.");
       }
-
     }
 
   // inputPtr->TransformContinuousIndexToPhysicalPoint(inputIndexOutputOrigin, outputOrigin);
@@ -201,9 +203,7 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
   outputLargestPossibleRegion.SetIndex(outputStartIndex);
 
   outputPtr->SetLargestPossibleRegion(outputLargestPossibleRegion);
-
 }
-
 } // end namespace itk
 
 #endif

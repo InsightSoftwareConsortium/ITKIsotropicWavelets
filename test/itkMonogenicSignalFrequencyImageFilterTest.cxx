@@ -24,7 +24,7 @@
 #include "itkImageFileWriter.h"
 #include "itkForwardFFTImageFilter.h"
 #include <itkComplexToRealImageFilter.h>
-//Visualize for dev/debug purposes. Set in cmake file. Require VTK
+// Visualize for dev/debug purposes. Set in cmake file. Require VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif

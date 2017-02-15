@@ -34,15 +34,16 @@
 using namespace std;
 using namespace itk;
 
-//Visualize for dev/debug purposes. Set in cmake file. Require VTK
+// Visualize for dev/debug purposes. Set in cmake file. Require VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
 
-  template<unsigned int N>
+template<unsigned int N>
 int runFrequencyExpandTest(const std::string & inputImage, const std::string & outputImage)
 {
   const unsigned int dimension = N;
+
   typedef double                           PixelType;
   typedef itk::Image<PixelType, dimension> ImageType;
   typedef itk::ImageFileReader<ImageType>  ReaderType;
@@ -79,28 +80,29 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
   inverseFFT->Update();
 
   /***************** Hermitian property (sym) *****************************/
-    bool fftIsHermitian = itk::Testing::ComplexImageIsHermitian(fftFilter->GetOutput());
-    bool expandIsHermitian = itk::Testing::ComplexImageIsHermitian(expandFilter->GetOutput());
-    if (!fftIsHermitian)
-      {
-      std::cerr <<"fft is not Hermitian" << std::endl;
-      // return EXIT_FAILURE;
-      }
-    if (!expandIsHermitian)
-      {
-      std::cerr <<"expand is not Hermitian" << std::endl;
-      // return EXIT_FAILURE;
-      }
+  bool fftIsHermitian    = itk::Testing::ComplexImageIsHermitian(fftFilter->GetOutput());
+  bool expandIsHermitian = itk::Testing::ComplexImageIsHermitian(expandFilter->GetOutput());
+  if (!fftIsHermitian)
+    {
+    std::cerr << "fft is not Hermitian" << std::endl;
+    // return EXIT_FAILURE;
+    }
+  if (!expandIsHermitian)
+    {
+    std::cerr << "expand is not Hermitian" << std::endl;
+    // return EXIT_FAILURE;
+    }
   /***************** Hermitian property *****************************/
     {
     // Simmetry and hermitian test: ComplexInverseFFT will generate output with zero imaginary part.
     // Test hermitian properties for even Images. Odd real images are not even hermitian after FFT.
     FixedArray<bool, dimension> inputSizeIsEven;
     bool imageIsEven(true);
-    for ( unsigned int dim=0; dim < dimension; ++dim )
+    for ( unsigned int dim = 0; dim < dimension; ++dim )
       {
       inputSizeIsEven[dim] = (reader->GetOutput()->GetLargestPossibleRegion().GetSize()[dim] % 2 == 0);
-      if (inputSizeIsEven[dim] == false) imageIsEven = false;
+      if (inputSizeIsEven[dim] == false)
+        imageIsEven = false;
       }
     // Check that complex part is almost 0 after FFT and complex inverse FFT.
       {
@@ -134,7 +136,7 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
       if ( not_zero_complex_error > 0 )
         {
         std::cout << "Dev note: After the FFT filter the image is not "
-                     "hermitian. #Not_zero_imag_value Pixels: "
+          "hermitian. #Not_zero_imag_value Pixels: "
                   << not_zero_complex_error
                   << " accumSquareDifference: " << accum_square_difference
                   << std::endl;
@@ -170,17 +172,17 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
       if ( not_zero_complex_error > 0 )
         {
         std::cout << "Dev note: After the EXPAND filter the image is not "
-                     "hermitian. #Not_zero_imag_value Pixels: "
+          "hermitian. #Not_zero_imag_value Pixels: "
                   << not_zero_complex_error
                   << " accumSquareDifference: " << accum_square_difference
                   << std::endl;
         }
       }
     }
-    /*************End Hermitian property *****************************/
+  /*************End Hermitian property *****************************/
 
   // Write Output for comparisson
-  typedef itk::Image<float,dimension>                       FloatImageType;
+  typedef itk::Image<float, dimension>                      FloatImageType;
   typedef itk::CastImageFilter< ImageType, FloatImageType > CastType;
   typename CastType::Pointer castFilter = CastType::New();
   castFilter->SetInput(inverseFFT->GetOutput());

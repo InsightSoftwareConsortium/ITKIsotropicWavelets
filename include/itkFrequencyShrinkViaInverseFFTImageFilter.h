@@ -26,7 +26,6 @@
 
 namespace itk
 {
-
 /** \class FrequencyShrinkViaInverseFFTImageFilter
  * \brief Reduce the size of an image in the frequency domain by an integer
  * factor in each dimension.
@@ -38,16 +37,16 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template <typename TImageType>
-class FrequencyShrinkViaInverseFFTImageFilter :
+template<typename TImageType>
+class FrequencyShrinkViaInverseFFTImageFilter:
   public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   /** Standard class typedefs. */
-  typedef FrequencyShrinkViaInverseFFTImageFilter   Self;
-  typedef ImageToImageFilter<TImageType,TImageType> Superclass;
-  typedef SmartPointer<Self>                        Pointer;
-  typedef SmartPointer<const Self>                  ConstPointer;
+  typedef FrequencyShrinkViaInverseFFTImageFilter    Self;
+  typedef ImageToImageFilter<TImageType, TImageType> Superclass;
+  typedef SmartPointer<Self>                         Pointer;
+  typedef SmartPointer<const Self>                   ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -65,9 +64,12 @@ public:
   /** Typedef to describe the output image region type. */
   typedef typename TImageType::RegionType ImageRegionType;
   /** Typedef of used filters */
-  typedef itk::InverseFFTImageFilter<ImageType> InverseFFTFilterType;
-  typedef itk::ShrinkDecimateImageFilter<typename InverseFFTFilterType::OutputImageType, typename InverseFFTFilterType::OutputImageType> ShrinkFilterType;
-  typedef itk::ForwardFFTImageFilter<typename InverseFFTFilterType::OutputImageType, ImageType> ForwardFFTFilterType;
+  typedef itk::InverseFFTImageFilter<ImageType>
+                                                    InverseFFTFilterType;
+  typedef itk::ShrinkDecimateImageFilter<typename InverseFFTFilterType::OutputImageType,
+    typename InverseFFTFilterType::OutputImageType> ShrinkFilterType;
+  typedef itk::ForwardFFTImageFilter<typename InverseFFTFilterType::OutputImageType,
+    ImageType>                                      ForwardFFTFilterType;
 
   /** ImageDimension enumeration. */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -81,6 +83,7 @@ public:
    * a minimum value of 1. Default is 1 for all dimensions. */
   itkSetMacro(ShrinkFactors, ShrinkFactorsType);
   void SetShrinkFactors(unsigned int factor);
+
   void SetShrinkFactor(unsigned int i, unsigned int factor);
 
   /** Get the shrink factors. */
@@ -116,9 +119,7 @@ private:
   typename InverseFFTFilterType::Pointer m_InverseFFT;
   typename ForwardFFTFilterType::Pointer m_ForwardFFT;
   typename ShrinkFilterType::Pointer     m_Shrinker;
-
 };
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION

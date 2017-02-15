@@ -61,11 +61,11 @@ Orientation:
  * \ingroup IsotropicWavelets
  */
 template<typename TInputImage,
-         typename TOutputImage =
-           Image<typename TInputImage::PixelType::ComponentType, TInputImage::ImageDimension> >
+  typename TOutputImage =
+    Image<typename TInputImage::PixelType::ComponentType, TInputImage::ImageDimension> >
 class PhaseAnalysisImageFilter:
   public ImageToImageFilter< TInputImage, TOutputImage >
-    {
+{
 public:
   /** Standard class typedefs. */
   typedef PhaseAnalysisImageFilter                       Self;
@@ -106,22 +106,25 @@ public:
   typedef typename itk::ImageScanlineConstIterator<InputImageType> InputImageRegionConstIterator;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
- /// This ensure that PixelType is float||double, and not complex.
+  /// This ensure that PixelType is float||double, and not complex.
   itkConceptMacro( OutputPixelTypeIsFloatCheck,
-                 ( Concept::IsFloatingPoint< typename TOutputImage::PixelType > ) );
+                   ( Concept::IsFloatingPoint< typename TOutputImage::PixelType > ) );
 #endif
   const OutputImageType * GetOutputPhase() const
   {
     return this->GetOutput(0);
   }
+
   OutputImageType * GetOutputPhase()
   {
     return this->GetOutput(0);
   }
+
   const OutputImageType * GetOutputAmplitude() const
   {
     return this->GetOutput(1);
   }
+
   OutputImageType * GetOutputAmplitude()
   {
     return this->GetOutput(1);
@@ -133,18 +136,22 @@ protected:
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   virtual void BeforeThreadedGenerateData() ITK_OVERRIDE;
+
   virtual void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-                            ThreadIdType threadId) ITK_OVERRIDE;
+                                    ThreadIdType threadId) ITK_OVERRIDE;
 
   inline OutputImagePixelType ComputeFeatureVectorNormSquare( const InputImagePixelType & inputPixel) const;
+
   /**************** Helpers requiring the square norm of Riesz *******************/
   inline OutputImagePixelType ComputeAmplitude( const InputImagePixelType & inputPixel,
-      const OutputImagePixelType & featureAmpSquare ) const;
+                                                const OutputImagePixelType & featureAmpSquare ) const;
+
   inline OutputImagePixelType ComputePhase( const InputImagePixelType & inputPixel,
-      const OutputImagePixelType & featureAmpSquare ) const;
+                                            const OutputImagePixelType & featureAmpSquare ) const;
+
   inline itk::FixedArray<OutputImagePixelType, ImageDimension - 1>
-    ComputePhaseOrientation( const InputImagePixelType & inputPixel,
-      const OutputImagePixelType & featureAmpSquare ) const;
+  ComputePhaseOrientation( const InputImagePixelType & inputPixel,
+                           const OutputImagePixelType & featureAmpSquare ) const;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(PhaseAnalysisImageFilter);

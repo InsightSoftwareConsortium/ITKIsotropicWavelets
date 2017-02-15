@@ -28,30 +28,32 @@
 #include "itkNumberToString.h"
 using namespace std;
 using namespace itk;
-namespace itk{
-namespace Testing {
+namespace itk
+{
+namespace Testing
+{
 // Generate values from a linear space
 std::vector<double> linSpaceForIWFF(double init = 0.0, double end = 1.0, size_t points = 1000)
 {
   std::vector<double> w_array(points);
   if(points <= 1)
-    throw("linSpace needs more points");
-  double interval = (end - init)/(points - 1);
+    throw ("linSpace needs more points");
+  double interval = (end - init) / (points - 1);
   for(unsigned int i = 0; i < points; ++i)
     {
-    w_array[i] = init + interval*i;
+    w_array[i] = init + interval * i;
     }
   return w_array;
 }
 }
 }
 
-template <unsigned int N, typename TWaveletFunction>
+template<unsigned int N, typename TWaveletFunction>
 int runIsotropicWaveletFrequencyFunctionTest(
-    const std::string& profileDataRootPath,
-    const std::string& outputImage,
-    const unsigned int& inputBands,
-    const std::string & waveletTypeName)
+  const std::string& profileDataRootPath,
+  const std::string& outputImage,
+  const unsigned int& inputBands,
+  const std::string & waveletTypeName)
 {
   itk::NumberToString<float> n2s;
   typedef TWaveletFunction WaveletFunctionType;
@@ -59,16 +61,16 @@ int runIsotropicWaveletFrequencyFunctionTest(
     WaveletFunctionType::New();
   motherWavelet->SetHighPassSubBands(inputBands);
 
-  double init = 0.0;
-  double end = 1.0;
+  double init   = 0.0;
+  double end    = 1.0;
   size_t points = 1000;
-  std::vector< double > w_array = itk::Testing::linSpaceForIWFF(init,end,points);
+  std::vector< double > w_array = itk::Testing::linSpaceForIWFF(init, end, points);
   // Generate profile data for sub-bands and mother wavelet itself
   std::vector< std::vector< double > > subBandsResults;
-  for(unsigned int k = 0; k<inputBands + 2; ++k)
+  for(unsigned int k = 0; k < inputBands + 2; ++k)
     {
     std::vector<double> bandResults;
-    for(unsigned int i = 0; i<points; ++i)
+    for(unsigned int i = 0; i < points; ++i)
       {
       if (k == inputBands + 1) // mother wavelet
         bandResults.push_back(motherWavelet->EvaluateMagnitude(w_array[i]));
@@ -80,11 +82,11 @@ int runIsotropicWaveletFrequencyFunctionTest(
 
   // Write profile.
   const std::string outputFilePath = profileDataRootPath + "_" + waveletTypeName +  "_" + n2s(inputBands) + ".txt";
-  std::ofstream ofs(outputFilePath.c_str(), std::ofstream::out);
-  for(unsigned int i = 0; i<points; ++i)
+  std::ofstream     ofs(outputFilePath.c_str(), std::ofstream::out);
+  for(unsigned int i = 0; i < points; ++i)
     {
     ofs << w_array[i];
-    for(unsigned int k = 0; k<inputBands + 2; ++k)
+    for(unsigned int k = 0; k < inputBands + 2; ++k)
       {
       ofs << "," << subBandsResults[k][i];
       }
@@ -98,13 +100,13 @@ int itkIsotropicWaveletFrequencyFunctionTest(int argc, char *argv[])
 {
   if( argc < 5 || argc > 6 )
     {
-    std::cerr << "Usage: " << argv[0] <<
-      "profileDataRootPath outputImage inputBands waveletFunction [dimension]" << std::endl;
+    std::cerr << "Usage: " << argv[0]
+              << "profileDataRootPath outputImage inputBands waveletFunction [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
-  const string profileDataRootPath  = argv[1];
+  const string profileDataRootPath = argv[1];
   const string outputImage = argv[2];
-  const unsigned int inputBands  = atoi(argv[3]);
+  const unsigned int inputBands = atoi(argv[3]);
   const string waveletFunction  = argv[4];
   unsigned int dimension = 3;
   if( argc == 6 )
@@ -119,13 +121,25 @@ int itkIsotropicWaveletFrequencyFunctionTest(int argc, char *argv[])
   if( dimension == 2 )
     {
     if (waveletFunction == "Held")
-      return runIsotropicWaveletFrequencyFunctionTest<2, HeldWavelet>(profileDataRootPath, outputImage, inputBands, waveletFunction);
+      return runIsotropicWaveletFrequencyFunctionTest<2, HeldWavelet>(profileDataRootPath,
+                                                                      outputImage,
+                                                                      inputBands,
+                                                                      waveletFunction);
     else if (waveletFunction == "Vow")
-      return runIsotropicWaveletFrequencyFunctionTest<2, VowWavelet>(profileDataRootPath, outputImage, inputBands, waveletFunction);
+      return runIsotropicWaveletFrequencyFunctionTest<2, VowWavelet>(profileDataRootPath,
+                                                                     outputImage,
+                                                                     inputBands,
+                                                                     waveletFunction);
     else if (waveletFunction == "Simoncelli")
-      return runIsotropicWaveletFrequencyFunctionTest<2, SimoncelliWavelet>(profileDataRootPath, outputImage, inputBands, waveletFunction);
+      return runIsotropicWaveletFrequencyFunctionTest<2, SimoncelliWavelet>(profileDataRootPath,
+                                                                            outputImage,
+                                                                            inputBands,
+                                                                            waveletFunction);
     else if (waveletFunction == "Shannon")
-      return runIsotropicWaveletFrequencyFunctionTest<2, ShannonWavelet>(profileDataRootPath, outputImage, inputBands, waveletFunction);
+      return runIsotropicWaveletFrequencyFunctionTest<2, ShannonWavelet>(profileDataRootPath,
+                                                                         outputImage,
+                                                                         inputBands,
+                                                                         waveletFunction);
     else
       {
       std::cerr << argv[4] << " is an unknown wavelet type " << std::endl;
@@ -135,13 +149,25 @@ int itkIsotropicWaveletFrequencyFunctionTest(int argc, char *argv[])
   else if( dimension == 3 )
     {
     if (waveletFunction == "Held")
-      return runIsotropicWaveletFrequencyFunctionTest<3, HeldWavelet>(profileDataRootPath, outputImage, inputBands, waveletFunction);
+      return runIsotropicWaveletFrequencyFunctionTest<3, HeldWavelet>(profileDataRootPath,
+                                                                      outputImage,
+                                                                      inputBands,
+                                                                      waveletFunction);
     else if (waveletFunction == "Vow")
-      return runIsotropicWaveletFrequencyFunctionTest<3, VowWavelet>(profileDataRootPath, outputImage, inputBands, waveletFunction);
+      return runIsotropicWaveletFrequencyFunctionTest<3, VowWavelet>(profileDataRootPath,
+                                                                     outputImage,
+                                                                     inputBands,
+                                                                     waveletFunction);
     else if (waveletFunction == "Simoncelli")
-      return runIsotropicWaveletFrequencyFunctionTest<3, SimoncelliWavelet>(profileDataRootPath, outputImage, inputBands, waveletFunction);
+      return runIsotropicWaveletFrequencyFunctionTest<3, SimoncelliWavelet>(profileDataRootPath,
+                                                                            outputImage,
+                                                                            inputBands,
+                                                                            waveletFunction);
     else if (waveletFunction == "Shannon")
-      return runIsotropicWaveletFrequencyFunctionTest<3, ShannonWavelet>(profileDataRootPath, outputImage, inputBands, waveletFunction);
+      return runIsotropicWaveletFrequencyFunctionTest<3, ShannonWavelet>(profileDataRootPath,
+                                                                         outputImage,
+                                                                         inputBands,
+                                                                         waveletFunction);
     else
       {
       std::cerr << argv[4] << " is an unknown wavelet type " << std::endl;

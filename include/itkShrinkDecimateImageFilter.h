@@ -23,7 +23,6 @@
 
 namespace itk
 {
-
 /** \class ShrinkDecimateImageFilter
  * \brief Reduce the size of an image by an integer factor in each
  * dimension just cutting off samples without any interpolation.
@@ -39,16 +38,16 @@ namespace itk
  * \ingroup ITKImageGrid
  * \ingroup IsotropicWavelets
  */
-template <typename TInputImage, typename TOutputImage>
-class ShrinkDecimateImageFilter :
-  public ImageToImageFilter<TInputImage,TOutputImage>
+template<typename TInputImage, typename TOutputImage>
+class ShrinkDecimateImageFilter:
+  public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef ShrinkDecimateImageFilter                    Self;
-  typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
-  typedef SmartPointer<Self>                           Pointer;
-  typedef SmartPointer<const Self>                     ConstPointer;
+  typedef ShrinkDecimateImageFilter                     Self;
+  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
+  typedef SmartPointer<Self>                            Pointer;
+  typedef SmartPointer<const Self>                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -63,9 +62,9 @@ public:
   typedef typename InputImageType::Pointer      InputImagePointer;
   typedef typename InputImageType::ConstPointer InputImageConstPointer;
 
-  typedef typename TOutputImage::OffsetType  OutputOffsetType;
-  typedef typename TOutputImage::IndexType   OutputIndexType;
-  typedef typename TInputImage::IndexType    InputIndexType;
+  typedef typename TOutputImage::OffsetType OutputOffsetType;
+  typedef typename TOutputImage::IndexType  OutputIndexType;
+  typedef typename TInputImage::IndexType   InputIndexType;
 
   /** Typedef to describe the output image region type. */
   typedef typename TOutputImage::RegionType OutputImageRegionType;
@@ -82,6 +81,7 @@ public:
    * a minimum value of 1. Default is 1 for all dimensions. */
   itkSetMacro(ShrinkFactors, ShrinkFactorsType);
   void SetShrinkFactors(unsigned int factor);
+
   void SetShrinkFactor(unsigned int i, unsigned int factor);
 
   /** Get the shrink factors. */
@@ -96,13 +96,12 @@ public:
    * \sa ProcessObject::GenerateInputRequestedRegion() */
   virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
 
-
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro(InputConvertibleToOutputCheck,
-    (Concept::Convertible<typename TInputImage::PixelType, typename TOutputImage::PixelType>));
+                  (Concept::Convertible<typename TInputImage::PixelType, typename TOutputImage::PixelType> ));
   itkConceptMacro(SameDimensionCheck,
-    (Concept::SameDimension<ImageDimension, OutputImageDimension>));
+                  (Concept::SameDimension<ImageDimension, OutputImageDimension> ));
   /** End concept checking */
 #endif
 
@@ -122,20 +121,19 @@ private:
   template< class TOutputType, class TInputType >
   typename EnableIfC<std::numeric_limits<TOutputType>::is_integer,  TOutputType>::Type
   RoundIfInteger( TInputType input )
-    {
-      return Math::Round< TOutputType >( input );
-    }
+  {
+    return Math::Round< TOutputType >( input );
+  }
 
   // For Non-fundamental types numeric_limits is not specialized, and
   // is_integer defaults to false.
   template< class TOutputType, class TInputType >
   typename DisableIfC<std::numeric_limits<TOutputType>::is_integer,  TOutputType>::Type
   RoundIfInteger( const TInputType & input, ...)
-    {
-      return static_cast<TOutputType>(input);
-    }
+  {
+    return static_cast<TOutputType>(input);
+  }
 };
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION

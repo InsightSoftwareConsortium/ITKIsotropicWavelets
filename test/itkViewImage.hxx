@@ -29,11 +29,13 @@
 #include "itkImageToVTKImageFilter.h"
 #include "itkStatisticsImageFilter.h"
 #include <itkFixedArray.h>
-namespace itk {
-namespace Testing {
+namespace itk
+{
+namespace Testing
+{
 template<typename T >
-void ViewImage(const T* img, const std::string& win_title, size_t win_x , size_t win_y )
-  {
+void ViewImage(const T* img, const std::string& win_title, size_t win_x, size_t win_y )
+{
   typedef itk::ImageToVTKImageFilter<T> ConnectorType;
   typename ConnectorType::Pointer connector = ConnectorType::New();
   connector->SetInput(img);
@@ -59,7 +61,7 @@ void ViewImage(const T* img, const std::string& win_title, size_t win_x , size_t
   // Render and start interaction
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
-  //Prepare for slices.
+  // Prepare for slices.
   typedef itk::StatisticsImageFilter<T> FilterType;
   typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput(img);
@@ -68,7 +70,7 @@ void ViewImage(const T* img, const std::string& win_title, size_t win_x , size_t
   double min_intensity = filter->GetMinimum();
   double max_intensity = filter->GetMaximum();
   double window = max_intensity - min_intensity;
-  double level = min_intensity + window / 2;
+  double level  = min_intensity + window / 2;
   /** SLICES */
   FixedArray<vtkSmartPointer<vtkImagePlaneWidget>, 3> slice_planes;
   for (unsigned i = 0; i < 3; ++i)
@@ -110,12 +112,12 @@ void ViewImage(const T* img, const std::string& win_title, size_t win_x , size_t
   renderer->ResetCamera();
   renderWindowInteractor->Initialize();
   renderWindowInteractor->Start();
-  }
+}
 
 template<typename TLeft, typename TRight >
 void ViewImages(const TLeft* leftImg, const TRight* rightImg,
-  const std::string& win_title, size_t win_x , size_t win_y )
-  {
+                const std::string& win_title, size_t win_x, size_t win_y )
+{
   typedef itk::ImageToVTKImageFilter<TLeft> LeftConnectorType;
   typename LeftConnectorType::Pointer leftConnector = LeftConnectorType::New();
   leftConnector->SetInput(leftImg);
@@ -148,7 +150,7 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
   typedef itk::StatisticsImageFilter<TLeft> LeftFilterType;
-  //Prepare for slices (BOTH)
+  // Prepare for slices (BOTH)
   typename LeftFilterType::Pointer leftFilter = LeftFilterType::New();
   leftFilter->SetInput(leftImg);
   leftFilter->Update();
@@ -156,7 +158,7 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
   double leftMin_intensity = leftFilter->GetMinimum();
   double leftMax_intensity = leftFilter->GetMaximum();
   double leftWindow = leftMax_intensity - leftMin_intensity;
-  double leftLevel = leftMin_intensity + leftWindow / 2;
+  double leftLevel  = leftMin_intensity + leftWindow / 2;
 
   typedef itk::StatisticsImageFilter<TRight> RightFilterType;
   typename RightFilterType::Pointer rightFilter = RightFilterType::New();
@@ -166,10 +168,11 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
   double rightMin_intensity = rightFilter->GetMinimum();
   double rightMax_intensity = rightFilter->GetMaximum();
   double rightWindow = rightMax_intensity - rightMin_intensity;
-  double rightLevel = rightMin_intensity + rightWindow / 2;
+  double rightLevel  = rightMin_intensity + rightWindow / 2;
   /** SLICES (BOTH) */
   FixedArray<vtkSmartPointer<vtkImagePlaneWidget>, 3> leftSlice_planes;
-  for (unsigned i = 0; i < 3; ++i) {
+  for (unsigned i = 0; i < 3; ++i)
+    {
     leftSlice_planes[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
     leftSlice_planes[i]->SetResliceInterpolateToCubic();
     leftSlice_planes[i]->DisplayTextOn();
@@ -189,9 +192,10 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
     leftSlice_planes[i]->UpdatePlacement();
     leftSlice_planes[i]->SetWindowLevel(leftWindow, leftLevel);
     leftSlice_planes[i]->On();
-  }
+    }
   FixedArray<vtkSmartPointer<vtkImagePlaneWidget>, 3> rightSlice_planes;
-  for (unsigned i = 0; i < 3; ++i) {
+  for (unsigned i = 0; i < 3; ++i)
+    {
     rightSlice_planes[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
     rightSlice_planes[i]->SetResliceInterpolateToCubic();
     rightSlice_planes[i]->DisplayTextOn();
@@ -211,7 +215,7 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
     rightSlice_planes[i]->UpdatePlacement();
     rightSlice_planes[i]->SetWindowLevel(rightWindow, rightLevel);
     rightSlice_planes[i]->On();
-  }
+    }
   // Flip camera because VTK-ITK different corner for origin.
   double pos[3];
   double vup[3];
@@ -230,8 +234,7 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
 
   renderWindowInteractor->Initialize();
   renderWindowInteractor->Start();
-
-  }
+}
 }// namespace Testing
 }// namespace itk
 #endif

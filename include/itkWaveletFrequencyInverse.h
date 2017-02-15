@@ -70,8 +70,10 @@ public:
   itkTypeMacro(WaveletFrequencyInverse,
                ImageToImageFilter);
   void SetLevels(unsigned int n);
+
   itkGetMacro(Levels, unsigned int);
   void SetHighPassSubBands(unsigned int n);
+
   itkGetMacro(HighPassSubBands, unsigned int);
   itkGetMacro(TotalInputs, unsigned int);
 
@@ -79,46 +81,52 @@ public:
   /** Get the (Level,Band) from a linear index input */
   IndexPairType InputIndexToLevelBand(unsigned int linear_index);
 
-  void SetInputs(const std::vector<InputImagePointer> &inputs);
-  void SetInputLowPass(const InputImagePointer &input_low_pass);
-  void SetInputsHighPass(const std::vector<InputImagePointer> &inputs);
+  void SetInputs(const std::vector<InputImagePointer> & inputs);
+
+  void SetInputLowPass(const InputImagePointer & input_low_pass);
+
+  void SetInputsHighPass(const std::vector<InputImagePointer> & inputs);
 
 protected:
   WaveletFrequencyInverse();
   ~WaveletFrequencyInverse() {}
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+
   /** Single-threaded version of GenerateData. */
   void GenerateData() ITK_OVERRIDE;
-   /************ Information *************/
 
-   /** WaveletFrequencyInverse produces images which are of
-    * different resolution and different pixel spacing than its input image.
-    * As such, WaveletFrequencyInverse needs to provide an
-    * implementation for GenerateOutputInformation() in order to inform the
-    * pipeline execution model.  The original documentation of this method is
-    * below.
-    * \sa ProcessObject::GenerateOutputInformaton()
-    */
-   virtual void GenerateOutputInformation() ITK_OVERRIDE;
+  /************ Information *************/
 
-   /** Given one output whose requested region has been set, this method sets
-    * the requested region for the remaining output images.  The original
-    * documentation of this method is below.
-    * \sa ProcessObject::GenerateOutputRequestedRegion()
-    */
-   virtual void GenerateOutputRequestedRegion(DataObject *output) ITK_OVERRIDE;
+  /** WaveletFrequencyInverse produces images which are of
+   * different resolution and different pixel spacing than its input image.
+   * As such, WaveletFrequencyInverse needs to provide an
+   * implementation for GenerateOutputInformation() in order to inform the
+   * pipeline execution model.  The original documentation of this method is
+   * below.
+   * \sa ProcessObject::GenerateOutputInformaton()
+   */
+  virtual void GenerateOutputInformation() ITK_OVERRIDE;
 
-   /** WaveletFrequencyInverse requires a larger input requested
-    * region than the output requested regions to accommodate the shrinkage and
-    * smoothing operations. As such, WaveletFrequencyInverse needs
-    * to provide an implementation for GenerateInputRequestedRegion().  The
-    * original documentation of this method is below.
-    * \sa ProcessObject::GenerateInputRequestedRegion()
-    */
-   virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
+  /** Given one output whose requested region has been set, this method sets
+   * the requested region for the remaining output images.  The original
+   * documentation of this method is below.
+   * \sa ProcessObject::GenerateOutputRequestedRegion()
+   */
+  virtual void GenerateOutputRequestedRegion(DataObject *output) ITK_OVERRIDE;
+
+  /** WaveletFrequencyInverse requires a larger input requested
+   * region than the output requested regions to accommodate the shrinkage and
+   * smoothing operations. As such, WaveletFrequencyInverse needs
+   * to provide an implementation for GenerateInputRequestedRegion().  The
+   * original documentation of this method is below.
+   * \sa ProcessObject::GenerateInputRequestedRegion()
+   */
+  virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
+
 private:
   WaveletFrequencyInverse(const Self &) ITK_DELETE_FUNCTION;
   void operator=(const Self &) ITK_DELETE_FUNCTION;
+
   unsigned int m_Levels;
   unsigned int m_HighPassSubBands;
   unsigned int m_TotalInputs;

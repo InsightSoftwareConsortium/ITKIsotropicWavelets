@@ -48,17 +48,17 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template< typename TFunctionValue = double,
-          unsigned int VImageDimension = 3,
-          typename TInput = Point< SpacePrecisionType, VImageDimension > >
+  unsigned int VImageDimension    = 3,
+  typename TInput = Point< SpacePrecisionType, VImageDimension > >
 class VowIsotropicWavelet:
   public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
 public:
   /** Standard class typedefs. */
-  typedef VowIsotropicWavelet                                        Self;
+  typedef VowIsotropicWavelet                                                          Self;
   typedef IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput > Superclass;
-  typedef SmartPointer< Self >                                Pointer;
-  typedef SmartPointer< const Self >                          ConstPointer;
+  typedef SmartPointer< Self >                                                         Pointer;
+  typedef SmartPointer< const Self >                                                   ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -92,7 +92,7 @@ private:
   void operator=(const Self &) ITK_DELETE_FUNCTION;
 
   /** kappa value, default is optimal:0.75 */
- FunctionValueType m_Kappa;
+  FunctionValueType m_Kappa;
 };
 } // end namespace itk
 

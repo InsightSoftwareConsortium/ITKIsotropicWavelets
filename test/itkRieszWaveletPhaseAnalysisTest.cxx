@@ -38,20 +38,21 @@
 
 #include <itkGaussianSpatialFunction.h>
 #include <itkFrequencyImageRegionIteratorWithIndex.h>
-//Visualize for dev/debug purposes. Set in cmake file. Require VTK
+// Visualize for dev/debug purposes. Set in cmake file. Require VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
 using namespace std;
 using namespace itk;
 
-template <unsigned int N, typename TWaveletFunction>
+template<unsigned int N, typename TWaveletFunction>
 int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
-    const std::string& outputImage,
-    const unsigned int& inputLevels,
-    const unsigned int& inputBands)
+                                      const std::string& outputImage,
+                                      const unsigned int& inputLevels,
+                                      const unsigned int& inputBands)
 {
   const unsigned int dimension = N;
+
   typedef double                           PixelType;
   typedef itk::Image<PixelType, dimension> ImageType;
   typedef itk::ImageFileReader<ImageType>  ReaderType;
@@ -77,8 +78,8 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   typedef typename FFTForwardFilterType::OutputImageType ComplexImageType;
 
   // Forward Wavelet
-  typedef TWaveletFunction WaveletFunctionType;
-  typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType> WaveletFilterBankType;
+  typedef TWaveletFunction                                                                        WaveletFunctionType;
+  typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType>        WaveletFilterBankType;
   typedef itk::WaveletFrequencyForward<ComplexImageType, ComplexImageType, WaveletFilterBankType> ForwardWaveletType;
   typename ForwardWaveletType::Pointer forwardWavelet = ForwardWaveletType::New();
   unsigned int high_sub_bands = inputBands;
@@ -90,20 +91,21 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   typename ForwardWaveletType::OutputsType analysisWavelets = forwardWavelet->GetOutputs();
 
   /******* Apply Monogenic signal to wavelet results ********/
-  typedef itk::MonogenicSignalFrequencyImageFilter<ComplexImageType> MonogenicSignalFrequencyFilterType;
-  typedef typename MonogenicSignalFrequencyFilterType::OutputImageType VectorMonoOutputType;
-  typedef itk::VectorInverseFFTImageFilter<VectorMonoOutputType> VectorInverseFFTType;
+  typedef itk::MonogenicSignalFrequencyImageFilter<ComplexImageType>
+                                                                                                MonogenicSignalFrequencyFilterType;
+  typedef typename MonogenicSignalFrequencyFilterType::OutputImageType                          VectorMonoOutputType;
+  typedef itk::VectorInverseFFTImageFilter<VectorMonoOutputType>                                VectorInverseFFTType;
   typedef PhaseAnalysisSoftThresholdImageFilter<typename VectorInverseFFTType::OutputImageType> PhaseAnalysisFilter;
 
   typename ForwardWaveletType::OutputsType modifiedWavelets;
   unsigned int noutputs = forwardWavelet->GetNumberOfOutputs();
   for (unsigned int nout = 0; nout < forwardWavelet->GetNumberOfOutputs(); ++nout)
     {
-    std::cout << "************Nout: "<< nout << " / " <<noutputs << std::endl;
+    std::cout << "************Nout: " << nout << " / " << noutputs << std::endl;
     if(nout == 12000) // TODO check this. avoid phase analysis in last approximation (low_pass).
       {
       modifiedWavelets.push_back(analysisWavelets[nout]);
-    //TODO remove this visualize
+      // TODO remove this visualize
 // #ifdef ITK_VISUALIZE_TESTS
 //     typedef itk::InverseFFTImageFilter<ComplexImageType> FFTInverseFilterType;
 //     typename FFTInverseFilterType::Pointer fftInv = FFTInverseFilterType::New();
@@ -115,7 +117,7 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
       }
     typename MonogenicSignalFrequencyFilterType::Pointer monoFilter = MonogenicSignalFrequencyFilterType::New();
     typename VectorInverseFFTType::Pointer vecInverseFFT = VectorInverseFFTType::New();
-    typename PhaseAnalysisFilter::Pointer phaseAnalyzer = PhaseAnalysisFilter::New();
+    typename PhaseAnalysisFilter::Pointer  phaseAnalyzer = PhaseAnalysisFilter::New();
     typename FFTForwardFilterType::Pointer fftForwardPhaseFilter = FFTForwardFilterType::New();
     monoFilter->SetInput(analysisWavelets[nout]);
     monoFilter->Update();
@@ -128,7 +130,7 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     fftForwardPhaseFilter->Update();
     modifiedWavelets.push_back(fftForwardPhaseFilter->GetOutput());
     modifiedWavelets.back()->DisconnectPipeline();
-    //TODO remove this visualize
+    // TODO remove this visualize
 // #ifdef ITK_VISUALIZE_TESTS
 //     typedef itk::InverseFFTImageFilter<ComplexImageType> FFTInverseFilterType;
 //     typename FFTInverseFilterType::Pointer fftInv = FFTInverseFilterType::New();
@@ -194,8 +196,8 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   inverseFFT->SetInput(inverseWavelet->GetOutput());
   inverseFFT->Update();
 #ifdef ITK_VISUALIZE_TESTS
-    Testing::ViewImage(reader->GetOutput(), "Input Image");
-    Testing::ViewImage(inverseFFT->GetOutput(), "Inverse Wavelet");
+  Testing::ViewImage(reader->GetOutput(), "Input Image");
+  Testing::ViewImage(inverseFFT->GetOutput(), "Inverse Wavelet");
 #endif
 
   // typedef itk::ImageFileWriter<typename InverseFFTFilterType::OutputImageType>  WriterType;
@@ -221,15 +223,15 @@ int itkRieszWaveletPhaseAnalysisTest(int argc, char *argv[])
 {
   if( argc < 6 || argc > 7 )
     {
-    std::cerr << "Usage: " << argv[0] <<
-      " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
+    std::cerr << "Usage: " << argv[0]
+              << " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
   const string inputImage  = argv[1];
   const string outputImage = argv[2];
   const unsigned int inputLevels = atoi(argv[3]);
   const unsigned int inputBands  = atoi(argv[4]);
-  const string waveletFunction  = argv[5];
+  const string waveletFunction   = argv[5];
   unsigned int dimension = 3;
   if( argc == 7 )
     {

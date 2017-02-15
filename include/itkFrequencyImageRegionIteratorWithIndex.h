@@ -80,18 +80,18 @@ public:
   typedef typename Superclass::PixelType             PixelType;
   typedef typename Superclass::AccessorType          AccessorType;
 
-  typedef typename ImageType::SpacingType            FrequencyType;
-  typedef typename ImageType::SpacingValueType       FrequencyValueType;
+  typedef typename ImageType::SpacingType      FrequencyType;
+  typedef typename ImageType::SpacingValueType FrequencyValueType;
   /** Default constructor. Needed since we provide a cast constructor. */
-  FrequencyImageRegionIteratorWithIndex():
-   FrequencyImageRegionConstIteratorWithIndex< TImage >()
+  FrequencyImageRegionIteratorWithIndex() :
+    FrequencyImageRegionConstIteratorWithIndex< TImage >()
   {
   }
 
   /** Constructor establishes an iterator to walk a particular image and a
    * particular region of that image. */
-  FrequencyImageRegionIteratorWithIndex(TImage *ptr, const RegionType & region):
-   FrequencyImageRegionConstIteratorWithIndex< TImage >(ptr, region)
+  FrequencyImageRegionIteratorWithIndex(TImage *ptr, const RegionType & region) :
+    FrequencyImageRegionConstIteratorWithIndex< TImage >(ptr, region)
   {
   }
 
@@ -101,8 +101,8 @@ public:
    * provide overloaded APIs that return different types of Iterators, itk
    * returns ImageIterators and uses constructors to cast from an
    * ImageIterator to a ImageRegionIteratorWithIndex. */
-  FrequencyImageRegionIteratorWithIndex(const ImageIteratorWithIndex< TImage > & it):
-   FrequencyImageRegionConstIteratorWithIndex< TImage >(it)
+  FrequencyImageRegionIteratorWithIndex(const ImageIteratorWithIndex< TImage > & it) :
+    FrequencyImageRegionConstIteratorWithIndex< TImage >(it)
   {
   }
 
@@ -119,16 +119,16 @@ public:
 protected:
   /** The construction from a const iterator is declared protected
       in order to enforce const correctness. */
-  FrequencyImageRegionIteratorWithIndex(const FrequencyImageRegionConstIteratorWithIndex< TImage > & it):
-   FrequencyImageRegionConstIteratorWithIndex< TImage >(it)
+  FrequencyImageRegionIteratorWithIndex(const FrequencyImageRegionConstIteratorWithIndex< TImage > & it) :
+    FrequencyImageRegionConstIteratorWithIndex< TImage >(it)
   {
   }
 
   Self & operator=(const FrequencyImageRegionConstIteratorWithIndex< TImage > & it)
-    {
+  {
     this->FrequencyImageRegionConstIteratorWithIndex< TImage >::operator=(it);
     return *this;
-    }
+  }
 };
 } // end namespace itk
 #endif

@@ -27,12 +27,14 @@ namespace itk
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::RieszFrequencyFunction()
-{}
+{
+}
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::~RieszFrequencyFunction()
-{}
+{
+}
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 void
@@ -46,13 +48,14 @@ template< typename TFunctionValue, unsigned int VImageDimension, typename TInput
 typename RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >::OutputComplexType
 RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::Evaluate(
-    const TInput & frequency_point,
-    const unsigned int & dimension) const
+  const TInput & frequency_point,
+  const unsigned int & dimension) const
 {
   double magn(this->Magnitude(frequency_point));
+
   if(itk::Math::FloatAlmostEqual(magn, 0.0) )
-      return FunctionValueType(0);
-  return OutputComplexType(0, static_cast<FunctionValueType>( - frequency_point[dimension] / magn ) );
+    return FunctionValueType(0);
+  return OutputComplexType(0, static_cast<FunctionValueType>( -frequency_point[dimension] / magn ) );
 }
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
@@ -61,13 +64,14 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateArray(const TInput & frequency_point) const
 {
   double magn(this->Magnitude(frequency_point));
+
   if(itk::Math::FloatAlmostEqual(magn, 0.0) )
-      return InputType(0);
+    return InputType(0);
   OutputArrayType out;
   for( unsigned int dim = 0; dim < VImageDimension; ++dim)
-  {
-    out[dim] = OutputComplexType(0, static_cast<FunctionValueType>( - frequency_point[dim] / magn ) );
-  }
+    {
+    out[dim] = OutputComplexType(0, static_cast<FunctionValueType>( -frequency_point[dim] / magn ) );
+    }
   return out;
 }
 } // end namespace itk

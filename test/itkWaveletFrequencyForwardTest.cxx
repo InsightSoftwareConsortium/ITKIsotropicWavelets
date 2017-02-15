@@ -31,7 +31,7 @@
 #include "itkInverseFFTImageFilter.h"
 #include <itkComplexToRealImageFilter.h>
 #include "itkNumberToString.h"
-//Visualize for dev/debug purposes. Set in cmake file. Require VTK
+// Visualize for dev/debug purposes. Set in cmake file. Require VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
@@ -41,16 +41,17 @@ using namespace itk;
 std::string append_to_filename(const std::string& filename, const std::string & appendix)
 {
   std::size_t found_dot = filename.find_last_of('.');
-  return filename.substr(0,found_dot) + appendix + filename.substr(found_dot);
+  return filename.substr(0, found_dot) + appendix + filename.substr(found_dot);
 }
 
-template <unsigned int N, typename TWaveletFunction>
+template<unsigned int N, typename TWaveletFunction>
 int runWaveletFrequencyForwardTest( const std::string& inputImage,
-    const std::string& outputImage,
-    const unsigned int& inputLevels,
-    const unsigned int& inputBands)
+                                    const std::string& outputImage,
+                                    const unsigned int& inputLevels,
+                                    const unsigned int& inputBands)
 {
   const unsigned int dimension = N;
+
   typedef float                            PixelType;
   typedef itk::Image<PixelType, dimension> ImageType;
   typedef itk::ImageFileReader<ImageType>  ReaderType;
@@ -66,8 +67,8 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
   typedef typename FFTFilterType::OutputImageType ComplexImageType;
 
   // Set the WaveletFunctionType and the WaveletFilterBank
-  typedef TWaveletFunction WaveletFunctionType;
-  typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType> WaveletFilterBankType;
+  typedef TWaveletFunction                                                                        WaveletFunctionType;
+  typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType>        WaveletFilterBankType;
   typedef itk::WaveletFrequencyForward<ComplexImageType, ComplexImageType, WaveletFilterBankType> ForwardWaveletType;
   typename ForwardWaveletType::Pointer forwardWavelet = ForwardWaveletType::New();
   unsigned int high_sub_bands = inputBands;
@@ -77,7 +78,6 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
   forwardWavelet->SetInput(fftFilter->GetOutput());
   forwardWavelet->Print(std::cout);
   forwardWavelet->Update();
-
 
   unsigned int ne = 0;
   // TEST INTERFACE:
@@ -111,7 +111,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       forwardWavelet->OutputIndexToLevelBand(nout);
     unsigned int lv = pairLvBand.first;
     unsigned int b  = pairLvBand.second;
-    std::cout <<"InputIndex: " << nout << " --> lv:" << lv << " b:" << b << std::endl;
+    std::cout << "InputIndex: " << nout << " --> lv:" << lv << " b:" << b << std::endl;
     }
 
   /* test OutputIndexToLevelBand */
@@ -120,7 +120,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       forwardWavelet->OutputIndexToLevelBand(0);
     unsigned int lv = pairLvBand.first;
     unsigned int b  = pairLvBand.second;
-    std::cout <<"inputindex: " << 0 << " lv:" << lv << " b:" << b << std::endl;
+    std::cout << "inputindex: " << 0 << " lv:" << lv << " b:" << b << std::endl;
     if (lv != levels || b != 0)
       ++ne;
     }
@@ -129,7 +129,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       forwardWavelet->OutputIndexToLevelBand(high_sub_bands);
     unsigned int lv = pairLvBand.first;
     unsigned int b  = pairLvBand.second;
-    std::cout <<"inputindex: " << high_sub_bands << " lv:" << lv << " b:" << b << std::endl;
+    std::cout << "inputindex: " << high_sub_bands << " lv:" << lv << " b:" << b << std::endl;
     if (lv != 1 || b != high_sub_bands)
       ++ne;
     }
@@ -142,7 +142,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
   // Inverse FFT Transform (Multilevel)
   typedef itk::InverseFFTImageFilter<ComplexImageType, ImageType> InverseFFTFilterType;
   typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
-  typedef itk::ImageFileWriter<typename InverseFFTFilterType::OutputImageType>  WriterType;
+  typedef itk::ImageFileWriter<typename InverseFFTFilterType::OutputImageType> WriterType;
   typename WriterType::Pointer writer = WriterType::New();
   itk::NumberToString<unsigned int> n2s;
   for (unsigned int level = 0; level < levels; ++level)
@@ -152,7 +152,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       if (level == 0 && band == 0) // Low pass
         {
         unsigned int n_output = 0;
-        std::cout << "OutputIndex : " << n_output <<std::endl;
+        std::cout << "OutputIndex : " << n_output << std::endl;
         std::cout << "Level: " << level + 1 << " / " << forwardWavelet->GetLevels() << std::endl;
         std::cout << "Band: " << band  << " / " << forwardWavelet->GetHighPassSubBands() << std::endl;
         std::cout << "Largest Region: " << forwardWavelet->GetOutput(n_output)->GetLargestPossibleRegion() << std::endl;
@@ -163,7 +163,8 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
         inverseFFT->Update();
 #ifdef ITK_VISUALIZE_TESTS
         Testing::ViewImage(inverseFFT->GetOutput(),
-          "Approx coef. n_out: " + n2s(n_output) + " level: " + n2s(levels) + ", band:0/" + n2s(inputBands));
+                           "Approx coef. n_out: " + n2s(n_output) + " level: " + n2s(levels) + ", band:0/"
+                           + n2s(inputBands));
 #endif
         writer->SetFileName(append_to_filename(outputImage, n2s(n_output)) );
         writer->SetInput(inverseFFT->GetOutput());
@@ -179,7 +180,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
           }
         }
       unsigned int n_output = 1 + level * forwardWavelet->GetHighPassSubBands() + band;
-      std::cout << "OutputIndex : " << n_output <<std::endl;
+      std::cout << "OutputIndex : " << n_output << std::endl;
       std::cout << "Level: " << level + 1 << " / " << forwardWavelet->GetLevels() << std::endl;
       std::cout << "Band: " << band + 1 << " / " << forwardWavelet->GetHighPassSubBands() << std::endl;
       std::cout << "Largest Region: " << forwardWavelet->GetOutput(n_output)->GetLargestPossibleRegion() << std::endl;
@@ -189,11 +190,11 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       inverseFFT->SetInput(forwardWavelet->GetOutput(n_output) );
       inverseFFT->Update();
 #ifdef ITK_VISUALIZE_TESTS
-    std::pair<unsigned int, unsigned int> pairLvBand =
-      forwardWavelet->OutputIndexToLevelBand(n_output);
+      std::pair<unsigned int, unsigned int> pairLvBand =
+        forwardWavelet->OutputIndexToLevelBand(n_output);
       Testing::ViewImage(inverseFFT->GetOutput(),
-          "Wavelet coef. n_out: " + n2s(n_output) + " level: " + n2s(pairLvBand.first)
-             + " , band: " +  n2s(pairLvBand.second) + "/" + n2s(inputBands) );
+                         "Wavelet coef. n_out: " + n2s(n_output) + " level: " + n2s(pairLvBand.first)
+                         + " , band: " +  n2s(pairLvBand.second) + "/" + n2s(inputBands) );
 
 #endif
       writer->SetFileName(append_to_filename(outputImage, n2s(n_output)) );
@@ -219,15 +220,15 @@ int itkWaveletFrequencyForwardTest(int argc, char *argv[])
 {
   if( argc < 6 || argc > 7 )
     {
-    std::cerr << "Usage: " << argv[0] <<
-      " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
+    std::cerr << "Usage: " << argv[0]
+              << " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
   const string inputImage  = argv[1];
   const string outputImage = argv[2];
   const unsigned int inputLevels = atoi(argv[3]);
   const unsigned int inputBands  = atoi(argv[4]);
-  const string waveletFunction  = argv[5];
+  const string waveletFunction   = argv[5];
   unsigned int dimension = 3;
   if( argc == 7 )
     {
