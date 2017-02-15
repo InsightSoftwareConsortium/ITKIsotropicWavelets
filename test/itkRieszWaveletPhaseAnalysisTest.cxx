@@ -47,7 +47,7 @@ using namespace itk;
 
 template<unsigned int N, typename TWaveletFunction>
 int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
-                                      const std::string& outputImage,
+                                      const std::string&, //outputImage
                                       const unsigned int& inputLevels,
                                       const unsigned int& inputBands)
 {
@@ -216,7 +216,7 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   //   return EXIT_FAILURE;
   //   }
   //
-  // return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }
 
 int itkRieszWaveletPhaseAnalysisTest(int argc, char *argv[])

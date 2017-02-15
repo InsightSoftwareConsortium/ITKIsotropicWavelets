@@ -149,7 +149,7 @@ protected:
   inline OutputImagePixelType ComputePhase( const InputImagePixelType & inputPixel,
                                             const OutputImagePixelType & featureAmpSquare ) const;
 
-  inline itk::FixedArray<OutputImagePixelType, ImageDimension - 1>
+  itk::FixedArray<OutputImagePixelType, ImageDimension - 1>
   ComputePhaseOrientation( const InputImagePixelType & inputPixel,
                            const OutputImagePixelType & featureAmpSquare ) const;
 

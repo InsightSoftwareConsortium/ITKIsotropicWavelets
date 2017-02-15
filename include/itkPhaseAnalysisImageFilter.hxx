@@ -127,7 +127,7 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
 }
 
 template< typename TInputImage, typename TOutputImage >
-FixedArray<
+itk::FixedArray<
   typename PhaseAnalysisImageFilter<TInputImage, TOutputImage>::OutputImagePixelType,
   PhaseAnalysisImageFilter<TInputImage, TOutputImage>::ImageDimension - 1 >
 PhaseAnalysisImageFilter< TInputImage, TOutputImage >
