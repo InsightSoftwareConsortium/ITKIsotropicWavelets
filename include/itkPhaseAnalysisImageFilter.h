@@ -140,18 +140,48 @@ protected:
   virtual void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
                                     ThreadIdType threadId) ITK_OVERRIDE;
 
-  inline OutputImagePixelType ComputeFeatureVectorNormSquare( const InputImagePixelType & inputPixel) const;
+  inline OutputImagePixelType ComputeFeatureVectorNormSquare( const InputImagePixelType & inputPixel) const
+  {
+    const unsigned int & nC = this->GetInput()->GetNumberOfComponentsPerPixel();
+    OutputImagePixelType out(0);
+
+    for(unsigned int r = 1; r < nC; r++)
+      {
+      out += inputPixel[r] * inputPixel[r];
+      }
+    return out;
+  }
 
   /**************** Helpers requiring the square norm of Riesz *******************/
   inline OutputImagePixelType ComputeAmplitude( const InputImagePixelType & inputPixel,
-                                                const OutputImagePixelType & featureAmpSquare ) const;
+                                                const OutputImagePixelType & featureAmpSquare ) const
+  {
+    return sqrt( inputPixel[0] * inputPixel[0] + featureAmpSquare );
+  }
 
   inline OutputImagePixelType ComputePhase( const InputImagePixelType & inputPixel,
-                                            const OutputImagePixelType & featureAmpSquare ) const;
+                                            const OutputImagePixelType & featureAmpSquare ) const
+  {
+    return atan2(sqrt(featureAmpSquare), inputPixel[0]);
+  }
 
   itk::FixedArray<OutputImagePixelType, ImageDimension - 1>
   ComputePhaseOrientation( const InputImagePixelType & inputPixel,
-                           const OutputImagePixelType & featureAmpSquare ) const;
+                           const OutputImagePixelType & featureAmpSquare ) const
+  {
+    // the angles of the polar coordinates of the normed vector:
+    // V = (R1*f, ..., Rn*f) / FeatureNorm
+    FixedArray< OutputImagePixelType, ImageDimension - 1> out;
+    out.Fill( NumericTraits< OutputImagePixelType >::ZeroValue() );
+    OutputImagePixelType fNorm     = sqrt(featureAmpSquare);
+    OutputImagePixelType f1Unitary = inputPixel[1] / fNorm;
+    for(unsigned int i = 0; i < ImageDimension - 1; i++)
+      {
+      out[i] = atan2(inputPixel[i + 2] / fNorm, f1Unitary)
+        + ( (inputPixel[i + 2] >= 0) ? 0 : itk::Math::pi  );
+      }
+    return out;
+  }
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(PhaseAnalysisImageFilter);
