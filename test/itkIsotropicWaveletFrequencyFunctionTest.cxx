@@ -15,8 +15,7 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#include <string>
-#include <fstream>
+
 #include "itkHeldIsotropicWavelet.h"
 #include "itkVowIsotropicWavelet.h"
 #include "itkSimoncelliIsotropicWavelet.h"
@@ -26,32 +25,39 @@
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkNumberToString.h"
-using namespace std;
-using namespace itk;
+
+#include "itkTestingMacros.h"
+
+#include <string>
+#include <fstream>
+
+
 namespace itk
 {
 namespace Testing
 {
 // Generate values from a linear space
-std::vector<double> linSpaceForIWFF(double init = 0.0, double end = 1.0, size_t points = 1000)
+std::vector<double> linSpaceForIWFF( double init = 0.0, double end = 1.0, size_t points = 1000 )
 {
-  std::vector<double> w_array(points);
-  if(points <= 1)
-    throw ("linSpace needs more points");
-  double interval = (end - init) / (points - 1);
-  for(unsigned int i = 0; i < points; ++i)
+  std::vector< double > wArray( points );
+  if( points <= 1 )
     {
-    w_array[i] = init + interval * i;
+    throw ("linSpace needs more points");
     }
-  return w_array;
+  double interval = (end - init) / (points - 1);
+  for( unsigned int i = 0; i < points; ++i )
+    {
+    wArray[i] = init + interval * i;
+    }
+  return wArray;
 }
 }
 }
 
-template<unsigned int N, typename TWaveletFunction>
+template< unsigned int VDimension, typename TWaveletFunction >
 int runIsotropicWaveletFrequencyFunctionTest(
   const std::string& profileDataRootPath,
-  const std::string& outputImage,
+  const std::string&, // outputImage,
   const unsigned int& inputBands,
   const std::string & waveletTypeName)
 {
@@ -59,44 +65,48 @@ int runIsotropicWaveletFrequencyFunctionTest(
   typedef TWaveletFunction WaveletFunctionType;
   typename WaveletFunctionType::Pointer motherWavelet =
     WaveletFunctionType::New();
-  motherWavelet->SetHighPassSubBands(inputBands);
+  motherWavelet->SetHighPassSubBands( inputBands );
 
   double init   = 0.0;
   double end    = 1.0;
   size_t points = 1000;
-  std::vector< double > w_array = itk::Testing::linSpaceForIWFF(init, end, points);
+  std::vector< double > wArray = itk::Testing::linSpaceForIWFF( init, end, points );
   // Generate profile data for sub-bands and mother wavelet itself
   std::vector< std::vector< double > > subBandsResults;
-  for(unsigned int k = 0; k < inputBands + 2; ++k)
+  for( unsigned int k = 0; k < inputBands + 2; ++k )
     {
-    std::vector<double> bandResults;
-    for(unsigned int i = 0; i < points; ++i)
+    std::vector< double > bandResults;
+    for( unsigned int i = 0; i < points; ++i )
       {
-      if (k == inputBands + 1) // mother wavelet
-        bandResults.push_back(motherWavelet->EvaluateMagnitude(w_array[i]));
+      if ( k == inputBands + 1 ) // mother wavelet
+        {
+        bandResults.push_back( motherWavelet->EvaluateMagnitude( wArray[i] ) );
+        }
       else // bands
-        bandResults.push_back(motherWavelet->EvaluateForwardSubBand(w_array[i], k));
+        {
+        bandResults.push_back( motherWavelet->EvaluateForwardSubBand( wArray[i], k ) );
+        }
       }
-    subBandsResults.push_back(bandResults);
+    subBandsResults.push_back( bandResults );
     }
 
-  // Write profile.
+  // Write profile
   const std::string outputFilePath = profileDataRootPath + "_" + waveletTypeName +  "_" + n2s(inputBands) + ".txt";
-  std::ofstream     ofs(outputFilePath.c_str(), std::ofstream::out);
-  for(unsigned int i = 0; i < points; ++i)
+  std::ofstream ofs(outputFilePath.c_str(), std::ofstream::out);
+  for( unsigned int i = 0; i < points; ++i )
     {
-    ofs << w_array[i];
-    for(unsigned int k = 0; k < inputBands + 2; ++k)
+    ofs << wArray[i];
+    for( unsigned int k = 0; k < inputBands + 2; ++k )
       {
       ofs << "," << subBandsResults[k][i];
       }
-    ofs << "\n";
+    ofs << std::endl;
     }
   ofs.close();
   return EXIT_SUCCESS;
 }
 
-int itkIsotropicWaveletFrequencyFunctionTest(int argc, char *argv[])
+int itkIsotropicWaveletFrequencyFunctionTest( int argc, char *argv[] )
 {
   if( argc < 5 || argc > 6 )
     {
@@ -104,10 +114,12 @@ int itkIsotropicWaveletFrequencyFunctionTest(int argc, char *argv[])
               << "profileDataRootPath outputImage inputBands waveletFunction [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
-  const string profileDataRootPath = argv[1];
-  const string outputImage = argv[2];
-  const unsigned int inputBands = atoi(argv[3]);
-  const string waveletFunction  = argv[4];
+  const std::string profileDataRootPath = argv[1];
+  const std::string outputImage = argv[2];
+  const unsigned int inputBands = atoi( argv[3] );
+  const std:: string waveletFunction = argv[4];
+
+
   unsigned int dimension = 3;
   if( argc == 6 )
     {
@@ -170,12 +182,14 @@ int itkIsotropicWaveletFrequencyFunctionTest(int argc, char *argv[])
                                                                          waveletFunction);
     else
       {
-      std::cerr << argv[4] << " is an unknown wavelet type " << std::endl;
+    std::cerr << "Test failed!" << std::endl;
+      std::cerr << argv[4] << " wavelet type not supported." << std::endl;
       return EXIT_FAILURE;
       }
     }
   else
     {
+    std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error: only 2 or 3 dimensions allowed, " << dimension << " selected." << std::endl;
     return EXIT_FAILURE;
     }

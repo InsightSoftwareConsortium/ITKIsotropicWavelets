@@ -522,10 +522,10 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
 //   typename ComplexToRealType::Pointer compToReal = ComplexToRealType::New();
 //   compToReal->SetInput(highPassImages[band]);
 //   compToReal->Update();
-//   Testing::ViewImage(compToReal->GetOutput(), "Wavelet band");
+//   itk::Testing::ViewImage(compToReal->GetOutput(), "Wavelet band");
 //   compToReal->SetInput(multiplyByAnalysisBandFactor->GetOutput());
 //   compToReal->Update();
-//   Testing::ViewImage(compToReal->GetOutput(), "Wavelet x dilation factor");
+//   itk::Testing::ViewImage(compToReal->GetOutput(), "Wavelet x dilation factor");
 // #endif
 
       typename MultiplyFilterType::Pointer multiplyHighBandFilter = MultiplyFilterType::New();
@@ -537,7 +537,7 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
 // #ifdef ITK_VISUALIZE_TESTS
 //   compToReal->SetInput(multiplyHighBandFilter->GetOutput());
 //   compToReal->Update();
-//   Testing::ViewImage(compToReal->GetOutput(), "high band result in frequency");
+//   itk::Testing::ViewImage(compToReal->GetOutput(), "high band result in frequency");
 // #endif
       this->UpdateProgress( static_cast< float >( n_output - 1 )
                             / static_cast< float >( m_TotalOutputs ) );
@@ -558,7 +558,7 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
 //   typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
 //   inverseFFT->SetInput(inputPerLevel);
 //   inverseFFT->Update();
-//   Testing::ViewImage(inverseFFT->GetOutput(), "Low Filter");
+//   itk::Testing::ViewImage(inverseFFT->GetOutput(), "Low Filter");
 // #endif
 
     /******* DownSample stored low band for the next Level iteration *****/
@@ -571,7 +571,7 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
 // #ifdef ITK_VISUALIZE_TESTS
 //   inverseFFT->SetInput(shrinkFilter->GetOutput());
 //   inverseFFT->Update();
-//   Testing::ViewImage(inverseFFT->GetOutput(), "Low Filter After shrink");
+//   itk::Testing::ViewImage(inverseFFT->GetOutput(), "Low Filter After shrink");
 // #endif
 
     // Ignore modifications of origin and spacing of shrink filters.
