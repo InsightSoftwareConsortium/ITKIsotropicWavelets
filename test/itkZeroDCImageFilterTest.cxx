@@ -17,53 +17,60 @@
  *=========================================================================*/
 
 #include "itkZeroDCImageFilter.h"
-#include <string>
 #include "itkForwardFFTImageFilter.h"
 #include "itkInverseFFTImageFilter.h"
-
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
-using namespace std;
-using namespace itk;
+#include "itkTestingMacros.h"
 
-template<unsigned int N>
-int runZeroDCImageFilterTest(
-  const std::string& inputImage)
+#include <string>
+
+
+template< unsigned int VDimension >
+int runZeroDCImageFilterTest( const std::string& inputImage )
 {
-  const unsigned int dimension = N;
+  const unsigned int Dimension = VDimension;
 
   // TODO massive difference (-1,4, 3^-10) of 0 freq pixel between (float, double) I guess it is because FFT algorithm not ZeroDC. Maybe because odd size using FFTW.
-  typedef float                            PixelType;
-  typedef itk::Image<PixelType, dimension> ImageType;
-  typedef itk::ImageFileReader<ImageType>  ReaderType;
+  typedef float                               PixelType;
+  typedef itk::Image< PixelType, Dimension >  ImageType;
+  typedef itk::ImageFileReader< ImageType >   ReaderType;
+
   typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName(inputImage);
-  typedef itk::ZeroDCImageFilter<ImageType> ZeroDCFilterType;
+
+  reader->SetFileName( inputImage );
+
+  typedef itk::ZeroDCImageFilter< ImageType > ZeroDCFilterType;
   typename ZeroDCFilterType::Pointer zeroDCFilter = ZeroDCFilterType::New();
-  zeroDCFilter->SetInput(reader->GetOutput());
+
+  zeroDCFilter->SetInput( reader->GetOutput() );
 
   // Perform FFT on zeroDC image and check freq bin 0 has zero value.
-  typedef itk::ForwardFFTImageFilter<ImageType> FFTForwardFilterType;
+  typedef itk::ForwardFFTImageFilter< ImageType > FFTForwardFilterType;
   typename FFTForwardFilterType::Pointer fftForwardFilter = FFTForwardFilterType::New();
-  fftForwardFilter->SetInput(zeroDCFilter->GetOutput());
-  fftForwardFilter->Update();
+
+  fftForwardFilter->SetInput( zeroDCFilter->GetOutput() );
+
+  TRY_EXPECT_NO_EXCEPTION( fftForwardFilter->Update() );
+
   typedef typename FFTForwardFilterType::OutputImageType ComplexImageType;
   typename ComplexImageType::IndexType zeroIndex;
-  zeroIndex.Fill(0);
+  zeroIndex.Fill( 0 );
 
   typename ComplexImageType::Pointer filteredImg = fftForwardFilter->GetOutput();
   filteredImg->DisconnectPipeline();
-  typename ComplexImageType::PixelType filteredZeroFreqPixelValue = filteredImg->GetPixel(zeroIndex);
+  typename ComplexImageType::PixelType filteredZeroFreqPixelValue = filteredImg->GetPixel( zeroIndex );
   typename ZeroDCFilterType::RealType  mean = zeroDCFilter->GetMean();
 
-  fftForwardFilter->SetInput(reader->GetOutput());
+  fftForwardFilter->SetInput( reader->GetOutput( ));
   fftForwardFilter->Update();
   typename ComplexImageType::Pointer   originalImg = fftForwardFilter->GetOutput();
-  typename ComplexImageType::PixelType originalZeroFreqPixelValue = originalImg->GetPixel(zeroIndex);
+  typename ComplexImageType::PixelType originalZeroFreqPixelValue = originalImg->GetPixel( zeroIndex );
 
-  if (itk::Math::NotAlmostEquals(filteredZeroFreqPixelValue.real(), 0.0))
+  if( itk::Math::NotAlmostEquals( filteredZeroFreqPixelValue.real(), 0.0 ) )
     {
+    std::cerr << "Test failed!" << std::endl;
     std::cerr << "DC Component (Index = " << zeroIndex << ") is not zero: " << filteredZeroFreqPixelValue.real()
               << std::endl;
     std::cerr << "DC Component (Index = " << zeroIndex << ") of original image is: "
@@ -75,7 +82,7 @@ int runZeroDCImageFilterTest(
   return EXIT_SUCCESS;
 }
 
-int itkZeroDCImageFilterTest(int argc, char *argv[])
+int itkZeroDCImageFilterTest( int argc, char *argv[] )
 {
   if( argc < 2 || argc > 3 )
     {
@@ -83,19 +90,47 @@ int itkZeroDCImageFilterTest(int argc, char *argv[])
               << " inputImage [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
-  const string inputImage = argv[1];
+
+  const std::string inputImage = argv[1];
   unsigned int dimension  = 3;
   if( argc == 3 )
     {
     dimension = atoi( argv[2] );
     }
 
+
+  const unsigned int ImageDimension = 3;
+  typedef double                                  PixelType;
+  typedef itk::Image< PixelType, ImageDimension > ImageType;
+
+  // Exercise basic object methods
+  // Done outside the helper function in the test because GCC is limited
+  // when calling overloaded base class functions.
+  typedef itk::ZeroDCImageFilter< ImageType > ZeroDCFilterType;
+
+  ZeroDCFilterType::Pointer zeroDCFilter = ZeroDCFilterType::New();
+  EXERCISE_BASIC_OBJECT_METHODS( zeroDCFilter, ZeroDCImageFilter,
+    ImageToImageFilter );
+
+  // Perform FFT on zeroDC image and check freq bin 0 has zero value.
+  typedef itk::ForwardFFTImageFilter< ImageType > FFTForwardFilterType;
+  FFTForwardFilterType::Pointer fftForwardFilter = FFTForwardFilterType::New();
+
+  EXERCISE_BASIC_OBJECT_METHODS( fftForwardFilter, ForwardFFTImageFilter,
+    ImageToImageFilter );
+
+
   if( dimension == 2 )
-    return runZeroDCImageFilterTest<2>(inputImage);
-  else if (dimension == 3)
-    return runZeroDCImageFilterTest<3>(inputImage);
+    {
+    return runZeroDCImageFilterTest< 2 >( inputImage );
+    }
+  else if( dimension == 3 )
+    {
+    return runZeroDCImageFilterTest< 3 >( inputImage );
+    }
   else
     {
+    std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error: only 2 or 3 dimensions allowed, " << dimension << " selected." << std::endl;
     return EXIT_FAILURE;
     }
