@@ -15,42 +15,47 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#include <string>
-#include <cmath>
-#include "itkStructureTensor.h"
 
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkImageRegionIterator.h"
-#include <itkTestingComparisonImageFilter.h>
-// Visualize for dev/debug purposes. Set in cmake file. Require VTK
+#include "itkTestingComparisonImageFilter.h"
+#include "itkStructureTensor.h"
+#include "itkTestingMacros.h"
+
+#include <string>
+#include <cmath>
+
+// Visualize for dev/debug purposes. Set in cmake file. Requires VTK
 #ifdef ITK_VISUALIZE_TESTS
-#include <itkNumberToString.h>
+#include "itkNumberToString.h"
 #include "itkViewImage.h"
 #endif
-using namespace std;
-using namespace itk;
 
-template<unsigned int N>
+
+template< unsigned int VDimension >
 int runStructureTensorTest()
 {
-  const unsigned int ImageDimension = N;
+  const unsigned int Dimension = VDimension;
 
-  typedef itk::Image<double, ImageDimension> ImageType;
-  typedef itk::Index<ImageDimension>         IndexType;
-  typedef itk::Size<ImageDimension>          SizeType;
-  typedef itk::ImageRegion<ImageDimension>   RegionType;
+  typedef double PixelType;
+  typedef itk::Image< PixelType, Dimension> ImageType;
+  typedef itk::Index< Dimension>            IndexType;
+  typedef itk::Size< Dimension >            SizeType;
+  typedef itk::ImageRegion< Dimension >     RegionType;
+
   bool testFailed = false;
 
-  unsigned int L = 24;
+  unsigned int sizeValue = 24;
   SizeType     size;
-  size.Fill(L);
+  size.Fill( sizeValue );
   IndexType start;
-  start.Fill(0);
+  start.Fill( 0 );
   RegionType region;
   region.SetIndex( start );
   region.SetSize( size );
+
   typename ImageType::Pointer inputImage1 = ImageType::New();
   inputImage1->SetRegions(region);
   inputImage1->Allocate();
@@ -61,13 +66,13 @@ int runStructureTensorTest()
   inputImage2->Allocate();
   inputImage2->FillBuffer(0);
 
-  // Fill half image with non-zero.
+  // Fill half image with non-zero
   SizeType sizeHalf;
   sizeHalf    = size;
-  sizeHalf[0] = L / 2;
+  sizeHalf[0] = sizeValue / 2;
   IndexType startHalf;
   startHalf    = start;
-  startHalf[0] = L / 2;
+  startHalf[0] = sizeValue / 2;
   RegionType regionHalfLeft;
   regionHalfLeft.SetIndex( start );
   regionHalfLeft.SetSize( sizeHalf );
@@ -76,75 +81,84 @@ int runStructureTensorTest()
   regionHalfRight.SetSize( sizeHalf );
 
   const unsigned int nInputs = 2;
-  typedef itk::ImageRegionIterator<ImageType> InputIteratorType;
-  InputIteratorType inputIt1(inputImage1, regionHalfLeft);
+  typedef itk::ImageRegionIterator< ImageType > InputIteratorType;
+  InputIteratorType inputIt1( inputImage1, regionHalfLeft );
   inputIt1.GoToBegin();
-  while(!inputIt1.IsAtEnd())
+  while( !inputIt1.IsAtEnd() )
     {
-    inputIt1.Set(1.0);
+    inputIt1.Set(1.0 );
     ++inputIt1;
     }
-  InputIteratorType inputIt2(inputImage2, regionHalfRight);
+
+  InputIteratorType inputIt2( inputImage2, regionHalfRight );
   inputIt2.GoToBegin();
-  while(!inputIt2.IsAtEnd())
+  while( !inputIt2.IsAtEnd() )
     {
-    inputIt2.Set(1.0);
+    inputIt2.Set( 1.0 );
     ++inputIt2;
     }
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::Testing::ViewImage(inputImage1.GetPointer(), "input1");
-  itk::Testing::ViewImage(inputImage2.GetPointer(), "input2");
+  itk::Testing::ViewImage( inputImage1.GetPointer(), "input1" );
+  itk::Testing::ViewImage( inputImage2.GetPointer(), "input2" );
 #endif
 
   // Structure Tensor
-  typedef itk::StructureTensor<ImageType> StructureTensorType;
+  typedef itk::StructureTensor< ImageType > StructureTensorType;
   typename StructureTensorType::Pointer    tensor = StructureTensorType::New();
-  std::vector<typename ImageType::Pointer> inputs;
-  inputs.push_back(inputImage1);
-  inputs.push_back(inputImage2);
-  tensor->SetInputs(inputs);
+  std::vector< typename ImageType::Pointer > inputs;
+  inputs.push_back( inputImage1 );
+  inputs.push_back( inputImage2 );
+  tensor->SetInputs( inputs );
+
   tensor->Update();
+
   typename StructureTensorType::OutputImageType::Pointer eigenImage = tensor->GetOutput();
   unsigned eigenMatrixRows = eigenImage->GetPixel(start).Rows();
   unsigned eigenMatrixCols = eigenImage->GetPixel(start).Cols();
-  if (eigenMatrixRows != nInputs || eigenMatrixCols != nInputs + 1)
+  if( eigenMatrixRows != nInputs || eigenMatrixCols != nInputs + 1 )
     {
     testFailed = true;
-    std::cout << "The resulting eigenMatrix size is wrong. Rows: " << eigenMatrixRows   << " . Columns: "
+    std::cout << "The resulting eigenMatrix size is wrong. Rows: " << eigenMatrixRows << " . Columns: "
               << eigenMatrixCols << std::endl;
     }
 #ifdef ITK_VISUALIZE_TESTS
-  itk::Testing::ViewImage(tensor->GetGaussianSource()->GetOutput(), "gaussian");
+  itk::Testing::ViewImage( tensor->GetGaussianSource()->GetOutput(), "Gaussian" );
 #endif
 
   typename ImageType::Pointer largestEigenValueProjectionImage;
-  for (unsigned int eigen_number = 0; eigen_number < nInputs; ++eigen_number)
+  for( unsigned int eigenNumber = 0; eigenNumber < nInputs; ++eigenNumber )
     {
-    typename StructureTensorType::InputImagePointer projectImage = tensor->ComputeProjectionImage(eigen_number);
-    if (eigen_number == nInputs - 1)
+    typename StructureTensorType::InputImagePointer projectImage =
+      tensor->ComputeProjectionImage( eigenNumber );
+    if( eigenNumber == nInputs - 1 )
+      {
       largestEigenValueProjectionImage = projectImage;
+      }
 
 #ifdef ITK_VISUALIZE_TESTS
-    itk::NumberToString<float> n2s;
-    itk::Testing::ViewImage(projectImage.GetPointer(), "eigen_number: " + n2s(eigen_number));
+    itk::NumberToString< float > n2s;
+    itk::Testing::ViewImage( projectImage.GetPointer(), "eigen number: " + n2s( eigenNumber ) );
 #endif
     }
   typename ImageType::Pointer coherencyImage = tensor->ComputeCoherencyImage();
 #ifdef ITK_VISUALIZE_TESTS
-  itk::Testing::ViewImage(coherencyImage.GetPointer(), "coherency image");
+  itk::Testing::ViewImage( coherencyImage.GetPointer(), "Coherency image" );
 #endif
 
-  /** Compare With Known result: ***/
+  // Compare to known result
   // The projected image from the largest eigenValue must be all ones.
   typename ImageType::Pointer validImage = ImageType::New();
-  validImage->SetRegions(region);
+  validImage->SetRegions( region );
   validImage->Allocate();
-  validImage->FillBuffer(1);
-  typedef itk::Testing::ComparisonImageFilter<ImageType, ImageType> ComparisonType;
+  validImage->FillBuffer( 1 );
+
+  typedef itk::Testing::ComparisonImageFilter< ImageType, ImageType > ComparisonType;
   typename ComparisonType::Pointer diff = ComparisonType::New();
-  diff->SetValidInput(validImage);
-  diff->SetTestInput(largestEigenValueProjectionImage);
+
+  diff->SetValidInput( validImage );
+  diff->SetTestInput( largestEigenValueProjectionImage );
+
   // diff->SetDifferenceThreshold( intensityTolerance );
   // diff->SetToleranceRadius( radiusTolerance );
   diff->UpdateLargestPossibleRegion();
@@ -155,7 +169,7 @@ int runStructureTensorTest()
     diff->GetNumberOfPixelsWithDifferences();
   if( averageIntensityDifference > 0.0 )
     {
-    if( static_cast<int>(numberOfPixelsWithDifferences) > 0 )
+    if( static_cast< int >( numberOfPixelsWithDifferences ) > 0 )
       {
       differenceFailed = true;
       }
@@ -169,22 +183,30 @@ int runStructureTensorTest()
     differenceFailed = false;
     }
 
-  if (differenceFailed)
+  if( differenceFailed )
+    {
+    std::cerr << "Test failed!" << std::endl;
+    std::cerr << "Expected 0 different pixels, but got " << numberOfPixelsWithDifferences
+      << std::endl;
     return EXIT_FAILURE;
-  if (testFailed)
+    }
+  if( testFailed )
+    {
+    std::cerr << "Test failed!" << std::endl;
     return EXIT_FAILURE;
+    }
 
   return EXIT_SUCCESS;
 }
 
-int itkStructureTensorTest(int, char* [])
+int itkStructureTensorTest( int, char* [] )
 {
-  int result2D = runStructureTensorTest<2>();
-  int result3D = runStructureTensorTest<3>();
+  int result2D = runStructureTensorTest< 2 >();
+  int result3D = runStructureTensorTest< 3 >();
 
 #ifndef ITK_VISUALIZE_TESTS
   // cannot visualize 4D images with viewimage
-  int result4D = runStructureTensorTest<4>();
+  int result4D = runStructureTensorTest< 4 >();
   return result2D && result3D && result4D;
 #else
   return result2D && result3D;

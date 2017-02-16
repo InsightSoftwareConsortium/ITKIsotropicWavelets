@@ -15,56 +15,76 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#include <string>
-#include <cmath>
+
 #include "itkMonogenicSignalFrequencyImageFilter.h"
 
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkForwardFFTImageFilter.h"
-#include <itkComplexToRealImageFilter.h>
-// Visualize for dev/debug purposes. Set in cmake file. Require VTK
+#include "itkComplexToRealImageFilter.h"
+#include "itkTestingMacros.h"
+
+#include <string>
+#include <cmath>
+
+// Visualize for dev/debug purposes. Set in cmake file. Requires VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
-using namespace std;
-using namespace itk;
 
-int itkMonogenicSignalFrequencyImageFilterTest(int argc, char* argv[])
+
+int itkMonogenicSignalFrequencyImageFilterTest( int argc, char* argv[] )
 {
   if( argc != 3 )
     {
     std::cerr << "Usage: " << argv[0] << " inputImage outputImage" << std::endl;
     return EXIT_FAILURE;
     }
-  const string inputImage  = argv[1];
-  const string outputImage = argv[2];
 
-  const unsigned int dimension = 3;
-  typedef float                            PixelType;
-  typedef itk::Image<PixelType, dimension> ImageType;
-  typedef itk::ImageFileReader<ImageType>  ReaderType;
+  const std::string inputImage  = argv[1];
+  const std::string outputImage = argv[2];
+
+  const unsigned int Dimension = 3;
+  typedef float                               PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType>    ReaderType;
+
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName(inputImage);
-  reader->Update();
-  reader->UpdateLargestPossibleRegion();
+
+  reader->SetFileName( inputImage );
+
+  TRY_EXPECT_NO_EXCEPTION( reader->Update() );
 
   // Perform FFT on input image.
   typedef itk::ForwardFFTImageFilter<ImageType> FFTFilterType;
   FFTFilterType::Pointer fftFilter = FFTFilterType::New();
+
   fftFilter->SetInput(reader->GetOutput());
+
   fftFilter->Update();
+
   typedef FFTFilterType::OutputImageType ComplexImageType;
 
-  typedef itk::MonogenicSignalFrequencyImageFilter<ComplexImageType> MonogenicSignalFilterType;
+  typedef itk::MonogenicSignalFrequencyImageFilter< ComplexImageType > MonogenicSignalFilterType;
   MonogenicSignalFilterType::Pointer monoFilter = MonogenicSignalFilterType::New();
-  monoFilter->SetInput(fftFilter->GetOutput());
-  monoFilter->Update();
 
-  if (monoFilter->GetOutput()->GetNumberOfComponentsPerPixel() != dimension + 1)
+  EXERCISE_BASIC_OBJECT_METHODS( monoFilter, MonogenicSignalFrequencyImageFilter,
+    ImageToImageFilter );
+
+  monoFilter->SetInput( fftFilter->GetOutput() );
+
+  TRY_EXPECT_NO_EXCEPTION( monoFilter->Update() );
+
+  unsigned int expectedNumberOfComponentsPerPixel =
+    monoFilter->GetOutput()->GetNumberOfComponentsPerPixel();
+  unsigned int computedNumberOfComponentsPerPixel = Dimension + 1;
+  if( expectedNumberOfComponentsPerPixel != computedNumberOfComponentsPerPixel )
     {
-    std::cout << "Wrong number of components" << std::endl;
+    std::cerr << "Test failed!" << std::endl;
+    std::cerr << "Wrong number of components" << std::endl;
+    std::cerr << "Expected: " << expectedNumberOfComponentsPerPixel
+      <<  ", but got: " << computedNumberOfComponentsPerPixel << std::endl;
     return EXIT_FAILURE;
     }
 
