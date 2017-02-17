@@ -85,7 +85,6 @@ public:
 
   /****** Frequency Threshold Getters/Setters *****/
   itkGetConstReferenceMacro(LowFrequencyThreshold, FrequencyValueType);
-  itkGetConstReferenceMacro(HighFrequencyThreshold, FrequencyValueType);
   itkSetMacro(LowFrequencyThreshold, FrequencyValueType);
   /**
    * @brief Set low frequency threshold when input frequency is in radians.
@@ -93,6 +92,7 @@ public:
    */
   void SetLowFrequencyThresholdInRadians(const FrequencyValueType& freq_low_in_radians);
 
+  itkGetConstReferenceMacro(HighFrequencyThreshold, FrequencyValueType);
   itkSetMacro(HighFrequencyThreshold, FrequencyValueType);
   void SetHighFrequencyThresholdInRadians(const FrequencyValueType& freq_high_in_radians);
 
@@ -102,8 +102,14 @@ public:
   void SetFrequencyThresholdsInRadians( const FrequencyValueType& freq_low_in_radians,
                                         const FrequencyValueType& freq_high_in_radians);
 
+  itkSetMacro( PassLowFrequencyThreshold, bool );
+  itkGetConstReferenceMacro(PassLowFrequencyThreshold, bool);
+  itkSetMacro( PassHighFrequencyThreshold, bool );
+  itkGetConstReferenceMacro(PassHighFrequencyThreshold, bool);
+
   itkSetMacro( PassBand, bool );
   itkGetConstReferenceMacro(PassBand, bool);
+
   /**
    * Utility method equivalent to:
    * SetPassBand(true)
@@ -116,11 +122,6 @@ public:
   void SetPassBand(const bool pass_low_threshold, const bool pass_high_threshold);
 
   void SetStopBand(const bool pass_low_threshold, const bool pass_high_threshold);
-
-  itkSetMacro( PassLowFrequencyThreshold, bool );
-  itkGetConstReferenceMacro(PassLowFrequencyThreshold, bool);
-  itkSetMacro( PassHighFrequencyThreshold, bool );
-  itkGetConstReferenceMacro(PassHighFrequencyThreshold, bool);
 
 protected:
   FrequencyBandPassImageFilter();

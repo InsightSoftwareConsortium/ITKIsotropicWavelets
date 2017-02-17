@@ -124,7 +124,7 @@ public:
       {
       for( unsigned int dim = 0; dim < ImageType::ImageDimension; dim++ )
         {
-          if( !itk::Math::NotAlmostEquals( it.GetFrequency()[dim],
+          if( itk::Math::NotAlmostEquals( it.GetFrequency()[dim],
             itk::Math::abs(reverseIt.GetFrequency()[dim] ) ) )
           {
           std::cout << "Failed testing Hermitian property at index:"
