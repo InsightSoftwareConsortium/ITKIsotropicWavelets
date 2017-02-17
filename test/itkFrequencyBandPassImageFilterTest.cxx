@@ -27,7 +27,7 @@ using namespace itk;
 #include "itkViewImage.h"
 #endif
 
-int itkFrequencyBandPassImageFilterTest(int, char**)
+int itkFrequencyBandPassImageFilterTest(int, char*[])
 {
   typedef float                    PixelType;
   typedef itk::Image<PixelType, 3> ImageType3D;

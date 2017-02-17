@@ -21,7 +21,7 @@
 using namespace std;
 using namespace itk;
 
-int itkInd2SubTest(int, char**)
+int itkInd2SubTest(int, char*[])
 {
   // Used for  initializing FixedArray.
   const unsigned int D3 = 3;

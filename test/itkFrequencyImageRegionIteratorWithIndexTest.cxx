@@ -253,7 +253,7 @@ private:
   bool                           m_ImageIsOdd;
 };
 
-int itkFrequencyImageRegionIteratorWithIndexTest(int, char**)
+int itkFrequencyImageRegionIteratorWithIndexTest(int, char*[])
 {
   bool testPassed = true; // let's be optimistic
 
