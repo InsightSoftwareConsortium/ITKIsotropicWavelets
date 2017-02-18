@@ -22,13 +22,14 @@
 #include "itkZeroFluxNeumannBoundaryCondition.h"
 #include "itkPeriodicBoundaryCondition.h"
 #include "itkConstantBoundaryCondition.h"
+#include "itkTestingMacros.h"
 
 int itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
 {
   if( argc < 3 )
     {
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << "  inputImageFile outputImageFile" << std::endl;
+    std::cerr << argv[0] << " inputImageFile outputImageFile" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -36,7 +37,7 @@ int itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
   typedef unsigned char                       PixelType;
   typedef itk::Image< PixelType,  Dimension > ImageType;
 
-  // readers/writers
+  // Readers, writers and filter typdefs
   typedef itk::ImageFileReader< ImageType  >               ReaderType;
   typedef itk::ImageFileWriter< ImageType >                WriterType;
   typedef itk::FFTPadPositiveIndexImageFilter< ImageType > FFTPadType;
@@ -48,26 +49,46 @@ int itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
   itk::ConstantBoundaryCondition< ImageType > zeroCond;
   itk::PeriodicBoundaryCondition< ImageType > wrapCond;
 
-  // Create the filters
+  // Create the filter
   FFTPadType::Pointer fftpad = FFTPadType::New();
-  fftpad->SetInput(  reader->GetOutput() );
 
-  fftpad->Update();
+  EXERCISE_BASIC_OBJECT_METHODS( fftpad, FFTPadPositiveIndexImageFilter,
+    ImageToImageFilter );
+
+
+  /*itk::SizeValueType sizeGreatestPrimeFactor;
+  fftpad->SetSizeGreatestPrimeFactor( sizeGreatestPrimeFactor );
+  TEST_SET_GET_VALUE( sizeGreatestPrimeFactor, fftpad->GetSizeGreatestPrimeFactor() );*/
+
+
+  /*FFTPadType::BoundaryConditionPointerType boundaryCondition;
+  fftpad->SetBoundaryCondition( boundaryCondition );
+  TEST_SET_GET_VALUE( boundaryCondition, fftpad->GetBoundaryCondition() );*/
+
+  fftpad->SetInput( reader->GetOutput() );
+
+
+  TRY_EXPECT_NO_EXCEPTION( fftpad->Update() );
+
+
   ImageType::IndexType outIndex = fftpad->GetOutput()->GetLargestPossibleRegion().GetIndex();
   ImageType::SizeType  outSize  = fftpad->GetOutput()->GetLargestPossibleRegion().GetSize();
   std::cout << "Index: " << outIndex << " Size: " << outSize << std::endl;
-  for (unsigned int i = 0; i < Dimension; ++i)
+  for( unsigned int i = 0; i < Dimension; ++i )
     {
-    if(outIndex[i] < 0)
+    if( outIndex[i] < 0 )
       {
-      std::cerr << "Negative index " << std::endl;
+      std::cerr << "Test failed!" << std::endl;
+      std::cerr << "Negative index found." << std::endl;
       return EXIT_FAILURE;
       }
     }
+
   WriterType::Pointer writer = WriterType::New();
-  writer->SetInput(fftpad->GetOutput());
-  writer->SetFileName(  argv[2] );
-  writer->Update();
+  writer->SetInput( fftpad->GetOutput() );
+  writer->SetFileName( argv[2] );
+
+  TRY_EXPECT_NO_EXCEPTION( writer->Update() );
 
   return EXIT_SUCCESS;
 }
