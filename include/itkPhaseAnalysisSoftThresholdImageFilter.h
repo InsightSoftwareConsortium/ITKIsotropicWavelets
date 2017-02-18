@@ -84,6 +84,8 @@ public:
 
   itkSetMacro( ApplySoftThreshold, bool );
   itkGetConstMacro( ApplySoftThreshold, bool );
+  itkBooleanMacro( ApplySoftThreshold );
+
   itkSetMacro( NumOfSigmas, OutputImagePixelType );
   itkGetConstMacro( NumOfSigmas, OutputImagePixelType );
   itkGetConstMacro( MeanAmp, OutputImagePixelType );
