@@ -36,7 +36,11 @@ set(IsotropicWaveletsTests
     itkRieszFrequencyFilterBankGeneratorTest.cxx
     itkMonogenicSignalFrequencyImageFilterTest.cxx
     # StructureTensor
-    itkStructureTensorTest.cxx
+itkStructureTensorTest.cxx
+itkHeldIsotropicWaveletTest.cxx
+itkShannonIsotropicWaveletTest.cxx
+itkSimoncelliIsotropicWaveletTest.cxx
+itkVowIsotropicWaveletTest.cxx
     # TODO Wavelet + Riesz + PhaseAnalysis. This is not an unit test. Convert to example or application.
     itkRieszWaveletPhaseAnalysisTest.cxx
     # TODO add Steerable framework?
@@ -66,6 +70,47 @@ endif()
 if(ITK_VISUALIZE_TESTS AND NOT ITKVtkGlue_ENABLED)
   message( FATAL_ERROR "ITK_VISUALIZE_TESTS is set, but Module_ITKVtkGlue is not enabled. Set Module_ITKVtkGlue = ON or set ITK_VISUALIZE_TESTS = OFF to avoid this error." )
 endif()
+
+# Isotropic wavelets
+itk_add_test(NAME itkHeldIsotropicWaveletTest2D
+      COMMAND IsotropicWaveletsTestDriver
+    itkHeldIsotropicWaveletTest DATA{Input/checkershadow_Lch_512x512.tiff} ${ITK_TEST_OUTPUT_DIR}/itkHeldIsotropicWaveletTest2D.png 2 1 3)
+itk_add_test(NAME itkHeldIsotropicWaveletTest3D
+      COMMAND IsotropicWaveletsTestDriver
+    itkHeldIsotropicWaveletTest DATA{Input/collagen_32x32x16.tiff} ${ITK_TEST_OUTPUT_DIR}/itkHeldIsotropicWaveletTest3D.png 3 1 3)
+itk_add_test(NAME itkHeldIsotropicWaveletTestOpt
+      COMMAND IsotropicWaveletsTestDriver
+    itkHeldIsotropicWaveletTest DATA{Input/collagen_64x64x16.tiff} ${ITK_TEST_OUTPUT_DIR}/itkHeldIsotropicWaveletTestOpt.tiff 3 2 4)
+
+itk_add_test(NAME itkShannonIsotropicWaveletTest2D
+      COMMAND IsotropicWaveletsTestDriver
+    itkShannonIsotropicWaveletTest DATA{Input/checkershadow_Lch_512x512.tiff} ${ITK_TEST_OUTPUT_DIR}/itkShannonIsotropicWaveletTest2D.png 1 2)
+itk_add_test(NAME itkShannonIsotropicWaveletTest3D
+      COMMAND IsotropicWaveletsTestDriver
+    itkShannonIsotropicWaveletTest DATA{Input/collagen_32x32x16.tiff} ${ITK_TEST_OUTPUT_DIR}/itkShannonIsotropicWaveletTest3D.png 1 3)
+itk_add_test(NAME itkShannonIsotropicWaveletTestOpt
+      COMMAND IsotropicWaveletsTestDriver
+    itkShannonIsotropicWaveletTest DATA{Input/collagen_64x64x16.tiff} ${ITK_TEST_OUTPUT_DIR}/itkShannonIsotropicWaveletTestOpt.png 2 3)
+
+itk_add_test(NAME itkSimoncelliIsotropicWaveletTest2D
+      COMMAND IsotropicWaveletsTestDriver
+    itkSimoncelliIsotropicWaveletTest DATA{Input/checkershadow_Lch_512x512.tiff} ${ITK_TEST_OUTPUT_DIR}/itkSimoncelliIsotropicWaveletTest2D.png 1 2)
+itk_add_test(NAME itkSimoncelliIsotropicWaveletTest3D
+      COMMAND IsotropicWaveletsTestDriver
+    itkSimoncelliIsotropicWaveletTest DATA{Input/collagen_32x32x16.tiff} ${ITK_TEST_OUTPUT_DIR}/itkSimoncelliIsotropicWaveletTest3D.png 1 3)
+itk_add_test(NAME itkSimoncelliIsotropicWaveletTestOpt
+      COMMAND IsotropicWaveletsTestDriver
+    itkSimoncelliIsotropicWaveletTest DATA{Input/collagen_64x64x16.tiff} ${ITK_TEST_OUTPUT_DIR}/itkSimoncelliIsotropicWaveletTestOpt.png 2 3)
+
+itk_add_test(NAME itkVowIsotropicWaveletTest2D
+      COMMAND IsotropicWaveletsTestDriver
+    itkVowIsotropicWaveletTest DATA{Input/checkershadow_Lch_512x512.tiff} ${ITK_TEST_OUTPUT_DIR}/itkVowIsotropicWaveletTest2D.png 2 1 0.75)
+itk_add_test(NAME itkVowIsotropicWaveletTest3D
+      COMMAND IsotropicWaveletsTestDriver
+    itkVowIsotropicWaveletTest DATA{Input/collagen_32x32x16.tiff} ${ITK_TEST_OUTPUT_DIR}/itkVowIsotropicWaveletTest3D.png 3 1 0.75)
+itk_add_test(NAME itkVowIsotropicWaveletTestOpt
+      COMMAND IsotropicWaveletsTestDriver
+    itkVowIsotropicWaveletTest DATA{Input/collagen_64x64x16.tiff} ${ITK_TEST_OUTPUT_DIR}/itkVowIsotropicWaveletTestOpt.png 3 2 0.84)
 
 # Wavelet Generator
 itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest1
