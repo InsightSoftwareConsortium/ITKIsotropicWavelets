@@ -48,7 +48,7 @@ class FrequencyBandImageFilter:
 {
 public:
   /** Standard class typedefs. */
-  typedef FrequencyBandImageFilter               Self;
+  typedef FrequencyBandImageFilter                   Self;
   typedef ImageToImageFilter<TImageType, TImageType> Superclass;
   typedef SmartPointer<Self>                         Pointer;
   typedef SmartPointer<const Self>                   ConstPointer;
