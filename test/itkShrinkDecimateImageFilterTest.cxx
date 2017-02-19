@@ -67,7 +67,7 @@ int runShrinkDecimateImageFilterTest()
     unsigned int shrinkFactor = 1;
     typename DecimatorType::ShrinkFactorsType shrinkFactors;
     shrinkFactors.Fill( shrinkFactor );
-    for( unsigned int i = 0; shrinkFactors.Size(); ++i )
+    for( unsigned int i = 0; i < shrinkFactors.Size(); ++i )
       {
       decimator->SetShrinkFactor( i, shrinkFactors[i] );
       }

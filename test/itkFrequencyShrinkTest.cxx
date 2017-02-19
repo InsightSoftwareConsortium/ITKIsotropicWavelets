@@ -74,10 +74,10 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
   typedef itk::FrequencyShrinkImageFilter< ComplexImageType > ShrinkType;
   typename ShrinkType::Pointer shrinkFilter = ShrinkType::New();
   
-  unsigned int shrinkFactor = 1;
+  unsigned int shrinkFactor = 2;
   typename ShrinkType::ShrinkFactorsType shrinkFactors;
   shrinkFactors.Fill( shrinkFactor );
-  for( unsigned int i = 0; shrinkFactors.Size(); ++i )
+  for( unsigned int i = 0; i < shrinkFactors.Size(); ++i )
     {
     shrinkFilter->SetShrinkFactor( i, shrinkFactors[i] );
     }

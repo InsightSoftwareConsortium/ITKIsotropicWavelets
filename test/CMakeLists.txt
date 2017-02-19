@@ -283,7 +283,7 @@ itk_add_test(NAME itkZeroDCImageFilterTest
 ## Odd input
 # Require ITK_USE_FFTWF
 # TODO bug in VNL FFT Forward? error with input [21,21,9] about wrong size not being multiple of 2,3,5
-# if(ITK_USE_FFTWF)
+if(ITK_USE_FFTWF)
   #Expand
   itk_add_test(NAME itkFrequencyExpandOddTest
     COMMAND IsotropicWaveletsTestDriver
@@ -306,7 +306,7 @@ itk_add_test(NAME itkZeroDCImageFilterTest
       )
     list(APPEND TEST_LIST
       itkFrequencyExpandOddTest itkFrequencyShrinkOddTest)
-# endif()
+endif()
 
 itk_python_expression_add_test(NAME itkFFTPadPositiveIndexImageFilterPythonTest
   EXPRESSION "instance = itk.FFTPadPositiveIndexImageFilter.New()")
