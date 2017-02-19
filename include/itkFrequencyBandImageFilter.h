@@ -15,15 +15,15 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef itkFrequencyBandPassImageFilter_h
-#define itkFrequencyBandPassImageFilter_h
+#ifndef itkFrequencyBandImageFilter_h
+#define itkFrequencyBandImageFilter_h
 
 #include <itkImageToImageFilter.h>
 #include <itkFrequencyImageRegionIteratorWithIndex.h>
 
 namespace itk
 {
-/** \class FrequencyBandPassImageFilter
+/** \class FrequencyBandImageFilter
  * \brief Performs a frequency band filter in the range LowFrequencyThreshold and HighFrequencyThreshold.
  *
  * The default is a pass band between threshold frequencies [0,0.5] Hz or [0, pi] radians,
@@ -43,12 +43,12 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 template<typename TImageType>
-class FrequencyBandPassImageFilter:
+class FrequencyBandImageFilter:
   public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   /** Standard class typedefs. */
-  typedef FrequencyBandPassImageFilter               Self;
+  typedef FrequencyBandImageFilter               Self;
   typedef ImageToImageFilter<TImageType, TImageType> Superclass;
   typedef SmartPointer<Self>                         Pointer;
   typedef SmartPointer<const Self>                   ConstPointer;
@@ -57,7 +57,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(FrequencyBandPassImageFilter, ImageToImageFilter);
+  itkTypeMacro(FrequencyBandImageFilter, ImageToImageFilter);
 
   /** Typedef to images */
   typedef TImageType                       ImageType;
@@ -158,7 +158,7 @@ public:
   void SetStopBand(const bool pass_low_threshold, const bool pass_high_threshold);
 
 protected:
-  FrequencyBandPassImageFilter();
+  FrequencyBandImageFilter();
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   virtual void BeforeThreadedGenerateData() ITK_OVERRIDE;
@@ -167,7 +167,7 @@ protected:
                                     ThreadIdType threadId) ITK_OVERRIDE;
 
 private:
-  FrequencyBandPassImageFilter(const Self&) ITK_DELETE_FUNCTION;
+  FrequencyBandImageFilter(const Self&) ITK_DELETE_FUNCTION;
   void operator=(const Self&) ITK_DELETE_FUNCTION;
 
   FrequencyValueType m_LowFrequencyThreshold;
@@ -180,7 +180,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkFrequencyBandPassImageFilter.hxx"
+#include "itkFrequencyBandImageFilter.hxx"
 #endif
 
 #endif
