@@ -130,8 +130,7 @@ HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
         + 63.0     * std::pow(x8, 11.0);
       break;
     default:
-      throw ExceptionObject(__FILE__, __LINE__,
-                            "Choose order of polynom less than 6", ITK_LOCATION);
+      itkExceptionMacro( <<"Order of polynom must be less than 6." );
     }
   return y;
 }
