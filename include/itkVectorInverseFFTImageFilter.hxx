@@ -64,4 +64,12 @@ itk::VectorInverseFFTImageFilter< TInputImage, TOutputImage >
   this->GraftOutput(composeFilter->GetOutput());
 }
 
+template< typename TInputImage, typename TOutputImage >
+void
+itk::VectorInverseFFTImageFilter< TInputImage, TOutputImage >
+::PrintSelf(std::ostream & os, Indent indent) const
+{
+  Superclass::PrintSelf(os, indent);
+}
+
 #endif
