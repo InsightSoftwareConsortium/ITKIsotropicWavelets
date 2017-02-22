@@ -92,14 +92,9 @@ public:
   itkGetConstMacro( SigmaAmp, OutputImagePixelType );
   itkGetConstMacro( Threshold, OutputImagePixelType );
 
-  const OutputImageType * GetOutputCosPhase() const
-  {
-    return this->GetOutput(2);
-  }
-
   OutputImageType * GetOutputCosPhase()
   {
-    return this->GetOutput(2);
+    return itkDynamicCastInDebugMode< OutputImageType * >(this->GetOutput(2));
   }
 
 protected:
