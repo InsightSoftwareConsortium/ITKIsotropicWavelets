@@ -33,6 +33,7 @@ WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
 ::WaveletFrequencyInverse()
   : m_Levels(1),
   m_HighPassSubBands(1),
+  m_TotalInputs(0),
   m_ScaleFactor(2)
 {
   this->SetNumberOfRequiredOutputs(1);

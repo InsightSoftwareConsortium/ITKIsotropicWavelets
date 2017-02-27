@@ -25,11 +25,7 @@
 #include <itkFrequencyShrinkImageFilter.h>
 #include <itkFrequencyShrinkViaInverseFFTImageFilter.h>
 #include <itkChangeInformationImageFilter.h>
-// TODO remove after debug
-// #ifdef ITK_VISUALIZE_TESTS
-// #include <itkComplexToRealImageFilter.h>
-// #include "../test/itkViewImage.h"
-// #endif
+
 namespace itk
 {
 template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
@@ -447,9 +443,6 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
 
   this->AllocateOutputs();
 
-  std::vector<OutputImagePointer>   outputList;
-  std::vector<OutputRegionIterator> outputItList;
-
   typedef itk::CastImageFilter<InputImageType, OutputImageType> CastFilterType;
   typename CastFilterType::Pointer castFilter = CastFilterType::New();
   castFilter->SetInput(input);
@@ -516,17 +509,6 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
       multiplyByAnalysisBandFactor->SetConstant(std::pow(2.0, expBandFactor));
       multiplyByAnalysisBandFactor->InPlaceOn();
       multiplyByAnalysisBandFactor->Update();
-// #ifdef ITK_VISUALIZE_TESTS
-//   typedef itk::Image<float, ImageDimension> SpatialImageType;
-//   typedef itk::ComplexToRealImageFilter<OutputImageType,SpatialImageType> ComplexToRealType;
-//   typename ComplexToRealType::Pointer compToReal = ComplexToRealType::New();
-//   compToReal->SetInput(highPassImages[band]);
-//   compToReal->Update();
-//   itk::Testing::ViewImage(compToReal->GetOutput(), "Wavelet band");
-//   compToReal->SetInput(multiplyByAnalysisBandFactor->GetOutput());
-//   compToReal->Update();
-//   itk::Testing::ViewImage(compToReal->GetOutput(), "Wavelet x dilation factor");
-// #endif
 
       typename MultiplyFilterType::Pointer multiplyHighBandFilter = MultiplyFilterType::New();
       multiplyHighBandFilter->SetInput1(multiplyByAnalysisBandFactor->GetOutput());
@@ -534,11 +516,7 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
       multiplyHighBandFilter->InPlaceOn();
       multiplyHighBandFilter->GraftOutput(this->GetOutput(n_output));
       multiplyHighBandFilter->Update();
-// #ifdef ITK_VISUALIZE_TESTS
-//   compToReal->SetInput(multiplyHighBandFilter->GetOutput());
-//   compToReal->Update();
-//   itk::Testing::ViewImage(compToReal->GetOutput(), "high band result in frequency");
-// #endif
+
       this->UpdateProgress( static_cast< float >( n_output - 1 )
                             / static_cast< float >( m_TotalOutputs ) );
       this->GraftNthOutput(n_output, multiplyHighBandFilter->GetOutput());
@@ -552,15 +530,6 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     // Store result without dilation factor for next level.
     inputPerLevel = multiplyLowFilter->GetOutput();
 
-// #ifdef ITK_VISUALIZE_TESTS
-//   typedef itk::Image<float, ImageDimension> SpatialImageType;
-//   typedef itk::InverseFFTImageFilter<OutputImageType, SpatialImageType> InverseFFTFilterType;
-//   typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
-//   inverseFFT->SetInput(inputPerLevel);
-//   inverseFFT->Update();
-//   itk::Testing::ViewImage(inverseFFT->GetOutput(), "Low Filter");
-// #endif
-
     /******* DownSample stored low band for the next Level iteration *****/
     // typedef itk::FrequencyShrinkViaInverseFFTImageFilter<OutputImageType> ShrinkFilterType;
     typedef itk::FrequencyShrinkImageFilter<OutputImageType> ShrinkFilterType;
@@ -568,11 +537,6 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     shrinkFilter->SetInput(inputPerLevel);
     shrinkFilter->SetShrinkFactors(2);
     shrinkFilter->Update();
-// #ifdef ITK_VISUALIZE_TESTS
-//   inverseFFT->SetInput(shrinkFilter->GetOutput());
-//   inverseFFT->Update();
-//   itk::Testing::ViewImage(inverseFFT->GetOutput(), "Low Filter After shrink");
-// #endif
 
     // Ignore modifications of origin and spacing of shrink filters.
     typename ChangeInformationFilterType::Pointer changeInfoFilter = ChangeInformationFilterType::New();
