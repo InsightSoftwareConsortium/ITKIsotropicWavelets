@@ -35,26 +35,23 @@ namespace itk
 template<class TImageType>
 FrequencyShrinkImageFilter< TImageType >
 ::FrequencyShrinkImageFilter()
+: m_ApplyBandFilter(true)
 {
   for ( unsigned int j = 0; j < ImageDimension; j++ )
     {
-    m_ShrinkFactors[j] = 1;
+    m_ShrinkFactors[j] = 2;
     }
-}
 
-template<class TImageType>
-void
-FrequencyShrinkImageFilter< TImageType >
-::PrintSelf(std::ostream & os, Indent indent) const
-{
-  Superclass::PrintSelf(os, indent);
-
-  os << indent << "Shrink Factor: ";
-  for ( unsigned int j = 0; j < ImageDimension; j++ )
-    {
-    os << m_ShrinkFactors[j] << " ";
-    }
-  os << std::endl;
+  this->m_FrequencyBandFilter = FrequencyBandFilterType::New();
+  // The band filter only let pass half of the frequencies.
+  this->m_FrequencyBandFilter->SetFrequencyThresholdsInRadians( 0.0, Math::pi_over_2 );
+  bool lowFreqThresholdPassing  = true;
+  bool highFreqThresholdPassing = true;
+  this->m_FrequencyBandFilter->SetPassBand( lowFreqThresholdPassing, highFreqThresholdPassing );
+  // The band is not radial, but square like.
+  this->m_FrequencyBandFilter->SetRadialBand(false);
+  // Pass high positive freqs but stop negative high ones, to avoid overlaping.
+  this->m_FrequencyBandFilter->SetPassNegativeHighFrequencyThreshold(false);
 }
 
 template<class TImageType>
@@ -73,7 +70,6 @@ FrequencyShrinkImageFilter<TImageType>
     }
   if ( j < ImageDimension )
     {
-    this->Modified();
     for ( j = 0; j < ImageDimension; j++ )
       {
       m_ShrinkFactors[j] = factor;
@@ -83,6 +79,7 @@ FrequencyShrinkImageFilter<TImageType>
         }
       }
     }
+  this->Modified();
 }
 
 template<class TImageType>
@@ -95,8 +92,8 @@ FrequencyShrinkImageFilter<TImageType>
     return;
     }
 
-  this->Modified();
   m_ShrinkFactors[i] = factor;
+  this->Modified();
 }
 
 /**
@@ -126,8 +123,15 @@ FrequencyShrinkImageFilter<TImageType>
   // outputPtr->SetBufferedRegion(outputPtr->GetLargestPossibleRegion());
   outputPtr->FillBuffer(0);
 
-  // Output is the sum of the four quadrants.
-  // We can do it just because high freqs are removed. TODO is this true?
+  // Output is the sum of the four(2D) or eight(3D) quadrants.
+  // We can do it only because high freqs are removed.
+  // This filter will remove it by default a BandPass Filter.
+  if( this->m_ApplyBandFilter )
+    {
+    this->m_FrequencyBandFilter->SetInput(this->GetInput());
+    this->m_FrequencyBandFilter->Update();
+    inputPtr = this->m_FrequencyBandFilter->GetOutput();
+    }
 
   typename TImageType::SizeType inputSize  = inputPtr->GetLargestPossibleRegion().GetSize();
   typename TImageType::SizeType outputSize = outputPtr->GetLargestPossibleRegion().GetSize();
@@ -166,9 +170,13 @@ FrequencyShrinkImageFilter<TImageType>
       zoneSize[dim]    = outputSize[dim];
       outputIndex[dim] = indexOrigOut[dim];
       if(subIndices[dim] == 0) // positive frequencies
+        {
         inputIndex[dim] = indexOrigOut[dim];
+        }
       else // negative frequencies
+        {
         inputIndex[dim] = indexOrigOut[dim] + inputSize[dim]  - zoneSize[dim];
+        }
       }
     zoneRegion.SetIndex(inputIndex);
     zoneRegion.SetSize(zoneSize);
@@ -369,6 +377,25 @@ FrequencyShrinkImageFilter<TImageType>
   outputLargestPossibleRegion.SetIndex(outputStartIndex);
 
   outputPtr->SetLargestPossibleRegion(outputLargestPossibleRegion);
+}
+
+template<class TImageType>
+void
+FrequencyShrinkImageFilter< TImageType >
+::PrintSelf(std::ostream & os, Indent indent) const
+{
+  Superclass::PrintSelf(os, indent);
+
+  os << indent << "Shrink Factor: ";
+  for ( unsigned int j = 0; j < ImageDimension; j++ )
+    {
+    os << m_ShrinkFactors[j] << " ";
+    }
+  os << std::endl;
+  os << "ApplyBandFilter: " << this->m_ApplyBandFilter << std::endl;
+
+  itkPrintSelfObjectMacro(FrequencyBandFilter);
+
 }
 } // end namespace itk
 
