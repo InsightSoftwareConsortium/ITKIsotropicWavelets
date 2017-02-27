@@ -157,6 +157,11 @@ public:
    */
   void SetStopBand(const bool pass_low_threshold, const bool pass_high_threshold);
 
+  /** If true the frequency cut-off uses the radius of the frequency vector. If false, it uses the max absolute value of the frequency vector. */
+  itkSetMacro( RadialBand, bool );
+  itkGetConstReferenceMacro(RadialBand, bool);
+  itkBooleanMacro( RadialBand );
+
 protected:
   FrequencyBandImageFilter();
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
@@ -176,6 +181,7 @@ private:
   bool m_PassBand;
   bool m_PassLowFrequencyThreshold;
   bool m_PassHighFrequencyThreshold;
+  bool m_RadialBand;
 };
 } // end namespace itk
 
