@@ -124,8 +124,7 @@ protected:
   virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
 
 private:
-  WaveletFrequencyInverse(const Self &) ITK_DELETE_FUNCTION;
-  void operator=(const Self &) ITK_DELETE_FUNCTION;
+  ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyInverse);
 
   unsigned int m_Levels;
   unsigned int m_HighPassSubBands;

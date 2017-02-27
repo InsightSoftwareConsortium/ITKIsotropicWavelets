@@ -184,8 +184,7 @@ protected:
                                     ThreadIdType threadId) ITK_OVERRIDE;
 
 private:
-  FrequencyBandImageFilter(const Self&) ITK_DELETE_FUNCTION;
-  void operator=(const Self&) ITK_DELETE_FUNCTION;
+  ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyBandImageFilter);
 
   FrequencyValueType m_LowFrequencyThreshold;
   FrequencyValueType m_HighFrequencyThreshold;

@@ -148,8 +148,7 @@ protected:
   void GenerateData() ITK_OVERRIDE;
 
 private:
-  FrequencyShrinkImageFilter(const Self&) ITK_DELETE_FUNCTION;
-  void operator=(const Self&) ITK_DELETE_FUNCTION;
+  ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyShrinkImageFilter);
 
   ShrinkFactorsType                         m_ShrinkFactors;
   bool                                      m_ApplyBandFilter;

@@ -112,8 +112,7 @@ protected:
   void GenerateData() ITK_OVERRIDE;
 
 private:
-  FrequencyShrinkViaInverseFFTImageFilter(const Self&) ITK_DELETE_FUNCTION;
-  void operator=(const Self&) ITK_DELETE_FUNCTION;
+  ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyShrinkViaInverseFFTImageFilter);
 
   ShrinkFactorsType                      m_ShrinkFactors;
   typename InverseFFTFilterType::Pointer m_InverseFFT;
