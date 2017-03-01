@@ -38,7 +38,6 @@
 
 #include "itkGaussianSpatialFunction.h" 
 #include "itkFrequencyImageRegionIteratorWithIndex.h"
-
 #include "itkTestingMacros.h"
 
 #include <string>
@@ -63,7 +62,6 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
-
   reader->Update();
 
   // Wavelet analysis (forward)
@@ -74,16 +72,13 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   typedef itk::ZeroDCImageFilter< ImageType > ZeroDCFilterType;
   typename ZeroDCFilterType::Pointer zeroDCFilter = ZeroDCFilterType::New();
   zeroDCFilter->SetInput( reader->GetOutput() );
-
   zeroDCFilter->Update();
 
   // Perform FFT on input image.
   typedef itk::ForwardFFTImageFilter< typename ZeroDCFilterType::OutputImageType >
     FFTForwardFilterType;
   typename FFTForwardFilterType::Pointer fftForwardFilter = FFTForwardFilterType::New();
-
   fftForwardFilter->SetInput( zeroDCFilter->GetOutput() );
-
   fftForwardFilter->Update();
 
   typedef typename FFTForwardFilterType::OutputImageType ComplexImageType;
@@ -95,16 +90,12 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   typedef itk::WaveletFrequencyForward< ComplexImageType, ComplexImageType, WaveletFilterBankType >
     ForwardWaveletType;
   typename ForwardWaveletType::Pointer forwardWavelet = ForwardWaveletType::New();
-
   unsigned int highSubBands = inputBands;
   unsigned int levels = inputLevels;
   forwardWavelet->SetHighPassSubBands( highSubBands );
   forwardWavelet->SetLevels( levels );
-
   forwardWavelet->SetInput( fftForwardFilter->GetOutput() );
-
   forwardWavelet->Update();
-
   typename ForwardWaveletType::OutputsType analysisWavelets =
     forwardWavelet->GetOutputs();
 
@@ -119,11 +110,12 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     PhaseAnalysisFilter;
 
   typename ForwardWaveletType::OutputsType modifiedWavelets;
-  unsigned int numberOfOutouts = forwardWavelet->GetNumberOfOutputs();
+  unsigned int numberOfOutputs = forwardWavelet->GetNumberOfOutputs();
   for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
     {
-    std::cout << "Output #: " << i << " / " << numberOfOutouts << std::endl;
-    if( i == 12000 ) // TODO check this. avoid phase analysis in last approximation (low_pass).
+    std::cout << "Output #: " << i << " / " << numberOfOutputs << std::endl;
+    // if( i == 12000 ) // TODO check this. avoid phase analysis in last approximation (low_pass).
+    if( i == numberOfOutputs - 1 ) // TODO check this. avoid phase analysis in last approximation (low_pass).
       {
       modifiedWavelets.push_back( analysisWavelets[i] );
       continue;
@@ -141,31 +133,25 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     monoFilter->Update();
 
     vecInverseFFT->SetInput( monoFilter->GetOutput() );
-
     vecInverseFFT->Update();
 
     phaseAnalyzer->SetInput( vecInverseFFT->GetOutput() );
     phaseAnalyzer->SetApplySoftThreshold( false );
-
     phaseAnalyzer->Update();
 
     fftForwardPhaseFilter->SetInput( phaseAnalyzer->GetOutputCosPhase() );
-
     fftForwardPhaseFilter->Update();
 
     modifiedWavelets.push_back( fftForwardPhaseFilter->GetOutput() );
     modifiedWavelets.back()->DisconnectPipeline();
-
     }
 
   typedef itk::WaveletFrequencyInverse< ComplexImageType, ComplexImageType, WaveletFilterBankType >
     InverseWaveletType;
   typename InverseWaveletType::Pointer inverseWavelet = InverseWaveletType::New();
-
   inverseWavelet->SetHighPassSubBands( highSubBands );
-  inverseWavelet->SetLevels( levels);
+  inverseWavelet->SetLevels( levels );
   inverseWavelet->SetInputs( modifiedWavelets );
-
   inverseWavelet->Update();
 
   // bool apply_gaussian = false;
@@ -213,7 +199,6 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   typedef itk::InverseFFTImageFilter< ComplexImageType, ImageType > InverseFFTFilterType;
   typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
   inverseFFT->SetInput( inverseWavelet->GetOutput() );
-
   inverseFFT->Update();
 
 #ifdef ITK_VISUALIZE_TESTS

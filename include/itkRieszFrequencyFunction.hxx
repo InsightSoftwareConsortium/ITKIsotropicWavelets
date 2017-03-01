@@ -54,7 +54,9 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
   double magn(this->Magnitude(frequency_point));
 
   if(itk::Math::FloatAlmostEqual(magn, 0.0) )
+    {
     return FunctionValueType(0);
+    }
   return OutputComplexType(0, static_cast<FunctionValueType>( -frequency_point[dimension] / magn ) );
 }
 
@@ -66,7 +68,9 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
   double magn(this->Magnitude(frequency_point));
 
   if(itk::Math::FloatAlmostEqual(magn, 0.0) )
+    {
     return InputType(0);
+    }
   OutputArrayType out;
   for( unsigned int dim = 0; dim < VImageDimension; ++dim)
     {
