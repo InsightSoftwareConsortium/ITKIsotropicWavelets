@@ -45,15 +45,15 @@
 #include "itkViewImage.h"
 #endif
 
-
 template< unsigned int VDimension >
 int runFrequencyShrinkTest( const std::string & inputImage, const std::string & outputImage )
 {
+  bool testPassed = true;
   const unsigned int Dimension = VDimension;
 
-  typedef double                              PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+  typedef double                             PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
@@ -75,7 +75,7 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
   // ShinkFrequency
   typedef itk::FrequencyShrinkImageFilter< ComplexImageType > ShrinkType;
   typename ShrinkType::Pointer shrinkFilter = ShrinkType::New();
-  
+
   unsigned int shrinkFactor = 2;
   typename ShrinkType::ShrinkFactorsType shrinkFactors;
   shrinkFactors.Fill( shrinkFactor );
@@ -108,16 +108,16 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
     {
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "fft is not Hermitian" << std::endl;
-    return EXIT_FAILURE;
+    testPassed = false;
     }
   if( !shrinkIsHermitian )
     {
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "shrink is not Hermitian" << std::endl;
-    return EXIT_FAILURE;
+    testPassed = false;
     }
 
-    // Test Hermitian property
+  // Test Hermitian property
     {
     // Simmetry and Hermitian test: ComplexInverseFFT will generate output with zero imaginary part.
     // Test hermitian properties for even Images. Odd real images are not even hermitian after
@@ -169,7 +169,7 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
                   << std::endl;
         }
       }
-      // Check that complex part is almost 0 filter is correct after shrink
+    // Check that complex part is almost 0 filter is correct after shrink
       {
       typedef itk::ComplexToComplexFFTImageFilter<ComplexImageType> ComplexFFTType;
       typename ComplexFFTType::Pointer complexInverseFFT = ComplexFFTType::New();
@@ -206,7 +206,6 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
       }
     }
 
-
   // Test size and metadata
   typename ComplexImageType::PointType   fftOrigin     = fftFilter->GetOutput()->GetOrigin();
   typename ComplexImageType::SpacingType fftSpacing    = fftFilter->GetOutput()->GetSpacing();
@@ -218,8 +217,8 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error in Origin (has changed afterShrink): " << std::endl;
     std::cerr << "Expected: " << fftOrigin << ", but got "
-      << shrinkOrigin << std::endl;
-    return EXIT_FAILURE;
+              << shrinkOrigin << std::endl;
+    testPassed = false;
     }
 
   if( shrinkSpacing != fftSpacing * 0.5 )
@@ -227,10 +226,9 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error in Spacing (should be half afterShrink): " << std::endl;
     std::cerr << "Expected: " << fftSpacing * 0.5 << ", but got "
-      << shrinkSpacing << std::endl;
-    return EXIT_FAILURE;
+              << shrinkSpacing << std::endl;
+    testPassed = false;
     }
-
 
   //
   // Test with frequency band filter.
@@ -243,7 +241,8 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
 
   typename ShrinkType::Pointer shrinkIntersectionPassFilter = ShrinkType::New();
   shrinkIntersectionPassFilter->SetInput( fftFilter->GetOutput() );
-  shrinkIntersectionPassFilter->GetFrequencyBandFilter()->SetFrequencyThresholdsInRadians( itk::Math::pi_over_2, itk::Math::pi_over_2 );
+  shrinkIntersectionPassFilter->GetFrequencyBandFilter()->SetFrequencyThresholdsInRadians( itk::Math::pi_over_2,
+                                                                                           itk::Math::pi_over_2 );
   shrinkIntersectionPassFilter->GetFrequencyBandFilter()->SetPassBand(true, true);
 
   typedef itk::AddImageFilter<ComplexImageType, ComplexImageType> AddFilterType;
@@ -268,10 +267,9 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
     {
     std::cerr << "Test failed! " << std::endl;
     std::cerr << "Expected images to be equal, but got " << numberOfDiffPixels
-      << "unequal pixels" << std::endl;
-    return EXIT_FAILURE;
+              << "unequal pixels" << std::endl;
+    testPassed = false;
     }
-
 
   // Write output
   typedef itk::Image< float, Dimension >                    FloatImageType;
@@ -286,7 +284,6 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
   writer->SetInput( castFilter->GetOutput() );
 
   TRY_EXPECT_NO_EXCEPTION( writer->Update() );
-
 
 #ifdef ITK_VISUALIZE_TESTS
   itk::Testing::ViewImage( zeroDCFilter->GetOutput(), "Original" );
@@ -323,7 +320,14 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
 
 #endif
 
-  return EXIT_SUCCESS;
+  if(testPassed)
+    {
+    return EXIT_SUCCESS;
+    }
+  else
+    {
+    return EXIT_FAILURE;
+    }
 }
 
 int itkFrequencyShrinkTest( int argc, char* argv[] )
@@ -350,8 +354,7 @@ int itkFrequencyShrinkTest( int argc, char* argv[] )
   ShrinkType::Pointer shrinkFilter = ShrinkType::New();
 
   EXERCISE_BASIC_OBJECT_METHODS( shrinkFilter, FrequencyShrinkImageFilter,
-    ImageToImageFilter );
-
+                                 ImageToImageFilter );
 
   unsigned int dimension = 3;
   if( argc == 4 )
