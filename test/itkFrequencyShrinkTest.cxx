@@ -32,6 +32,7 @@
 #include <itkCastImageFilter.h>
 #include "itkIsotropicWaveletTestUtilities.h"
 #include "itkAddImageFilter.h"
+#include <itkChangeInformationImageFilter.h>
 #include "itkTestingComparisonImageFilter.h"
 #include "itkTestingMacros.h"
 
@@ -233,17 +234,45 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
   //
   // Test with frequency band filter.
   //
-  typename ShrinkType::Pointer shrinkNoIntersectionFilter = ShrinkType::New();
-  shrinkNoIntersectionFilter->SetInput( fftFilter->GetOutput() );
+
+  typedef itk::ChangeInformationImageFilter<ComplexImageType> ChangeInformationFilterType;
+  typename ChangeInformationFilterType::Pointer changeInputInfoFilter = ChangeInformationFilterType::New();
+  typename ComplexImageType::PointType   origin_new ;
+  origin_new.Fill(0);
+  typename ComplexImageType::SpacingType spacing_new;
+  spacing_new.Fill(1);
+  changeInputInfoFilter->SetInput(fftFilter->GetOutput());
+  changeInputInfoFilter->ChangeDirectionOff();
+  changeInputInfoFilter->ChangeRegionOff();
+  changeInputInfoFilter->ChangeSpacingOn();
+  changeInputInfoFilter->ChangeOriginOn();
+  changeInputInfoFilter->UseReferenceImageOff();
+  changeInputInfoFilter->SetOutputOrigin(origin_new);
+  changeInputInfoFilter->SetOutputSpacing(spacing_new);
+  changeInputInfoFilter->Update();
+
+  typename ShrinkType::Pointer shrinkBandFilter = ShrinkType::New();
+  shrinkBandFilter->SetApplyBandFilter(true);
+  shrinkBandFilter->SetInput( changeInputInfoFilter->GetOutput());
   bool lowFreqThresholdPassing  = true;
-  bool highFreqThresholdPassing = false;
+  bool highFreqThresholdPassing = true;
+  shrinkBandFilter->GetFrequencyBandFilter()->SetPassBand(lowFreqThresholdPassing, highFreqThresholdPassing);
+
+  typename ShrinkType::Pointer shrinkNoIntersectionFilter = ShrinkType::New();
+  shrinkNoIntersectionFilter->SetApplyBandFilter(true);
+  shrinkNoIntersectionFilter->SetInput( changeInputInfoFilter->GetOutput());
+  lowFreqThresholdPassing  = true;
+  highFreqThresholdPassing = false;
   shrinkNoIntersectionFilter->GetFrequencyBandFilter()->SetPassBand(lowFreqThresholdPassing, highFreqThresholdPassing);
 
   typename ShrinkType::Pointer shrinkIntersectionPassFilter = ShrinkType::New();
-  shrinkIntersectionPassFilter->SetInput( fftFilter->GetOutput() );
-  shrinkIntersectionPassFilter->GetFrequencyBandFilter()->SetFrequencyThresholdsInRadians( itk::Math::pi_over_2,
-                                                                                           itk::Math::pi_over_2 );
-  shrinkIntersectionPassFilter->GetFrequencyBandFilter()->SetPassBand(true, true);
+  shrinkIntersectionPassFilter->SetApplyBandFilter(true);
+  shrinkIntersectionPassFilter->SetInput( changeInputInfoFilter->GetOutput() );
+  lowFreqThresholdPassing  = true;
+  highFreqThresholdPassing = true;
+  shrinkIntersectionPassFilter->GetFrequencyBandFilter()->SetFrequencyThresholdsInRadians(
+      itk::Math::pi_over_2, itk::Math::pi_over_2 );
+  shrinkIntersectionPassFilter->GetFrequencyBandFilter()->SetPassBand(lowFreqThresholdPassing, highFreqThresholdPassing);
 
   typedef itk::AddImageFilter<ComplexImageType, ComplexImageType> AddFilterType;
   typename AddFilterType::Pointer addFilter = AddFilterType::New();
@@ -252,13 +281,16 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
   typename InverseFFTFilterType::Pointer inverseFFTAdd = InverseFFTFilterType::New();
   inverseFFTAdd->SetInput( addFilter->GetOutput() );
 
+  typename InverseFFTFilterType::Pointer inverseFFTShrinkBand = InverseFFTFilterType::New();
+  inverseFFTShrinkBand->SetInput( shrinkBandFilter->GetOutput() );
+
   typedef itk::Testing::ComparisonImageFilter< ImageType, ImageType >
     DifferenceFilterType;
   typename DifferenceFilterType::Pointer differenceFilter =
     DifferenceFilterType::New();
   differenceFilter->SetToleranceRadius( 0 );
   differenceFilter->SetDifferenceThreshold( 0 );
-  differenceFilter->SetValidInput( inverseFFT->GetOutput() );
+  differenceFilter->SetValidInput( inverseFFTShrinkBand->GetOutput() );
   differenceFilter->SetTestInput( inverseFFTAdd->GetOutput() );
   differenceFilter->Update();
 
@@ -267,7 +299,7 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
     {
     std::cerr << "Test failed! " << std::endl;
     std::cerr << "Expected images to be equal, but got " << numberOfDiffPixels
-              << "unequal pixels" << std::endl;
+              << " unequal pixels" << std::endl;
     testPassed = false;
     }
 

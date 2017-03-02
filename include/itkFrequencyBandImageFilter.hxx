@@ -181,7 +181,7 @@ FrequencyBandImageFilter<TImageType>
     // Boundaries: Do not pass threshold frequencies if requested.
     if(!this->m_PassLowFrequencyThreshold)
       {
-      if(f == this->m_LowFrequencyThreshold)
+      if(itk::Math::FloatAlmostEqual(f,this->m_LowFrequencyThreshold))
         {
         // Different boundaries when negative frequencies in the non-radial case.
         if(!this->m_RadialBand
@@ -199,7 +199,7 @@ FrequencyBandImageFilter<TImageType>
 
     if(!this->m_PassHighFrequencyThreshold)
       {
-      if(f == this->m_HighFrequencyThreshold)
+      if(itk::Math::FloatAlmostEqual(f,this->m_HighFrequencyThreshold))
         {
         // Different boundaries when negative frequencies in the non-radial case.
         if(!this->m_RadialBand
