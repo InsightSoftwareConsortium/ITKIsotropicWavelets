@@ -123,6 +123,10 @@ protected:
    */
   virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
 
+  /** Input images do not occupy the same physical space.
+   * Remove the check. */
+  virtual void VerifyInputInformation() ITK_OVERRIDE {};
+
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyInverse);
 
