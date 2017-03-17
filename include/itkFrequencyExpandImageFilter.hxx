@@ -286,7 +286,7 @@ FrequencyExpandImageFilter< TImageType >
 
   for ( unsigned int i = 0; i < TImageType::ImageDimension; i++ )
     {
-    outputSpacing[i]    = inputSpacing[i] * m_ExpandFactors[i];
+    outputSpacing[i]    = inputSpacing[i] / m_ExpandFactors[i];
     outputSize[i]       = inputSize[i] * static_cast<SizeValueType>(m_ExpandFactors[i]);
     outputStartIndex[i] = inputStartIndex[i];
     // outputStartIndex[i] = inputStartIndex[i] * (IndexValueType)m_ExpandFactors[i];
