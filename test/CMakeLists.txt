@@ -188,23 +188,23 @@ itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/collagen_32x32x16.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest.tiff
-  1 1 ${DefaultWavelet} )
+  1 1 ${DefaultWavelet} Apply )
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/collagen_64x64x16.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand.tiff
-  2 5 ${DefaultWavelet})
+  2 5 ${DefaultWavelet} Apply )
 ###
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2D
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2D.tiff
-  1 1 ${DefaultWavelet} 2 )
+  1 1 ${DefaultWavelet} Apply 2 )
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand.tiff
-  5 5 ${DefaultWavelet} 2 )
+  5 5 ${DefaultWavelet} Apply 2 )
 #IsotropicWaveletFrequencyFunctionTest
 itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionTest
   COMMAND IsotropicWaveletsTestDriver itkIsotropicWaveletFrequencyFunctionTest

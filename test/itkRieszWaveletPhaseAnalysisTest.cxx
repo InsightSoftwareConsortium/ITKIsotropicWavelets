@@ -52,7 +52,8 @@ template<unsigned int VDimension, typename TWaveletFunction >
 int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
                                       const std::string&, //outputImage
                                       const unsigned int& inputLevels,
-                                      const unsigned int& inputBands)
+                                      const unsigned int& inputBands,
+                                      const bool applySoftThreshold)
 {
   const unsigned int Dimension = VDimension;
 
@@ -80,8 +81,9 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   typename FFTForwardFilterType::Pointer fftForwardFilter = FFTForwardFilterType::New();
   fftForwardFilter->SetInput( zeroDCFilter->GetOutput() );
   fftForwardFilter->Update();
-
   typedef typename FFTForwardFilterType::OutputImageType ComplexImageType;
+
+  typedef itk::InverseFFTImageFilter< ComplexImageType, ImageType > InverseFFTFilterType;
 
   // Forward Wavelet
   typedef TWaveletFunction WaveletFunctionType;
@@ -114,8 +116,9 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
     {
     std::cout << "Output #: " << i << " / " << numberOfOutputs << std::endl;
-    // if( i == 12000 ) // TODO check this. avoid phase analysis in last approximation (low_pass).
-    if( i == numberOfOutputs - 1 ) // TODO check this. avoid phase analysis in last approximation (low_pass).
+    if( i == 12000 ) // Modify all
+    // if( i >= 0 ) // Don't modify
+    // if( i == numberOfOutputs - 1 ) // TODO check this. avoid phase analysis in last approximation (low_pass).
       {
       modifiedWavelets.push_back( analysisWavelets[i] );
       continue;
@@ -129,6 +132,7 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     typename FFTForwardFilterType::Pointer fftForwardPhaseFilter =
       FFTForwardFilterType::New();
 
+    // Generate a monogenic signal (vector valued)
     monoFilter->SetInput( analysisWavelets[i] );
     monoFilter->Update();
 
@@ -136,8 +140,17 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     vecInverseFFT->Update();
 
     phaseAnalyzer->SetInput( vecInverseFFT->GetOutput() );
-    phaseAnalyzer->SetApplySoftThreshold( false );
+    phaseAnalyzer->SetApplySoftThreshold( applySoftThreshold );
     phaseAnalyzer->Update();
+
+// #ifdef ITK_VISUALIZE_TESTS
+//     itk::NumberToString< unsigned int > n2s;
+//     typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
+//     inverseFFT->SetInput(analysisWavelets[i]);
+//     inverseFFT->Update();
+//     itk::Testing::ViewImage( inverseFFT->GetOutput(), "WaveletCoef: output #" + n2s(i) );
+//     itk::Testing::ViewImage( phaseAnalyzer->GetOutputCosPhase(), "WaveletCoef. PhaseAnalyzed #" + n2s(i) );
+// #endif
 
     fftForwardPhaseFilter->SetInput( phaseAnalyzer->GetOutputCosPhase() );
     fftForwardPhaseFilter->Update();
@@ -196,7 +209,6 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   //     ++outIt;
   //     }
   //   }
-  typedef itk::InverseFFTImageFilter< ComplexImageType, ImageType > InverseFFTFilterType;
   typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
   inverseFFT->SetInput( inverseWavelet->GetOutput() );
   inverseFFT->Update();
@@ -218,10 +230,10 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
 
 int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
 {
-  if( argc < 6 || argc > 7 )
+  if( argc < 7 || argc > 8 )
     {
     std::cerr << "Usage: " << argv[0]
-              << " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
+              << " inputImage outputImage inputLevels inputBands waveletFunction Apply|NoApply [dimension]" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -230,11 +242,26 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
   const unsigned int inputLevels = atoi( argv[3] );
   const unsigned int inputBands  = atoi( argv[4] );
   const std::string waveletFunction = argv[5];
+  const std::string applySoftThresholdInput = argv[6];
+  bool applySoftThreshold = false;
+  if (applySoftThresholdInput == "Apply")
+    {
+    applySoftThreshold = true;
+    }
+  else if (applySoftThresholdInput == "NoApply")
+    {
+    applySoftThreshold = false;
+    }
+  else
+    {
+    std::cerr << "Unkown string: " + applySoftThresholdInput + " . Use Apply or NoApply." << std::endl;
+    return EXIT_FAILURE;
+    }
 
   unsigned int dimension = 3;
-  if( argc == 7 )
+  if( argc == 8 )
     {
-    dimension = atoi( argv[6] );
+    dimension = atoi( argv[7] );
     }
 
   const unsigned int ImageDimension = 2;
@@ -342,19 +369,19 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
     {
     if( waveletFunction == "Held" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 2, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands );
+      return runRieszWaveletPhaseAnalysisTest< 2, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
       }
     else if(waveletFunction == "Vow" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 2, VowWavelet >( inputImage, outputImage, inputLevels, inputBands );
+      return runRieszWaveletPhaseAnalysisTest< 2, VowWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
       }
     else if( waveletFunction == "Simoncelli" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 2, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands );
+      return runRieszWaveletPhaseAnalysisTest< 2, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
       }
     else if( waveletFunction == "Shannon" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 2, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands );
+      return runRieszWaveletPhaseAnalysisTest< 2, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
       }
     else
       {
@@ -367,19 +394,19 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
     {
     if( waveletFunction == "Held" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 3, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands );
+      return runRieszWaveletPhaseAnalysisTest< 3, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
       }
     else if( waveletFunction == "Vow" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 3, VowWavelet >( inputImage, outputImage, inputLevels, inputBands );
+      return runRieszWaveletPhaseAnalysisTest< 3, VowWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
       }
     else if( waveletFunction == "Simoncelli" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 3, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands );
+      return runRieszWaveletPhaseAnalysisTest< 3, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
       }
     else if( waveletFunction == "Shannon" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 3, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands );
+      return runRieszWaveletPhaseAnalysisTest< 3, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
       }
     else
       {
