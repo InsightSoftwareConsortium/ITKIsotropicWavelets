@@ -472,10 +472,6 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
   inputPerLevel = changeInputInfoFilter->GetOutput();
   for (unsigned int level = 0; level < this->m_Levels; ++level)
     {
-    /***** Dilation factor (assume dilation is dyadic -2-). **/
-    // double expLevelFactor = - static_cast<double>(level*ImageDimension)/2.0;
-    double expLevelFactor = 0;
-    itkDebugMacro( << "ExpLevelFactor: " << expLevelFactor << ", level: " << level << " 2^expLevelFactor: " << std::pow(2.0, expLevelFactor) );
 
     /******* Set HighPass bands *****/
     itkDebugMacro(<< "Number of FilterBank high pass bands: " << highPassWavelets.size() );
@@ -490,7 +486,10 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
       // double expFactorHigh = - static_cast<double>(1)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
       // double expBandFactor = expLevelFactor;// + static_cast<double>(ImageDimension)/2.0;
       // double expBandFactor = expLevelFactor - static_cast<int>(band)/static_cast<double>(this->m_HighPassSubBands) * static_cast<double>(ImageDimension)/2.0;
-      double expBandFactor = 0;
+      // double expBandFactor = 0;
+      // double expBandFactor = - static_cast<double>(level*ImageDimension)/2.0;
+      double expBandFactor = ( - static_cast<double>(level)
+        + band/ static_cast<double>(this->m_HighPassSubBands) ) * ImageDimension/2.0;
       multiplyByAnalysisBandFactor->SetConstant(std::pow(2.0, expBandFactor));
       // TODO Warning: InPlace here deletes buffered region of input.
       // http://public.kitware.com/pipermail/community/2015-April/008819.html
@@ -527,9 +526,12 @@ void WaveletFrequencyForward< TInputImage, TOutputImage, TWaveletFilterBank>
     if (level == this->m_Levels - 1) // Set low_pass output (index=this->m_TotalOutputs - 1)
       {
       // Apply dilation factor on low band only in the last level.
+      // double expLevelFactor = - static_cast<double>( (level + 1) * ImageDimension ) / 2.0;
+      // double expLevelFactor = - static_cast<double>( level * ImageDimension ) / 2.0;
+      double expLevelFactor = 0;
+      itkDebugMacro( << "ExpLevelFactor: " << expLevelFactor << ", level: " << level << " 2^expLevelFactor: " << std::pow(2.0, expLevelFactor) );
       typename MultiplyFilterType::Pointer multiplyByDilationLevelFactor = MultiplyFilterType::New();
       multiplyByDilationLevelFactor->SetInput1(shrinkFilter->GetOutput());
-      itkDebugMacro( << " ExpLevelFactor: " << expLevelFactor << ", level: " << level << " 2^expLevelFactor: " << std::pow(2.0, expLevelFactor) );
       multiplyByDilationLevelFactor->SetConstant(std::pow(2.0, expLevelFactor));
       multiplyByDilationLevelFactor->InPlaceOn();
       multiplyByDilationLevelFactor->GraftOutput(this->GetOutput(this->m_TotalOutputs - 1));
