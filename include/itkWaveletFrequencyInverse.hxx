@@ -290,6 +290,7 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
 
   typedef itk::MultiplyImageFilter<OutputImageType> MultiplyFilterType;
 
+  double scaleFactor = static_cast<double>(this->m_ScaleFactor);
   for (int level = this->m_Levels - 1; level > -1; --level)
     {
     itkDebugMacro( << "LEVEL: " << level );
@@ -303,6 +304,7 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
     low_pass_per_level = expandFilter->GetOutput();
 
     /******* Calculate FilterBank with the right size per level. *****/
+    // TODO Save the FilterBank vector created in the forward wavelet and load it here to save compute it again.
     itkDebugMacro(<<"Low_pass_per_level: " << level << " Region:" << low_pass_per_level->GetLargestPossibleRegion() );
     typename WaveletFilterBankType::Pointer filterBank = WaveletFilterBankType::New();
     filterBank->SetHighPassSubBands(this->m_HighPassSubBands);
@@ -325,7 +327,7 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
     typename MultiplyFilterType::Pointer multiplyUpsampleCorrection = MultiplyFilterType::New();
     multiplyUpsampleCorrection->SetInput1(low_pass_per_level);
     double expUpsampleCorrection = static_cast<double>(ImageDimension);
-    multiplyUpsampleCorrection->SetConstant(std::pow(2.0, expUpsampleCorrection));
+    multiplyUpsampleCorrection->SetConstant(std::pow(scaleFactor, expUpsampleCorrection));
     multiplyUpsampleCorrection->InPlaceOn();
     multiplyUpsampleCorrection->Update();
 
@@ -384,7 +386,7 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
         expBandFactor = ( static_cast<double>(level) - band/ static_cast<double>(this->m_HighPassSubBands) )
           * ImageDimension/2.0;
         }
-      multiplyByReconstructionBandFactor->SetConstant(std::pow(2.0, expBandFactor));
+      multiplyByReconstructionBandFactor->SetConstant(std::pow(scaleFactor, expBandFactor));
       multiplyByReconstructionBandFactor->InPlaceOn();
       multiplyByReconstructionBandFactor->Update();
 
@@ -418,16 +420,7 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
     else // Update low_pass
       {
       addHighAndLow->Update();
-      /******* Dilation factor in the low_pass to have the same factor than input high bands of next level *****/
-      typename MultiplyFilterType::Pointer multiplyLowByReconstructLevelFactor = MultiplyFilterType::New();
-      multiplyLowByReconstructLevelFactor->SetInput1(addHighAndLow->GetOutput());
-      // double expLevelFactor = static_cast<double>(ImageDimension);
-      // double expLevelFactor = static_cast<double>(ImageDimension)/2.0;
-      double expLevelFactor = 0;
-      multiplyLowByReconstructLevelFactor->SetConstant(std::pow(2.0, expLevelFactor));
-      multiplyLowByReconstructLevelFactor->InPlaceOn();
-      multiplyLowByReconstructLevelFactor->Update();
-      low_pass_per_level = multiplyLowByReconstructLevelFactor->GetOutput();
+      low_pass_per_level = addHighAndLow->GetOutput();
       }
     }
 }
