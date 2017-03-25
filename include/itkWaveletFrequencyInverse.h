@@ -149,7 +149,7 @@ private:
   unsigned int m_HighPassSubBands;
   unsigned int m_TotalInputs;
   unsigned int m_ScaleFactor;
-  bool m_ApplyReconstructionFactors;
+  bool         m_ApplyReconstructionFactors;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION

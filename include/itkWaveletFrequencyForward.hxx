@@ -261,7 +261,7 @@ void WaveletFrequencyForward<TInputImage, TOutputImage, TWaveletFilterBank>
       // Spacing
       inputSpacingPerLevel[idim] = inputSpacingPerLevel[idim] * this->m_ScaleFactor;
       // Origin, the same.
-      inputOriginPerLevel[idim] = inputOriginPerLevel[idim] ;
+      // inputOriginPerLevel[idim] = inputOriginPerLevel[idim] ;
       // inputOriginPerLevel[idim] = inputOriginPerLevel[idim] / this->m_ScaleFactor;
       }
 

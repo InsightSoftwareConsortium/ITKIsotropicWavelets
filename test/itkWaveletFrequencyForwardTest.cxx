@@ -198,7 +198,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
     {
     double scaleFactorPerLevel = std::pow( static_cast<double>(forwardWavelet->GetScaleFactor()), level);
     unsigned int nOutput;
-    for (unsigned int i = 0; i < Dimension ; ++i)
+    for (unsigned int i = 0; i < Dimension; ++i)
     {
       expectedSize[i] = inputSize[i] / scaleFactorPerLevel;
       expectedOrigin[i] = inputOrigin[i];

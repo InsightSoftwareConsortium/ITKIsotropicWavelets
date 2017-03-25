@@ -279,9 +279,9 @@ private:
       }
   }
 
-  IndexType m_HalfIndex;
-  IndexType m_MinIndex;
-  IndexType m_MaxIndex;
+  IndexType     m_HalfIndex;
+  IndexType     m_MinIndex;
+  IndexType     m_MaxIndex;
   FrequencyType m_FrequencyOrigin;
   FrequencyType m_FrequencySpacing;
 };

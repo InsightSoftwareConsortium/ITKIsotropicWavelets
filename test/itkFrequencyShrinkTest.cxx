@@ -239,7 +239,7 @@ int runFrequencyShrinkTest( const std::string & inputImage, const std::string & 
 
   typedef itk::ChangeInformationImageFilter<ComplexImageType> ChangeInformationFilterType;
   typename ChangeInformationFilterType::Pointer changeInputInfoFilter = ChangeInformationFilterType::New();
-  typename ComplexImageType::PointType   origin_new ;
+  typename ComplexImageType::PointType   origin_new;
   origin_new.Fill(0);
   typename ComplexImageType::SpacingType spacing_new;
   spacing_new.Fill(1);
