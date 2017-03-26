@@ -130,7 +130,9 @@ int itkInd2SubTest( int, char* [] )
 
   // ITK index/size interface
   typedef itk::Index<D2> Index2DType;
-  itk::Size<D2> sizesItk2 = {{3, 4}};
+  itk::Size<D2> sizesItk2;
+  sizesItk2[0] = 3;
+  sizesItk2[1] = 4;
   std::vector<Array2DType> storeOutputIndex2D;
   for( unsigned int n = 0; n < sizesItk2[0] * sizesItk2[1]; ++n )
     {
