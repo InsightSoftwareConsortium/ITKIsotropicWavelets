@@ -151,8 +151,11 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
 
 #ifdef ITK_VISUALIZE_TESTS
   // Visualize and compare modified wavelets coefficients (and approx image)
-  for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
+  bool visualizeCoefficients = false;
+  if(visualizeCoefficients)
     {
+    for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
+      {
       itk::NumberToString< unsigned int > n2s;
       typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
       inverseFFT->SetInput(analysisWavelets[i]);
@@ -161,6 +164,7 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
       inverseFFT->SetInput(modifiedWavelets[i]);
       inverseFFT->Update();
       itk::Testing::ViewImage( inverseFFT->GetOutput(), "WaveletCoef. PhaseAnalyzed #" + n2s(i) );
+      }
     }
 #endif
 
