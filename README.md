@@ -10,9 +10,14 @@ Module (external) that adds Isotropic Wavelet analysis.
 
 ##TODO:
 
+- [ ] Add Generalized Riesz Filter Bank. Riesz of order N, including derivatives.
+- [ ] Add Steering framework.
+  - [ ] General case, U matrix from Chenouard, Unser.
+  - [ ] Simoncelli Equiangular case
 - [x] Add FrequencyBandImageFilter
-- [x] Add Monogenic Phase Analysis.
-- [x] Add Simoncelli and Shannon Isotropoic Wavelets.
+- [x] Add Monogenic Signal Phase Analysis.
+ - It now reproduces Held work as a brightness equalizator / local phase detector.
+- [x] Add Simoncelli, Shannon, Held and Vow Isotropoic Wavelets.
 - [x] Add Shrinker and Expander in spatial domain with no interpolation.
 - [x] Add StructureTensor.
 - [ ] Publish in InsightJournal about implementation and update handle.
