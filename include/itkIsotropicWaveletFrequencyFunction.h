@@ -110,15 +110,15 @@ protected:
   virtual ~IsotropicWaveletFrequencyFunction();
   virtual void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
+private:
+  ITK_DISALLOW_COPY_AND_ASSIGN(IsotropicWaveletFrequencyFunction);
+
   /** Number of HighPassSubBands in the high filter decomposition.
    * Default to just one HighPass filter (no subbands) */
   unsigned int m_HighPassSubBands;
   /** Cut off frequency for low and high pass frequency.
    * Default to 0.25 Hz ( pi/2 rad/s ) but can be changed in child classes. */
   FunctionValueType m_FreqCutOff;
-
-private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(IsotropicWaveletFrequencyFunction);
 };
 } // end namespace itk
 
