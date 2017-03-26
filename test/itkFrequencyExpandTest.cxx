@@ -40,34 +40,30 @@
 #include "itkViewImage.h"
 #endif
 
-
 template< unsigned int VDimension >
 int runFrequencyExpandTest(const std::string & inputImage, const std::string & outputImage)
 {
+  bool testPassed = true;
   const unsigned int Dimension = VDimension;
 
-  typedef double                              PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+  typedef double                             PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
-
   reader->Update();
 
   // Calculate mean value and subtract
   typedef itk::ZeroDCImageFilter< ImageType > ZeroDCFilterType;
   typename ZeroDCFilterType::Pointer zeroDCFilter = ZeroDCFilterType::New();
-
   zeroDCFilter->SetInput( reader->GetOutput() );
-
   zeroDCFilter->Update();
 
   // Perform FFT on input image.
   typedef itk::ForwardFFTImageFilter< ImageType > FFTFilterType;
   typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   // fftFilter->SetInput(subtractFilter->GetOutput());
-
   fftFilter->SetInput( zeroDCFilter->GetOutput() );
 
   typedef typename FFTFilterType::OutputImageType ComplexImageType;
@@ -75,24 +71,53 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
   // ExpandFrequency
   typedef itk::FrequencyExpandImageFilter< ComplexImageType > ExpandType;
   typename ExpandType::Pointer expandFilter = ExpandType::New();
-
   expandFilter->SetInput( fftFilter->GetOutput() );
 
   unsigned int expandFactor = 2;
   typename ExpandType::ExpandFactorsType expandFactors;
   expandFactors.Fill( expandFactor );
-
   expandFilter->SetExpandFactors( expandFactors );
   TEST_SET_GET_VALUE( expandFactors, expandFilter->GetExpandFactors() );
-
   expandFilter->Update();
+
+  // Test size and metadata
+  typename ComplexImageType::PointType   fftOrigin     = fftFilter->GetOutput()->GetOrigin();
+  typename ComplexImageType::SpacingType fftSpacing    = fftFilter->GetOutput()->GetSpacing();
+  typename ComplexImageType::PointType   expandOrigin  = expandFilter->GetOutput()->GetOrigin();
+  typename ComplexImageType::SpacingType expandSpacing = expandFilter->GetOutput()->GetSpacing();
+
+  if( expandOrigin != fftOrigin )
+    {
+    std::cerr << "Test failed!" << std::endl;
+    std::cerr << "Error in Origin (has changed afterExpand): " << std::endl;
+    std::cerr << "Expected: " << fftOrigin << ", but got "
+              << expandOrigin << std::endl;
+    testPassed = false;
+    }
+
+  if( expandSpacing != fftSpacing / expandFactor )
+    {
+    std::cerr << "Test failed!" << std::endl;
+    std::cerr << "Error in Spacing : " << std::endl;
+    std::cerr << "Expected: " << fftSpacing * expandFactor << ", but got "
+              << expandSpacing << std::endl;
+    testPassed = false;
+    }
+
+  // typename ComplexImageType::SpacingType defaultSpacing = {{1.0}};
+  // if( fftSpacing != defaultSpacing )
+  //   {
+  //   std::cerr << "Test failed!" << std::endl;
+  //   std::cerr << "After fft the spacing is not default: " << std::endl;
+  //   std::cerr << "Expected: " << defaultSpacing << ", but got "
+  //             << fftSpacing << std::endl;
+  //   testPassed = false;
+  //   }
 
   // InverseFFT
   typedef itk::InverseFFTImageFilter< ComplexImageType, ImageType > InverseFFTFilterType;
   typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
-
   inverseFFT->SetInput( expandFilter->GetOutput() );
-
   inverseFFT->Update();
 
   /***************** Hermitian property (sym) *****************************/
@@ -118,7 +143,9 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
       {
       inputSizeIsEven[dim] = (reader->GetOutput()->GetLargestPossibleRegion().GetSize()[dim] % 2 == 0);
       if (inputSizeIsEven[dim] == false)
+        {
         imageIsEven = false;
+        }
       }
     // Check that complex part is almost 0 after FFT and complex inverse FFT.
       {
@@ -207,7 +234,6 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
 
   TRY_EXPECT_NO_EXCEPTION( writer->Update() );
 
-
 #ifdef ITK_VISUALIZE_TESTS
   itk::Testing::ViewImage( zeroDCFilter->GetOutput(), "Original" );
   itk::Testing::ViewImage( inverseFFT->GetOutput(), "FrequencyExpander" );
@@ -231,7 +257,14 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
   // itk::Testing::ViewImage(complexToRealFilterExpand->GetOutput());
 #endif
 
-  return EXIT_SUCCESS;
+  if(testPassed)
+    {
+    return EXIT_SUCCESS;
+    }
+  else
+    {
+    return EXIT_FAILURE;
+    }
 }
 
 int itkFrequencyExpandTest( int argc, char* argv[] )
@@ -244,7 +277,7 @@ int itkFrequencyExpandTest( int argc, char* argv[] )
 
   const std::string inputImage  = argv[1];
   const std::string outputImage = argv[2];
-  
+
   const unsigned int ImageDimension = 3;
   typedef double                                  PixelType;
   typedef itk::Image< PixelType, ImageDimension > ImageType;
@@ -260,8 +293,7 @@ int itkFrequencyExpandTest( int argc, char* argv[] )
     FrequencyExpandImageFilterType::New();
 
   EXERCISE_BASIC_OBJECT_METHODS( expandFilter, FrequencyExpandImageFilter,
-    ImageToImageFilter );
-
+                                 ImageToImageFilter );
 
   unsigned int dimension = 3;
   if( argc == 4 )

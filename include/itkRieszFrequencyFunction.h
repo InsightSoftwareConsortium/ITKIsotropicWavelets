@@ -20,6 +20,7 @@
 
 #include "itkFrequencyFunction.h"
 #include <complex>
+#include <numeric>
 
 namespace itk
 {
@@ -71,13 +72,7 @@ public:
   /** Calculate magnitude (euclidean norm) of input point. **/
   inline double Magnitude(const TInput & point) const
   {
-    double accum(0);
-
-    for (size_t d = 0; d < VImageDimension; ++d)
-      {
-      accum += point[d] * point[d];
-      }
-    return sqrt(accum);
+    return sqrt(std::inner_product( point.Begin(), point.End(), point.Begin(), 0.0 ) );
   }
 
 protected:
