@@ -118,8 +118,8 @@ protected:
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyFilterBankGenerator);
 
-  unsigned int m_HighPassSubBands;
-  bool m_InverseBank;
+  unsigned int           m_HighPassSubBands;
+  bool                   m_InverseBank;
   WaveletFunctionPointer m_WaveletFunction;
 }; // end of class
 } // end namespace itk

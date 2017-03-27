@@ -164,7 +164,7 @@ int runWaveletFrequencyInverseTest( const std::string& inputImage,
   //TODO move it from here to Forward test.
 #ifdef ITK_VISUALIZE_TESTS
   std::vector<typename ComplexImageType::Pointer> waveletFilterBankPyramid =
-    forwardWavelet->GetWaveletFilterBankPyramid() ;
+    forwardWavelet->GetWaveletFilterBankPyramid();
   typedef itk::ComplexToRealImageFilter<ComplexImageType, ImageType> ComplexToRealFilterType;
   typename ComplexToRealFilterType::Pointer complexToRealFilter = ComplexToRealFilterType::New();
 
