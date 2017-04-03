@@ -34,7 +34,7 @@
 #endif
 
 template<unsigned int VDimension>
-int runRieszFrequencyFunctionTest()
+int runRieszFrequencyFunctionTest(unsigned int order)
 {
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
@@ -65,7 +65,7 @@ int runRieszFrequencyFunctionTest()
   // Init indice has to be sorted in descending order, example:(3,0,0)
   typename RieszFrequencyFunctionType::IndicesArrayType initIndice;
   initIndice.resize(Dimension);
-  initIndice[0] = 1;
+  initIndice[0] = order;
   typedef typename RieszFrequencyFunctionType::SetType SetType;
   SetType uniqueIndices;
   unsigned int positionToStartProcessing = 0;
@@ -83,7 +83,6 @@ int runRieszFrequencyFunctionTest()
 
   SetType allPermutations =
     RieszFrequencyFunctionType::ComputeAllPermutations(uniqueIndices);
-
   std::cout <<"AllPermutations: " << allPermutations.size() << std::endl; 
   for (typename SetType::const_iterator it = allPermutations.begin(); it != allPermutations.end(); ++it)
     {
@@ -104,9 +103,6 @@ int runRieszFrequencyFunctionTest()
     return EXIT_FAILURE;
     }
 
-
-
-
 //   // Get real part of complex image for visualization
 //   typedef itk::ComplexToRealImageFilter< ComplexImageType, ImageType > ComplexToRealFilter;
 //   ComplexToRealFilter::Pointer complexToRealFilter = ComplexToRealFilter::New();
@@ -126,22 +122,27 @@ int runRieszFrequencyFunctionTest()
 
 int itkRieszFrequencyFunctionTest( int argc, char* argv[] )
 {
-  if( argc != 2 )
+  if( argc < 2 || argc > 3 )
     {
     std::cerr << "Usage: " << argv[0]
-              << "dimension" << std::endl;
+              << "dimension [order]" << std::endl;
     return EXIT_FAILURE;
     }
 
   unsigned int dimension = atoi( argv[1] );
+  unsigned int order = 5;
+  if(argc == 3)
+    {
+    order = atoi( argv[2] );
+    }
 
   if( dimension == 2 )
     {
-      return runRieszFrequencyFunctionTest<2>();
+      return runRieszFrequencyFunctionTest<2>(order);
     }
   else if( dimension == 3 )
     {
-      return runRieszFrequencyFunctionTest<3>();
+      return runRieszFrequencyFunctionTest<3>(order);
     }
   else
     {
