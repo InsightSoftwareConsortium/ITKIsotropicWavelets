@@ -114,6 +114,14 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
     }
   return out;
 }
+template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
+unsigned int
+RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
+::ComputeNumberOfComponents(unsigned int order)
+{
+  return Self::Factorial(order + VImageDimension - 1 )
+    /( Self::Factorial(VImageDimension - 1)*Self::Factorial(order));
+}
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 void
