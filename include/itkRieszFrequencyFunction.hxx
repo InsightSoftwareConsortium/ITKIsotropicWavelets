@@ -38,42 +38,33 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
 }
 
-template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
-void
-RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
-::PrintSelf(std::ostream & os, Indent indent) const
-{
-  Superclass::PrintSelf(os, indent);
-  os << indent << "m_Order: " << this->m_Order << std::endl;
-}
-
-template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
-typename RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >::OutputComplexType
-RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
-::Evaluate(
-  const TInput & frequency_point,
-  const unsigned int & direction) const
-{
-  double magn(this->Magnitude(frequency_point));
-
-  if(itk::Math::FloatAlmostEqual(magn, 0.0) )
-    {
-    return OutputComplexType(0);
-    }
-  return OutputComplexType(0, static_cast<typename OutputComplexType::value_type>( -frequency_point[direction] / magn ) );
-}
+// template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
+// typename RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >::OutputComplexType
+// RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
+// ::Evaluate(
+//   const TInput & frequency_point,
+//   const unsigned int & direction) const
+// {
+//   double magn(this->Magnitude(frequency_point));
+//
+//   if(itk::Math::FloatAlmostEqual(magn, 0.0) )
+//     {
+//     return OutputComplexType(0);
+//     }
+//   return OutputComplexType(0, static_cast<typename OutputComplexType::value_type>( -frequency_point[direction] / magn ) );
+// }
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 typename RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >::OutputComplexType
 RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateWithIndices(
   const TInput & frequency_point,
-  const IndicesFixedArrayType & indices)
+  const IndicesArrayType & indices)
 {
-  this->SetIndices(indices);
   double magn(this->Magnitude(frequency_point));
 
   // Precondition:
+  // TODO: default precision ok? : https://itk.org/Doxygen/html/namespaceitk_1_1Math.html#ae9f0d6137957033eecb66c0e1356d022
   if(itk::Math::FloatAlmostEqual(magn, 0.0) )
     {
     return OutputComplexType(0);
@@ -88,9 +79,10 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
       freqProduct *= frequency_point[dim];
       }
     }
+  
 
   // rieszComponent = (-j)^{m_Order} * sqrt(m_Order!/(n1!n2!...nd!)) * w1^n1...wd^nd / ||w||^m_Order
-  return this->m_NormalizingIndicesComplexFactor
+  return this->ComputeNormalizingFactor(indices)
     * static_cast<typename OutputComplexType::value_type>( freqProduct
     / std::pow(magn, static_cast<double>(this->m_Order)) ) ;
 }
@@ -102,7 +94,6 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
   double magn(this->Magnitude(frequency_point));
 
-  // TODO: default precision ok? : https://itk.org/Doxygen/html/namespaceitk_1_1Math.html#ae9f0d6137957033eecb66c0e1356d022
   if(itk::Math::FloatAlmostEqual(magn, 0.0) )
     {
     return OutputComplexArrayType(0);
@@ -252,7 +243,6 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
         freqProduct *= frequency_point[dim];
         }
       }
-
     // rieszComponent = (-j)^{m_Order} * sqrt(m_Order!/(n1!n2!...nd!)) * w1^n1...wd^nd / ||w||^m_Order
     OutputComplexType outPerIndice = this->ComputeNormalizingFactor(indice);
     outPerIndice *= static_cast<typename OutputComplexType::value_type>(
@@ -261,6 +251,15 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
     }
 
   return out;
+}
+
+template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
+void
+RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
+::PrintSelf(std::ostream & os, Indent indent) const
+{
+  Superclass::PrintSelf(os, indent);
+  os << indent << "m_Order: " << this->m_Order << std::endl;
 }
 
 } // end namespace itk
