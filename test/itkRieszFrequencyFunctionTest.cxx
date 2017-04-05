@@ -64,7 +64,7 @@ int runRieszFrequencyFunctionTest(unsigned int inputOrder)
   std::cout <<"UniqueIndices: " << uniqueIndices.size() << std::endl; 
   for (typename SetType::const_iterator it = uniqueIndices.begin(); it != uniqueIndices.end(); ++it)
     {
-    std::cout << "(" ;
+    std::cout << "(";
     for (unsigned int i = 0; i<Dimension; ++i)
       {
       std::cout << (*it)[i]<< ", ";
@@ -77,7 +77,7 @@ int runRieszFrequencyFunctionTest(unsigned int inputOrder)
   std::cout <<"AllPermutations: " << allPermutations.size() << std::endl; 
   for (typename SetType::const_iterator it = allPermutations.begin(); it != allPermutations.end(); ++it)
     {
-    std::cout << "(" ;
+    std::cout << "(";
     for (unsigned int i = 0; i<Dimension; ++i)
       {
       std::cout << (*it)[i]<< ", ";
@@ -89,7 +89,10 @@ int runRieszFrequencyFunctionTest(unsigned int inputOrder)
   unsigned int actualNumberOfComponents = allPermutations.size();
   if (actualNumberOfComponents != expectedNumberOfComponents)
     {
-    std::cerr << "Error. NumberOfComponents for inputOrder: " << inputOrder << " ; actual: " << actualNumberOfComponents << " expected: " << expectedNumberOfComponents << " are not equal!" << std::endl;
+    std::cerr << "Error. NumberOfComponents for inputOrder: " << inputOrder 
+      << " ; actual: " << actualNumberOfComponents 
+      << " expected: " << expectedNumberOfComponents 
+      << " are not equal!" << std::endl;
     testPassed = false;
     }
 

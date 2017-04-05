@@ -28,8 +28,10 @@ namespace itk
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::RieszFrequencyFunction()
-: m_Order(1)
+: m_Order(0)
 {
+  // SetOrder also sets m_Indices.
+  this->SetOrder(1); 
 }
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
@@ -84,27 +86,9 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
   // rieszComponent = (-j)^{m_Order} * sqrt(m_Order!/(n1!n2!...nd!)) * w1^n1...wd^nd / ||w||^m_Order
   return this->ComputeNormalizingFactor(indices)
     * static_cast<typename OutputComplexType::value_type>( freqProduct
-    / std::pow(magn, static_cast<double>(this->m_Order)) ) ;
+    / std::pow(magn, static_cast<double>(this->m_Order)) );
 }
 
-template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
-typename RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >::OutputComplexArrayType
-RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
-::EvaluateArray(const TInput & frequency_point) const
-{
-  double magn(this->Magnitude(frequency_point));
-
-  if(itk::Math::FloatAlmostEqual(magn, 0.0) )
-    {
-    return OutputComplexArrayType(0);
-    }
-  OutputComplexArrayType out;
-  for( unsigned int dim = 0; dim < VImageDimension; ++dim)
-    {
-    out[dim] = OutputComplexType(0, static_cast<typename OutputComplexType::value_type>( -frequency_point[dim] / magn ) );
-    }
-  return out;
-}
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 unsigned int
 RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
@@ -222,13 +206,7 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
     return OutputComponentsType(RieszFrequencyFunction::ComputeNumberOfComponents(this->m_Order));
     }
 
-  // Calculate all the possible indices.
-  IndicesArrayType initIndice;
-  initIndice.resize(VImageDimension);
-  initIndice[0] = this->m_Order;
-  SetType uniqueIndices;
-  Self::ComputeUniqueIndices(initIndice, uniqueIndices);
-  SetType allIndices = Self::ComputeAllPermutations(uniqueIndices);
+  const SetType &allIndices = this->m_Indices;
 
   OutputComponentsType out;
   for(typename SetType::const_iterator it = allIndices.begin(); it != allIndices.end(); ++it)
@@ -260,6 +238,16 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
   Superclass::PrintSelf(os, indent);
   os << indent << "m_Order: " << this->m_Order << std::endl;
+  os << indent << "m_Indices:" << std::endl;
+  for (typename SetType::const_iterator it = this->m_Indices.begin(); it != this->m_Indices.end(); ++it)
+    {
+    std::cout << "(";
+    for (unsigned int i = 0; i<VImageDimension; ++i)
+      {
+      std::cout << (*it)[i] << ", ";
+      }
+    std::cout << ")" << std::endl;
+    }
 }
 
 } // end namespace itk
