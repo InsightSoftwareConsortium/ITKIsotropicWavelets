@@ -106,10 +106,17 @@ itk_add_test(NAME itkRieszFrequencyFunctionTest3D
   COMMAND IsotropicWaveletsTestDriver
   itkRieszFrequencyFunctionTest 3)
 # RieszGenerator
-itk_add_test(NAME itkRieszFrequencyFilterBankGeneratorTest
+itk_add_test(NAME itkRieszFrequencyFilterBankGeneratorTest1
   COMMAND IsotropicWaveletsTestDriver
   itkRieszFrequencyFilterBankGeneratorTest DATA{Input/collagen_64x64x16.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkRieszFrequencyFilterBankGeneratorTest.tiff
+  ${ITK_TEST_OUTPUT_DIR}/itkRieszFrequencyFilterBankGeneratorTest1.tiff
+  1
+  )
+itk_add_test(NAME itkRieszFrequencyFilterBankGeneratorTest2
+  COMMAND IsotropicWaveletsTestDriver
+  itkRieszFrequencyFilterBankGeneratorTest DATA{Input/collagen_64x64x16.tiff}
+  ${ITK_TEST_OUTPUT_DIR}/itkRieszFrequencyFilterBankGeneratorTest2.tiff
+  2
   )
 # Monogenic Analysis
 itk_add_test(NAME itkMonogenicSignalFrequencyImageFilterTest
