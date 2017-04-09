@@ -12,7 +12,7 @@ Module (external) that adds Isotropic Wavelet analysis.
 
 ##TODO:
 
-- [ ] Add Generalized Riesz Filter Bank. Riesz of order N, including derivatives.
+- [x] Add Generalized Riesz Filter Bank of order N (smoothed derivatives)
 - [ ] Add Steering framework.
   - [ ] General case, U matrix from Chenouard, Unser.
   - [ ] Simoncelli Equiangular case
