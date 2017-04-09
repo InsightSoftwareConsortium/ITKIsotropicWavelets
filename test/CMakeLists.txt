@@ -34,6 +34,7 @@ set(IsotropicWaveletsTests
     # Phase Analysis
     itkPhaseAnalysisSoftThresholdImageFilterTest.cxx
     # Riesz / Monogenic
+    itkRieszFrequencyFunctionTest.cxx
     itkRieszFrequencyFilterBankGeneratorTest.cxx
     itkMonogenicSignalFrequencyImageFilterTest.cxx
     # StructureTensor
@@ -97,11 +98,25 @@ itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorDownsampleTest2D
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorDownsampleTest2D.tiff
     2 2 "Held" 2)
 ## Riesz Related
+# RieszFunction
+itk_add_test(NAME itkRieszFrequencyFunctionTest2D
+  COMMAND IsotropicWaveletsTestDriver
+  itkRieszFrequencyFunctionTest 2)
+itk_add_test(NAME itkRieszFrequencyFunctionTest3D
+  COMMAND IsotropicWaveletsTestDriver
+  itkRieszFrequencyFunctionTest 3)
 # RieszGenerator
-itk_add_test(NAME itkRieszFrequencyFilterBankGeneratorTest
+itk_add_test(NAME itkRieszFrequencyFilterBankGeneratorTest1
   COMMAND IsotropicWaveletsTestDriver
   itkRieszFrequencyFilterBankGeneratorTest DATA{Input/collagen_64x64x16.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkRieszFrequencyFilterBankGeneratorTest.tiff
+  ${ITK_TEST_OUTPUT_DIR}/itkRieszFrequencyFilterBankGeneratorTest1.tiff
+  1
+  )
+itk_add_test(NAME itkRieszFrequencyFilterBankGeneratorTest2
+  COMMAND IsotropicWaveletsTestDriver
+  itkRieszFrequencyFilterBankGeneratorTest DATA{Input/collagen_64x64x16.tiff}
+  ${ITK_TEST_OUTPUT_DIR}/itkRieszFrequencyFilterBankGeneratorTest2.tiff
+  2
   )
 # Monogenic Analysis
 itk_add_test(NAME itkMonogenicSignalFrequencyImageFilterTest
@@ -193,7 +208,7 @@ itk_add_test(NAME itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/collagen_64x64x16.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand.tiff
-  2 5 ${DefaultWavelet} Apply )
+  2 3 ${DefaultWavelet} Apply )
 ###
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2D
   COMMAND IsotropicWaveletsTestDriver
@@ -204,7 +219,7 @@ itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand
   COMMAND IsotropicWaveletsTestDriver
   itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand.tiff
-  5 5 ${DefaultWavelet} Apply 2 )
+  5 2 ${DefaultWavelet} Apply 2 )
 #IsotropicWaveletFrequencyFunctionTest
 itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionTest
   COMMAND IsotropicWaveletsTestDriver itkIsotropicWaveletFrequencyFunctionTest
