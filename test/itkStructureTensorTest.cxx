@@ -110,7 +110,6 @@ int runStructureTensorTest()
   inputs.push_back( inputImage1 );
   inputs.push_back( inputImage2 );
   tensor->SetInputs( inputs );
-
   tensor->Update();
 
   typename StructureTensorType::OutputImageType::Pointer eigenImage = tensor->GetOutput();

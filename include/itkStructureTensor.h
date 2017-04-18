@@ -68,21 +68,20 @@ and
  *
  * \ingroup IsotropicWavelets
  */
-template<typename TInputImage>
+template<typename TInputImage,
+         typename TOutputImage = itk::Image<
+           itk::VariableSizeMatrix<typename TInputImage::PixelType>,
+           TInputImage::ImageDimension> >
 class StructureTensor:
-  public ImageToImageFilter<
-    TInputImage,
-    Image<itk::VariableSizeMatrix<double>, TInputImage::ImageDimension> >
+  public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Some convenient typedefs. */
   /** Standard class typedefs. */
-  typedef StructureTensor Self;
-  typedef ImageToImageFilter<
-    TInputImage,
-    Image<itk::VariableSizeMatrix<double>, TInputImage::ImageDimension> > Superclass;
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  typedef StructureTensor                                 Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   /** ImageDimension constants */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -98,9 +97,6 @@ public:
   /** Some convenient typedefs. */
   typedef typename Superclass::InputImageType   InputImageType;
   typedef typename Superclass::OutputImageType  OutputImageType;
-  typedef double                                FloatType;
-  typedef itk::Image<FloatType, ImageDimension> FloatImageType;
-  typedef typename FloatImageType::Pointer      FloatImagePointer;
 
   typedef typename InputImageType::Pointer        InputImagePointer;
   typedef typename InputImageType::ConstPointer   InputImageConstPointer;
@@ -114,14 +110,18 @@ public:
   typedef typename OutputImageType::RegionType   OutputImageRegionType;
   typedef typename OutputImageType::PixelType    OutputImagePixelType;
 
+  typedef double                                FloatType;
+  typedef itk::Image<FloatType, ImageDimension> FloatImageType;
+  typedef typename FloatImageType::Pointer      FloatImagePointer;
+
 #ifdef ITK_USE_CONCEPT_CHECKING
-  /// This ensure that PixelType is float||double, and not complex.
-  // itkConceptMacro( OutputPixelTypeIsFloatCheck,
-  //                ( Concept::IsFloatingPoint< typename TOutputImage::PixelType > ) );
+  // This ensure that PixelType is float||double, and not complex.
+  itkConceptMacro( InputPixelTypeIsFloatCheck,
+                 ( Concept::IsFloatingPoint< typename TInputImage::PixelType > ) );
 #endif
   typedef OutputImageType                                               EigenMatrixImageType;
-  typedef itk::VariableSizeMatrix<FloatType>                            EigenMatrixType;
-  typedef itk::Array<FloatType>                                         EigenValuesType;
+  typedef OutputImagePixelType                                          EigenMatrixType;
+  typedef itk::Array<typename OutputImagePixelType::ValueType>          EigenValuesType;
   typedef itk::SymmetricEigenAnalysis<EigenMatrixType, EigenValuesType> SymmetricEigenAnalysisType;
   typedef GaussianImageSource< FloatImageType >                         GaussianSourceType;
 
@@ -192,7 +192,6 @@ protected:
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(StructureTensor);
-  // User can select value
   unsigned int                         m_GaussianWindowRadius;
   FloatType                            m_GaussianWindowSigma;
   typename GaussianSourceType::Pointer m_GaussianSource;

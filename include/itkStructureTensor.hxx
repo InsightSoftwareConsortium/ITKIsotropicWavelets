@@ -23,25 +23,26 @@
 #include <itkMultiplyImageFilter.h>
 #include <numeric>
 // Eigen Calculations
-#include <itkSymmetricEigenAnalysis.h>
+#include "itkSymmetricEigenAnalysis.h"
+#include "itkImageDuplicator.h"
 // Convolution/Neighborhood Operations
 #include <itkConvolutionImageFilter.h>
 #include <itkConstantBoundaryCondition.h>
 #include "itkProgressReporter.h"
 namespace itk
 {
-template< typename TInputImage >
-StructureTensor< TInputImage >
+template< typename TInputImage, typename TOutputImage >
+StructureTensor< TInputImage, TOutputImage >
 ::StructureTensor()
-  : m_GaussianWindowRadius(2),
+: m_GaussianWindowRadius(2),
   m_GaussianWindowSigma(1.0)
 {
   this->m_GaussianSource = GaussianSourceType::New();
 }
 
-template< typename TInputImage >
+template< typename TInputImage, typename TOutputImage >
 void
-StructureTensor< TInputImage >
+StructureTensor< TInputImage, TOutputImage >
 ::SetInputs(const std::vector<InputImagePointer> & inputs)
 {
   if (inputs.size() <= 1)
@@ -56,9 +57,9 @@ StructureTensor< TInputImage >
     }
 }
 
-template< typename TInputImage >
+template< typename TInputImage, typename TOutputImage >
 void
-StructureTensor< TInputImage >
+StructureTensor< TInputImage, TOutputImage >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
@@ -67,9 +68,9 @@ StructureTensor< TInputImage >
   itkPrintSelfObjectMacro(GaussianSource);
 }
 
-template< typename TInputImage >
+template< typename TInputImage, typename TOutputImage >
 void
-StructureTensor< TInputImage >
+StructureTensor< TInputImage, TOutputImage >
 ::BeforeThreadedGenerateData()
 {
   unsigned int nInputs = this->GetNumberOfInputs();
@@ -144,9 +145,9 @@ StructureTensor< TInputImage >
  * Store them in the output.
  */
 
-template< typename TInputImage >
+template< typename TInputImage, typename TOutputImage >
 void
-StructureTensor< TInputImage >
+StructureTensor< TInputImage, TOutputImage >
 ::ThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread,
   ThreadIdType threadId)
@@ -226,9 +227,9 @@ StructureTensor< TInputImage >
     } // end outIt
 }
 
-template< typename TInputImage >
-typename StructureTensor< TInputImage >::InputImagePointer
-StructureTensor< TInputImage >
+template< typename TInputImage, typename TOutputImage >
+typename StructureTensor< TInputImage, TOutputImage >::InputImagePointer
+StructureTensor< TInputImage, TOutputImage >
 ::ComputeProjectionImage( unsigned int eigen_number) const
 {
   const unsigned int nInputs = this->GetNumberOfInputs();
@@ -240,9 +241,13 @@ StructureTensor< TInputImage >
 
   const OutputImageType* outputPtr = this->GetOutput();
   // Allocate output of this method:
-  InputImagePointer projectImage = InputImageType::New();
-  projectImage->SetRegions(outputPtr->GetLargestPossibleRegion());
-  projectImage->Allocate();
+  // Use duplicator to copy metadata as well.
+  typedef itk::ImageDuplicator< InputImageType > DuplicatorType;
+  typename DuplicatorType::Pointer duplicator = DuplicatorType::New();
+  duplicator->SetInputImage(this->GetInput(0));
+  duplicator->Update();
+  InputImagePointer projectImage = duplicator->GetOutput();
+  projectImage->FillBuffer(0);
 
   itk::ImageScanlineConstIterator<OutputImageType> outIt(
     outputPtr, outputPtr->GetLargestPossibleRegion());
@@ -283,17 +288,17 @@ StructureTensor< TInputImage >
   return projectImage;
 }
 
-template< typename TInputImage >
-typename StructureTensor< TInputImage >::InputImagePointer
-StructureTensor< TInputImage >
+template< typename TInputImage, typename TOutputImage >
+typename StructureTensor< TInputImage, TOutputImage >::InputImagePointer
+StructureTensor< TInputImage, TOutputImage >
 ::ComputeProjectionImageWithLargestResponse() const
 {
   return this->ComputeProjectionImage(this->GetNumberOfInputs() - 1);
 }
 
-template< typename TInputImage >
-typename StructureTensor< TInputImage >::InputImagePointer
-StructureTensor< TInputImage >
+template< typename TInputImage, typename TOutputImage >
+typename StructureTensor< TInputImage, TOutputImage >::InputImagePointer
+StructureTensor< TInputImage, TOutputImage >
 ::ComputeCoherencyImage() const
 {
   const unsigned int nInputs = this->GetNumberOfInputs();
