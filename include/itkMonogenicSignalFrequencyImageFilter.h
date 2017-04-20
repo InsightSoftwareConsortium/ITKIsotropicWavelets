@@ -20,7 +20,7 @@
 
 #include <itkImageToImageFilter.h>
 #include <itkVectorImage.h>
-#include <itkFrequencyImageRegionConstIteratorWithIndex.h>
+#include <itkFrequencyFFTLayoutImageRegionConstIteratorWithIndex.h>
 #include "itkRieszFrequencyFunction.h"
 namespace itk
 {
@@ -40,7 +40,7 @@ namespace itk
  */
 template< typename TInputImage,
   typename TFrequencyImageRegionConstIterator =
-    FrequencyImageRegionConstIteratorWithIndex< TInputImage> >
+    FrequencyFFTLayoutImageRegionConstIteratorWithIndex< TInputImage> >
 class MonogenicSignalFrequencyImageFilter:
   public ImageToImageFilter<
     TInputImage,
