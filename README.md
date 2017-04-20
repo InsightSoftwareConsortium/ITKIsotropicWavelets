@@ -71,6 +71,10 @@ but should work for the default VNL.
 ```
 itkFrequencyImageRegionConstIteratorWithIndex.h
 itkFrequencyImageRegionIteratorWithIndex.h
+itkFrequencyFFTLayoutImageRegionConstIteratorWithIndex.h
+itkFrequencyFFTLayoutImageRegionIteratorWithIndex.h
+itkFrequencyShiftedFFTLayoutImageRegionConstIteratorWithIndex.h
+itkFrequencyShiftedFFTLayoutImageRegionIteratorWithIndex.h
 ```
 
 ## FrequencyFunctions

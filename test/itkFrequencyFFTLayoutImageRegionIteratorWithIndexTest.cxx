@@ -16,7 +16,7 @@
  *
  *=========================================================================*/
 
-#include "itkFrequencyImageRegionIteratorWithIndex.h"
+#include "itkFrequencyFFTLayoutImageRegionIteratorWithIndex.h"
 #include "itkTestingMacros.h"
 
 #include <iostream>
@@ -25,16 +25,16 @@
 
 
 template< typename TImage >
-class itkFrequencyImageRegionIteratorWithIndexTester
+class itkFrequencyFFTLayoutImageRegionIteratorWithIndexTester
 {
 public:
   typedef TImage                          ImageType;
   typedef typename ImageType::IndexType   IndexType;
   typedef typename ImageType::SpacingType FrequencyType;
 
-  typedef itk::FrequencyImageRegionIteratorWithIndex<ImageType > IteratorType;
+  typedef itk::FrequencyFFTLayoutImageRegionIteratorWithIndex<ImageType > IteratorType;
 
-  explicit itkFrequencyImageRegionIteratorWithIndexTester( size_t inputImageSize )
+  explicit itkFrequencyFFTLayoutImageRegionIteratorWithIndexTester( size_t inputImageSize )
   {
     m_Image = ImageType::New();
 
@@ -150,9 +150,9 @@ public:
     IndexType halfIndexPlusOne;
     for (unsigned int dim = 0; dim < ImageType::ImageDimension; dim++)
       {
-      halfIndexPlusOne[dim] = it.GetHalfIndex()[dim] + 1;
+      halfIndexPlusOne[dim] = it.GetLargestPositiveFrequencyIndex()[dim] + 1;
       }
-    IndexType firstNegativeIndex = m_ImageIsOdd ? halfIndexPlusOne : it.GetHalfIndex();
+    IndexType firstNegativeIndex = m_ImageIsOdd ? halfIndexPlusOne : it.GetLargestPositiveFrequencyIndex();
     IndexType smallestNegativeFreqIndex;
     for (unsigned int dim = 0; dim < ImageType::ImageDimension; dim++)
       {
@@ -195,12 +195,12 @@ public:
       truthHalfIndex[dim] =
         m_Image->GetLargestPossibleRegion().GetIndex()[dim]
         + m_Image->GetLargestPossibleRegion().GetSize()[dim] / 2;
-      if( it.GetHalfIndex()[dim] != truthHalfIndex[dim] )
+      if( it.GetLargestPositiveFrequencyIndex()[dim] != truthHalfIndex[dim] )
         {
         std::cerr << "Test failed! " << std::endl;
-        std::cerr << "Error in GetHalfIndex()" << std::endl;
+        std::cerr << "Error in GetLargestPositiveFrequencyIndex()" << std::endl;
         std::cerr << "Expected: " << truthHalfIndex << ", but got "
-          << it.GetHalfIndex() << std::endl;
+          << it.GetLargestPositiveFrequencyIndex() << std::endl;
         return false;
         }
       }
@@ -236,9 +236,9 @@ public:
         return false;
         }
 
-      if( index == it.GetHalfIndex() &&
+      if( index == it.GetLargestPositiveFrequencyIndex() &&
           it.GetFrequency() != m_LargestFrequency &&
-          it.GetFrequencyBin() != it.GetHalfIndex() )
+          it.GetFrequencyBin() != it.GetLargestPositiveFrequencyIndex() )
         {
         std::cerr << "Test failed! " << std::endl;
         std::cerr << "Error in largest frequency bin" << std::endl;
@@ -260,7 +260,7 @@ private:
   bool                           m_ImageIsOdd;
 };
 
-int itkFrequencyImageRegionIteratorWithIndexTest( int, char* [] )
+int itkFrequencyFFTLayoutImageRegionIteratorWithIndexTest( int, char* [] )
 {
   bool testPassed = true; // let's be optimistic
 
@@ -273,7 +273,7 @@ int itkFrequencyImageRegionIteratorWithIndexTest( int, char* [] )
     size_t inputImageSize( 8 );
     std::cout << "Testing with EVEN Image< std::complex<float>, 3 > with size: "
       << inputImageSize << std::endl;
-    itkFrequencyImageRegionIteratorWithIndexTester<
+    itkFrequencyFFTLayoutImageRegionIteratorWithIndexTester<
       itk::Image< std::complex< FloatPixelType >, Dimension > > Tester( inputImageSize );
     if( Tester.TestIterator() == false )
       {
@@ -286,7 +286,7 @@ int itkFrequencyImageRegionIteratorWithIndexTest( int, char* [] )
     size_t inputImageSize( 10 );
     std::cout << "Testing with EVEN Image< char, 3 > with size: " <<
       inputImageSize << std::endl;
-    itkFrequencyImageRegionIteratorWithIndexTester<
+    itkFrequencyFFTLayoutImageRegionIteratorWithIndexTester<
       itk::Image< CharPixelType, Dimension > > Tester( inputImageSize );
     if( Tester.TestIterator() == false )
       {
@@ -299,7 +299,7 @@ int itkFrequencyImageRegionIteratorWithIndexTest( int, char* [] )
     size_t inputImageSize(9);
     std::cout << "Testing with ODD Image< char, 3 > with size: "
       << inputImageSize << std::endl;
-    itkFrequencyImageRegionIteratorWithIndexTester<
+    itkFrequencyFFTLayoutImageRegionIteratorWithIndexTester<
       itk::Image< CharPixelType, Dimension > > Tester( inputImageSize );
     if( Tester.TestIterator() == false )
       {

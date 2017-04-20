@@ -24,8 +24,8 @@
 
 namespace itk
 {
-template<class TImageType>
-FrequencyBandImageFilter< TImageType >
+template<typename TImageType, typename TFrequencyIteratorType >
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::FrequencyBandImageFilter()
   : m_LowFrequencyThreshold(0),
   m_HighFrequencyThreshold(0.5), // Nyquist in hertz
@@ -38,9 +38,9 @@ FrequencyBandImageFilter< TImageType >
 {
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter< TImageType >
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
@@ -52,9 +52,9 @@ FrequencyBandImageFilter< TImageType >
   os << indent << "   RadialBand? " << (this->m_RadialBand ? "Yes" : "No ") << std::endl;
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter< TImageType >
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::SetPassBand(const bool pass_low_threshold, const bool pass_high_threshold)
 {
   this->m_PassBand = true;
@@ -63,9 +63,9 @@ FrequencyBandImageFilter< TImageType >
   this->Modified();
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter< TImageType >
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::SetStopBand(const bool pass_low_threshold, const bool pass_high_threshold)
 {
   this->m_PassBand = false;
@@ -74,9 +74,9 @@ FrequencyBandImageFilter< TImageType >
   this->Modified();
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter< TImageType >
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::SetFrequencyThresholds( const FrequencyValueType& freq_low,
                           const FrequencyValueType& freq_high)
 {
@@ -86,25 +86,25 @@ FrequencyBandImageFilter< TImageType >
   this->Modified();
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter< TImageType >
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::SetLowFrequencyThresholdInRadians( const FrequencyValueType& freq_in_radians_low)
 {
   this->SetLowFrequencyThreshold( freq_in_radians_low * 0.5 * itk::Math::one_over_pi);
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter< TImageType >
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::SetHighFrequencyThresholdInRadians( const FrequencyValueType& freq_in_radians_high)
 {
   this->SetHighFrequencyThreshold( freq_in_radians_high * 0.5 * itk::Math::one_over_pi);
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter< TImageType >
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::SetFrequencyThresholdsInRadians( const FrequencyValueType& freq_in_radians_low,
                                    const FrequencyValueType& freq_in_radians_high)
 {
@@ -113,9 +113,9 @@ FrequencyBandImageFilter< TImageType >
     freq_in_radians_high * 0.5 * itk::Math::one_over_pi );
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter<TImageType>
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::BeforeThreadedGenerateData()
 {
   if( this->m_LowFrequencyThreshold > this->m_HighFrequencyThreshold)
@@ -127,9 +127,9 @@ FrequencyBandImageFilter<TImageType>
                        this->GetOutput()->GetLargestPossibleRegion() );
 }
 
-template<class TImageType>
+template<typename TImageType, typename TFrequencyIteratorType >
 void
-FrequencyBandImageFilter<TImageType>
+FrequencyBandImageFilter<TImageType, TFrequencyIteratorType> 
 ::ThreadedGenerateData(
   const ImageRegionType & outputRegionForThread,
   ThreadIdType )
