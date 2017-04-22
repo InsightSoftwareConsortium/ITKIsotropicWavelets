@@ -28,7 +28,7 @@ namespace itk
 /**
  * Default constructor
  */
-template< typename TImageType>
+template< typename TImageType >
 FrequencyExpandImageFilter< TImageType >
 ::FrequencyExpandImageFilter()
 {
@@ -42,7 +42,7 @@ FrequencyExpandImageFilter< TImageType >
 /**
  * Standard "PrintSelf" method
  */
-template< typename TImageType>
+template< typename TImageType >
 void
 FrequencyExpandImageFilter< TImageType >
 ::PrintSelf(std::ostream & os, Indent indent) const
@@ -61,7 +61,7 @@ FrequencyExpandImageFilter< TImageType >
 /**
  * Set expand factors from a single unsigned int
  */
-template< typename TImageType>
+template< typename TImageType >
 void
 FrequencyExpandImageFilter< TImageType >
 ::SetExpandFactors(
@@ -106,38 +106,38 @@ FrequencyExpandImageFilter< TImageType >
  * Region = Nr - 1  -----> Ind2Sub(Nr-1, [2,2,2]) = [1,1,1]
  * So, if the result of Ind2Sub is 0 we paste the positive frequencies, if 1, negative freq
  */
-template< typename TImageType>
+template< typename TImageType >
 void
 FrequencyExpandImageFilter< TImageType >
 ::GenerateData()
 {
   const ImageType * inputPtr  = this->GetInput();
-  ImagePointer      outputPtr = this->GetOutput();
+  ImagePointer outputPtr = this->GetOutput();
 
   // complex is initialized to zero directly.
 
   this->AllocateOutputs();
   outputPtr->FillBuffer(0);
-  typename TImageType::SizeType  inputSize = inputPtr->GetLargestPossibleRegion().GetSize();
+  typename TImageType::SizeType inputSize = inputPtr->GetLargestPossibleRegion().GetSize();
   typename TImageType::IndexType inputOriginIndex = inputPtr->GetLargestPossibleRegion().GetIndex();
-  typename TImageType::SizeType  outputSize = outputPtr->GetLargestPossibleRegion().GetSize();
-  FixedArray<bool, TImageType::ImageDimension> inputSizeIsEven;
+  typename TImageType::SizeType outputSize = outputPtr->GetLargestPossibleRegion().GetSize();
+  FixedArray< bool, TImageType::ImageDimension > inputSizeIsEven;
 
   const typename TImageType::IndexType indexRequested = outputPtr->GetLargestPossibleRegion().GetIndex();
 
   // Manage ImageDimension array linearly:{{{
-  FixedArray<unsigned int, ImageDimension> nsizes;
+  FixedArray< unsigned int, ImageDimension > nsizes;
   unsigned int numberOfRegions = 1;
-  for (unsigned int dim = 0; dim < ImageDimension; ++dim)
+  for ( unsigned int dim = 0; dim < ImageDimension; ++dim )
     {
     nsizes[dim]      = 2;
     numberOfRegions *= nsizes[dim];
     }
-  FixedArray<unsigned int, ImageDimension> subIndices;
+  FixedArray< unsigned int, ImageDimension > subIndices;
   /// }}}
 
   // Prepare filter to paste the different regions into output.
-  typedef itk::PasteImageFilter<ImageType> PasteFilterType;
+  typedef itk::PasteImageFilter< ImageType > PasteFilterType;
   typename PasteFilterType::Pointer pasteFilter = PasteFilterType::New();
   pasteFilter->SetSourceImage(inputPtr);
   pasteFilter->SetDestinationImage(outputPtr);
@@ -145,22 +145,25 @@ FrequencyExpandImageFilter< TImageType >
 
   typedef typename ImageType::RegionType RegionType;
   ProgressReporter progress(this, 0, numberOfRegions );
-
-  for (unsigned int n = 0; n < numberOfRegions; ++n)
+  for ( unsigned int n = 0; n < numberOfRegions; ++n )
     {
-    subIndices = Ind2Sub<ImageDimension>(n, nsizes);
+    subIndices = Ind2Sub< ImageDimension >(n, nsizes);
     RegionType zoneRegion;
-    typename ImageType::SizeType  zoneSize    = inputSize;
-    typename ImageType::IndexType inputIndex  = inputOriginIndex;
+    typename ImageType::SizeType zoneSize = inputSize;
+    typename ImageType::IndexType inputIndex = inputOriginIndex;
     typename ImageType::IndexType outputIndex = indexRequested;
     // We have to avoid break simmetry and the hermitian property.
     // So the output of a ComplexInverseFFT will generate complex images with non-zero imaginary part.
-    for (unsigned int dim = 0; dim < ImageDimension; ++dim)
+    for ( unsigned int dim = 0; dim < ImageDimension; ++dim )
       {
-      if(subIndices[dim] == 0) // positive frequencies
+      if ( subIndices[dim] == 0 ) // positive frequencies
+        {
         outputIndex[dim] = indexRequested[dim];
+        }
       else // negative frequencies
+        {
         outputIndex[dim] = indexRequested[dim] + outputSize[dim] - zoneSize[dim];
+        }
       }
     zoneRegion.SetIndex(inputIndex);
     zoneRegion.SetSize(zoneSize);
@@ -168,11 +171,11 @@ FrequencyExpandImageFilter< TImageType >
 
     pasteFilter->SetSourceRegion(zoneRegion);
     pasteFilter->SetDestinationIndex(outputIndex);
-    if (n == numberOfRegions - 1) // Graft the output.
+    if ( n == numberOfRegions - 1 ) // Graft the output.
       {
       pasteFilter->GraftOutput(outputPtr);
       pasteFilter->Update();
-      this->GraftOutput(pasteFilter->GetOutput());
+      this->GraftOutput(pasteFilter->GetOutput() );
       }
     else // update output
       {
@@ -186,7 +189,7 @@ FrequencyExpandImageFilter< TImageType >
 /**
  * GenerateInputRequesteRegion
  */
-template< typename TImageType>
+template< typename TImageType >
 void
 FrequencyExpandImageFilter< TImageType >
 ::GenerateInputRequestedRegion()
@@ -211,9 +214,8 @@ FrequencyExpandImageFilter< TImageType >
   const typename TImageType::IndexType & outputRequestedRegionStartIndex =
     outputPtr->GetRequestedRegion().GetIndex();
 
-  typename TImageType::SizeType  inputRequestedRegionSize;
+  typename TImageType::SizeType inputRequestedRegionSize;
   typename TImageType::IndexType inputRequestedRegionStartIndex;
-
   /**
    * inputRequestedSize = (outputRequestedSize / ExpandFactor) + 1)
    * The extra 1 above is to take care of edge effects when streaming.
@@ -222,11 +224,11 @@ FrequencyExpandImageFilter< TImageType >
     {
     inputRequestedRegionSize[i] =
       (SizeValueType)std::ceil( (double)outputRequestedRegionSize[i]
-                                / (double)m_ExpandFactors[i] ) + 1;
+        / (double)m_ExpandFactors[i] ) + 1;
 
     inputRequestedRegionStartIndex[i] =
       (SizeValueType)std::floor( (double)outputRequestedRegionStartIndex[i]
-                                 / (double)m_ExpandFactors[i] );
+        / (double)m_ExpandFactors[i] );
     }
 
   typename TImageType::RegionType inputRequestedRegion;
@@ -243,7 +245,7 @@ FrequencyExpandImageFilter< TImageType >
 /**
  * GenerateOutputInformation
  */
-template< typename TImageType>
+template< typename TImageType >
 void
 FrequencyExpandImageFilter< TImageType >
 ::GenerateOutputInformation()
@@ -273,16 +275,15 @@ FrequencyExpandImageFilter< TImageType >
   inputOrigin = inputPtr->GetOrigin();
 
   typename TImageType::SpacingType outputSpacing;
-  typename TImageType::SizeType    outputSize;
-  typename TImageType::IndexType   outputStartIndex;
-  typename TImageType::PointType   outputOrigin;
+  typename TImageType::SizeType outputSize;
+  typename TImageType::IndexType outputStartIndex;
+  typename TImageType::PointType outputOrigin;
 
   typename TImageType::SpacingType inputOriginShift;
-
   for ( unsigned int i = 0; i < TImageType::ImageDimension; i++ )
     {
     outputSpacing[i]    = inputSpacing[i] / m_ExpandFactors[i];
-    outputSize[i]       = inputSize[i] * static_cast<SizeValueType>(m_ExpandFactors[i]);
+    outputSize[i]       = inputSize[i] * static_cast< SizeValueType >(m_ExpandFactors[i]);
     outputStartIndex[i] = inputStartIndex[i];
     // outputStartIndex[i] = inputStartIndex[i] * (IndexValueType)m_ExpandFactors[i];
     // const double fraction = (double)( m_ExpandFactors[i] - 1 ) / (double)m_ExpandFactors[i];
