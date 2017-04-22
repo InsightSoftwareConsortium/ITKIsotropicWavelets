@@ -24,13 +24,15 @@
 #include <itkMultiplyImageFilter.h>
 #include <itkAddImageFilter.h>
 #include <itkImageDuplicator.h>
-#include <itkFrequencyExpandImageFilter.h>
-#include <itkFrequencyExpandViaInverseFFTImageFilter.h>
 #include <itkChangeInformationImageFilter.h>
 namespace itk
 {
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
-WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
+WaveletFrequencyInverse< TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::WaveletFrequencyInverse()
   : m_Levels(1),
   m_HighPassSubBands(1),
@@ -43,9 +45,13 @@ WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
   this->m_WaveletFilterBank = WaveletFilterBankType::New();
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
 std::pair<unsigned int, unsigned int>
-WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::InputIndexToLevelBand(unsigned int linear_index)
 {
   if (linear_index > this->m_TotalInputs - 1 || linear_index < 0)
@@ -62,8 +68,12 @@ WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
   return std::make_pair(level, band);
 };
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
-void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
+void WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::SetLevels(unsigned int n)
 {
   unsigned int current_inputs = 1 + this->m_Levels * this->m_HighPassSubBands;
@@ -82,8 +92,12 @@ void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
   this->SetNthOutput(0, this->MakeOutput(0));
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
-void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
+void WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::SetHighPassSubBands(unsigned int k)
 {
   if ( this->m_HighPassSubBands == k )
@@ -95,9 +109,13 @@ void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
   this->SetLevels(this->m_Levels);
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
 void
-WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::SetInputs(const std::vector<InputImagePointer> & inputs)
 {
   if (inputs.size() != this->m_TotalInputs)
@@ -111,17 +129,25 @@ WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
     }
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
 void
-WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::SetInputLowPass(const InputImagePointer & input_low_pass)
 {
   this->SetNthInput(this->m_TotalInputs - 1, input_low_pass);
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
 void
-WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::SetInputsHighPass(const std::vector<InputImagePointer> & inputs)
 {
   if (inputs.size() != this->m_TotalInputs - 1)
@@ -135,8 +161,12 @@ WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
     }
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank >
-void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
+void WaveletFrequencyInverse< TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
@@ -149,8 +179,12 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
   itkPrintSelfObjectMacro(WaveletFilterBank);
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
-void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
+void WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::GenerateOutputInformation()
 {
   // call the superclass's implementation of this method
@@ -189,16 +223,24 @@ void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
   outputPtr->SetDirection(inputDirection);
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
-void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
+void WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::GenerateOutputRequestedRegion(DataObject *refOutput)
 {
   // call the superclass's implementation of this method
   Superclass::GenerateOutputRequestedRegion(refOutput);
 }
 
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
-void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
+void WaveletFrequencyInverse<TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
@@ -279,8 +321,12 @@ void WaveletFrequencyInverse<TInputImage, TOutputImage, TWaveletFilterBank>
 //    - LP * Down -
 //                 - LP * Down
 // Where Down is a downsample.
-template<typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
-void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
+template<typename TInputImage,
+ typename TOutputImage,
+ typename TWaveletFilterBank,
+ typename TFrequencyExpandFilterType>
+void WaveletFrequencyInverse< TInputImage, TOutputImage,
+ TWaveletFilterBank, TFrequencyExpandFilterType>
 ::GenerateData()
 {
   this->AllocateOutputs();
@@ -300,9 +346,7 @@ void WaveletFrequencyInverse< TInputImage, TOutputImage, TWaveletFilterBank>
     {
     itkDebugMacro( << "LEVEL: " << level );
     /******** Upsample LowPass ********/
-    // typedef itk::FrequencyExpandViaInverseFFTImageFilter<InputImageType> ExpandFilterType;
-    typedef itk::FrequencyExpandImageFilter<InputImageType> ExpandFilterType;
-    typename ExpandFilterType::Pointer expandFilter = ExpandFilterType::New();
+    typename FrequencyExpandFilterType::Pointer expandFilter = FrequencyExpandFilterType::New();
     expandFilter->SetInput(low_pass_per_level);
     expandFilter->SetExpandFactors(this->m_ScaleFactor);
     expandFilter->Update();
