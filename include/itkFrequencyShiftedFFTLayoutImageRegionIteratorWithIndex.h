@@ -65,8 +65,8 @@ class FrequencyShiftedFFTLayoutImageRegionIteratorWithIndex:
 {
 public:
   /** Standard class typedefs. */
-  typedef FrequencyShiftedFFTLayoutImageRegionIteratorWithIndex  Self;
-  typedef ImageRegionIteratorWithIndex< TImage > Superclass;
+  typedef FrequencyShiftedFFTLayoutImageRegionIteratorWithIndex Self;
+  typedef ImageRegionIteratorWithIndex< TImage >                Superclass;
 
   /** Types inherited from the Superclass */
   typedef typename Superclass::IndexType             IndexType;
