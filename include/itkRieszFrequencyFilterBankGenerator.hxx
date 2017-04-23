@@ -83,7 +83,7 @@ void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequency
       this->m_Evaluator->EvaluateAllComponents(frequencyIt.GetFrequency());
     for (unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp)
       {
-      outputItList[comp].Set( evaluatedArray[comp] );
+      outputItList[comp].Set( static_cast<typename OutputImageType::PixelType>(evaluatedArray[comp]) );
       ++outputItList[comp];
       }
     itkDebugMacro(<< "w_vector: " << frequencyIt.GetFrequency()
