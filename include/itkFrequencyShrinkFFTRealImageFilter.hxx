@@ -15,10 +15,10 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef itkFrequencyShrinkImageFilter_hxx
-#define itkFrequencyShrinkImageFilter_hxx
+#ifndef itkFrequencyShrinkFFTRealImageFilter_hxx
+#define itkFrequencyShrinkFFTRealImageFilter_hxx
 
-#include <itkFrequencyShrinkImageFilter.h>
+#include <itkFrequencyShrinkFFTRealImageFilter.h>
 #include <itkProgressReporter.h>
 #include <numeric>
 #include <functional>
@@ -26,15 +26,14 @@
 #include <itkPasteImageFilter.h>
 #include <itkAddImageFilter.h>
 #include <itkMultiplyImageFilter.h>
-#include <itkImageLinearIteratorWithIndex.h>
 // #include <itkGaussianSpatialFunction.h>
 // #include <itkFrequencyImageRegionIteratorWithIndex.h>
 
 namespace itk
 {
 template<class TImageType>
-FrequencyShrinkImageFilter< TImageType >
-::FrequencyShrinkImageFilter()
+FrequencyShrinkFFTRealImageFilter< TImageType >
+::FrequencyShrinkFFTRealImageFilter()
 : m_ApplyBandFilter(false)
 {
   for ( unsigned int j = 0; j < ImageDimension; j++ )
@@ -56,7 +55,7 @@ FrequencyShrinkImageFilter< TImageType >
 
 template<class TImageType>
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkFFTRealImageFilter<TImageType>
 ::SetShrinkFactors(unsigned int factor)
 {
   unsigned int j;
@@ -84,7 +83,7 @@ FrequencyShrinkImageFilter<TImageType>
 
 template<class TImageType>
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkFFTRealImageFilter<TImageType>
 ::SetShrinkFactor(unsigned int i, unsigned int factor)
 {
   if ( m_ShrinkFactors[i] == factor )
@@ -112,42 +111,57 @@ FrequencyShrinkImageFilter<TImageType>
  */
 template<class TImageType>
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkFFTRealImageFilter<TImageType>
 ::GenerateData()
 {
   // Get the input and output pointers
-  const ImageType *           inputPtr = this->GetInput();
+  const ImageType * inputPtr = this->GetInput();
+
   typename ImageType::Pointer outputPtr = this->GetOutput();
   this->AllocateOutputs();
+  // outputPtr->SetBufferedRegion(outputPtr->GetLargestPossibleRegion());
   outputPtr->FillBuffer(0);
 
-  typename TImageType::SizeType inputSize = inputPtr->GetLargestPossibleRegion().GetSize();
-  // outputSize is Floor(inputSize/ShrinkFactor)
-  typename TImageType::SizeType outputSize = outputPtr->GetLargestPossibleRegion().GetSize();
-  FixedArray<bool, TImageType::ImageDimension> outputSizeIsEven;
-  FixedArray<bool, TImageType::ImageDimension> inputSizeIsEven;
-  // sizeInputRegionToCopy is the region to copy shared by all quadrants
-  // this excludes the zero bands (that are not shared for all quadrants)
-  // also excludes the nyquist band if output size is even.
-  // (nyquist bands need to be recalculated anyway)
-  // but includes the largest(+region)/smallest(-region) frequency bins if output size is odd.
-  typename TImageType::SizeType sizeInputRegionToCopy;
-  for ( unsigned int dim=0; dim < TImageType::ImageDimension; ++dim )
-  {
-    outputSizeIsEven[dim] = (outputSize[dim] % 2 == 0);
-    inputSizeIsEven[dim] = (inputSize[dim] % 2 == 0);
-    // -1 to exclude the zero band.
-    sizeInputRegionToCopy[dim]  = Math::Ceil<SizeValueType>(outputSize[dim]/2.0) - 1;
-  }
+  // Output is the sum of the four(2D) or eight(3D) quadrants.
+  // We can do it only because high freqs are removed.
+  // This filter will remove it by default a BandPass Filter.
+  if( this->m_ApplyBandFilter )
+    {
+    typename ImageType::SpacingType inputSpacing = this->GetInput()->GetSpacing();
+    const typename ImageType::SpacingType::ValueType spacingValue = inputSpacing[0];
+    // Check that the spacing is the same in all directions.
+      {
+      bool all_equal = true;
+      for (unsigned int i = 1; i < ImageDimension; ++i)
+        {
+        if(itk::Math::NotAlmostEquals(inputSpacing[i], spacingValue))
+          {
+          all_equal = false;
+          }
+        }
+      if(!all_equal)
+        {
+        itkExceptionMacro(<<"Spacing of input image is not the same in all directions " << inputSpacing);
+        }
+      }
 
+    this->m_FrequencyBandFilter->SetInput(this->GetInput());
+    this->m_FrequencyBandFilter->SetFrequencyThresholds(
+        this->m_FrequencyBandFilter->GetLowFrequencyThreshold() * spacingValue,
+        this->m_FrequencyBandFilter->GetHighFrequencyThreshold() * spacingValue );
+    this->m_FrequencyBandFilter->Update();
+    inputPtr = this->m_FrequencyBandFilter->GetOutput();
+    }
+
+  typename TImageType::SizeType inputSize  = inputPtr->GetLargestPossibleRegion().GetSize();
+  typename TImageType::SizeType outputSize = outputPtr->GetLargestPossibleRegion().GetSize();
   const typename TImageType::IndexType indexOrigOut = outputPtr->GetLargestPossibleRegion().GetIndex();
-  const typename TImageType::IndexType indexOrigIn= inputPtr->GetLargestPossibleRegion().GetIndex();
   // Manage ImageDimension array linearly:{{{
-  FixedArray<unsigned int , ImageDimension> nsizes;
+  FixedArray<unsigned int, ImageDimension> nsizes;
   unsigned int numberOfRegions = 1;
   for (unsigned int dim = 0; dim < ImageDimension; ++dim)
     {
-    nsizes[dim] = 2;
+    nsizes[dim]      = 2;
     numberOfRegions *= nsizes[dim];
     }
   FixedArray<unsigned int, ImageDimension> subIndices;
@@ -158,7 +172,7 @@ FrequencyShrinkImageFilter<TImageType>
   typename PasteFilterType::Pointer pasteFilter = PasteFilterType::New();
   pasteFilter->SetSourceImage(inputPtr);
   pasteFilter->SetDestinationImage(outputPtr);
-  pasteFilter->InPlaceOn();
+  // pasteFilter->InPlaceOn();
 
   typedef typename ImageType::RegionType RegionType;
   ProgressReporter progress(this, 0, numberOfRegions );
@@ -167,36 +181,22 @@ FrequencyShrinkImageFilter<TImageType>
     {
     subIndices = itk::Ind2Sub<ImageDimension>(n, nsizes);
     RegionType zoneRegion;
-    typename ImageType::SizeType zoneSize;
-    typename TImageType::IndexType inputIndex  = indexOrigIn;
+    typename ImageType::SizeType   zoneSize;
+    typename TImageType::IndexType inputIndex  = indexOrigOut;
     typename TImageType::IndexType outputIndex = indexOrigOut;
+    // Note that lowFreqsOfInput is inputSize/2 if outputSize is even, (outputSize - 1)/2 if odd.
     for (unsigned int dim = 0; dim < ImageDimension; ++dim)
       {
+      zoneSize[dim]    = outputSize[dim];
+      outputIndex[dim] = indexOrigOut[dim];
       if(subIndices[dim] == 0) // positive frequencies
         {
-        // + 1 to include the zero band that is in positive regions.
-        zoneSize[dim]    = sizeInputRegionToCopy[dim] + 1;
-        inputIndex[dim]  = indexOrigIn[dim];
-        outputIndex[dim] = indexOrigOut[dim];
+        inputIndex[dim] = indexOrigOut[dim];
         }
       else // negative frequencies
         {
-        zoneSize[dim]    = sizeInputRegionToCopy[dim];
-        inputIndex[dim]  = indexOrigIn[dim] + inputSize[dim]  - zoneSize[dim];
-        outputIndex[dim] = indexOrigOut[dim] + outputSize[dim] - zoneSize[dim];
+        inputIndex[dim] = indexOrigOut[dim] + inputSize[dim]  - zoneSize[dim];
         }
-      // if(subIndices[dim] == 0) // positive frequencies
-      //   {
-      //   zoneSize[dim]    = sizeInputRegionToCopy[dim];
-      //   inputIndex[dim]  = indexOrigOut[dim];
-      //   outputIndex[dim] = indexOrigOut[dim];
-      //   }
-      // else // negative frequencies
-      //   {
-      //   zoneSize[dim]    = sizeInputRegionToCopy[dim];
-      //   inputIndex[dim]  = indexOrigOut[dim] + inputSize[dim]  - zoneSize[dim];
-      //   outputIndex[dim] = indexOrigOut[dim] + outputSize[dim] - zoneSize[dim];
-      //   }
       }
     zoneRegion.SetIndex(inputIndex);
     zoneRegion.SetSize(zoneSize);
@@ -204,16 +204,33 @@ FrequencyShrinkImageFilter<TImageType>
 
     pasteFilter->SetSourceRegion(zoneRegion);
     pasteFilter->SetDestinationIndex(outputIndex);
+    pasteFilter->Update();
+    // Sum the quadrants.
+    typedef itk::AddImageFilter<TImageType, TImageType> AddFilterType;
+    typename AddFilterType::Pointer addFilter = AddFilterType::New();
+    addFilter->SetInput1(outputPtr);
+    addFilter->SetInput2(pasteFilter->GetOutput());
+    addFilter->InPlaceOn();
     if (n == numberOfRegions - 1) // Graft the output.
       {
-      pasteFilter->GraftOutput(outputPtr);
-      pasteFilter->Update();
-      this->GraftOutput(pasteFilter->GetOutput());
+      addFilter->Update();
+      outputPtr = addFilter->GetOutput();
+      typedef itk::MultiplyImageFilter<TImageType, TImageType, TImageType> MultiplyFilterType;
+      typename MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
+      multiplyFilter->SetInput(outputPtr);
+      multiplyFilter->SetConstant(static_cast<typename TImageType::PixelType::value_type>(1.0 / numberOfRegions));
+
+      multiplyFilter->GraftOutput(outputPtr);
+      multiplyFilter->Update();
+      this->GraftOutput(multiplyFilter->GetOutput());
+      // addFilter->GraftOutput(outputPtr);
+      // addFilter->Update();
+      // this->GraftOutput(addFilter->GetOutput());
       }
-    else // update output
+    else // update
       {
-      pasteFilter->Update();
-      outputPtr = pasteFilter->GetOutput();
+      addFilter->Update();
+      outputPtr = addFilter->GetOutput();
       }
     progress.CompletedPixel();
     }
@@ -221,156 +238,88 @@ FrequencyShrinkImageFilter<TImageType>
   /** Ensure image is hermitian in the Nyquist bands (even)
    * Example: Image 2D size 8, index = [0,...,7]
    * Each quadrant is a region pasted from the original image. The index refers to the input image of size 8. The input image is hermitian, so:
-   *   0               0
-   * 1 == 7          1 == 3
-   * 2 == 6            2      <-2/6 is Nyq in new image.
+   *   0
+   * 1 == 7
+   * 2 == 6  <- 6 is Nyq in new image.
    * 3 == 5
    *   4  <- Nyq original
    * Hermitian table, using the equivalences above. (assuming imag part zero to avoid working with conjugates) . Note that index 6 is the new Nyquist.
-   *    0    1  | 2/6 |  7
-   * 0 0,0  1,0 | 2,0 | 1,0
-   * 1 0,1  1,1 | 2,1 | 1,1
-   * ----------------------
-   2/6 0,2  1,2 | 2,2 | 1,2
-   * ----------------------
-   * 7 0,1  1,1 | 2,1 | 1,1
-   *
-   * Size = 9x9, [0,...,8], ShrinkedSize = 5x5
-   *   0              0
-   * 1 == 8        1 == 4
-   * 2 == 7        2 == 3
-   * 3 == 6
-   * 4 == 5
-   *    0    1  |  2    7  |  8
-   * 0 0,0  1,0 | 2,0  2,0 | 1,0
-   * 1 0,1  1,1 | 2,1  2,1 | 1,1
-   * ---------------------------
-  *  2 0,2  1,2 | 2,2  2,2 | 1,2
-   * 7 0,2  1,2 | 2,2  2,2 | 1,2
-   * ---------------------------
-   * 8 0,1  1,1 | 2,1  2,1 | 1,1
-   *
-   * Size = 7x7, [0,...,6], ShrinkedSize = 4x4
-   *   0              0
-   * 1 == 6         1 == 3
-   * 2 == 5           2
-   * 3 == 4
-   *
-   *    0    1  | 2/5 |  6
-   * 0 0,0  1,0 | 2,0 | 1,0
-   * 1 0,1  1,1 | 2,1 | 1,1
-   * ----------------------
-   2/5 0,2  1,2 | 2,2 | 1,2
-   * ----------------------
-   * 6 0,1  1,1 | 2,1 | 1,1
-   *
-   * Size = 10x7, [0,...,9], [0,...6], ShrinkedSize = 5x4
-   * {7}  0         0      {10}  0       0
-   *   1 == 6    1 == 3       1 == 9  1 == 4
-   *   2 == 5       2         2 == 8  2 == 3
-   *   3 == 4                 3 == 7
-   *                          4 == 6
-   *                            5
-   *    0    1  | 2/5 |  6
-   * 0 0,0  1,0 | 2,0 | 1,0
-   * 1 0,1  1,1 | 2,1 | 1,1
-   * ----------------------
-   * 2 0,2  1,2 | 2,2 | 1,2
-   * 8 0,2  1,2 | 2,2 | 1,2
-   * ----------------------
-   * 9 0,1  1,1 | 2,1 | 1,1
+   *    0    1  |  6    7
+   * 0 0,0  1,0 | 2,0  1,0
+   * 1 0,1  1,1 | 2,1  1,1
+   * ---------------------
+   * 6 0,2  1,2 | 2,2  1,2
+   * 7 0,1  1,1 | 2,1  1,1
    * /
   */
 // Fix Nyquist band. Folding results for hermiticity.
-// Nyquist band has to be recalculated for the case that the outputSize is even. Nyquist band is shared between + and - regions, even though only the + region is stored. (The - region value can be calculated with the conjugate from the postiive one)
-    {
-    // typedef ImageDimension - 1 NyquistDimension1;
-    // typedef itk::Size<NyquistDimension1> NyquistSizeType;
-    // typedef itk::ImageRegion<NyquistDimension1> NyquistImageRegion;
-    for(unsigned int dim = 0; dim < ImageDimension; ++dim)
-      {
-      // Nyquist band/slice only exist on even dimension.
-      if(!outputSizeIsEven[dim])
-        {
-        continue;
-        }
+  // {
+  // typename TImageType::IndexType index = indexOrigOut + lowFreqsOfInput;
+  // typename TImageType::IndexType modIndex = indexOrigOut + lowFreqsOfInput;
+  // // typename TImageType::SizeType endSize = outputSize - lowFreqsOfInput;
+  // for(unsigned int dim = 0; dim < ImageDimension; ++dim)
+  //   {
+  //   for(int i = 1; i < (int)lowFreqsOfInput[dim]; ++i)
+  //     {
+  //     index = indexOrigOut + lowFreqsOfInput;
+  //     modIndex = indexOrigOut + lowFreqsOfInput;
+  //     index.SetElement(dim, indexOrigOut[dim] + i );
+  //     modIndex.SetElement(dim, indexOrigOut[dim] + outputSize[dim] - i );
+  //     typename TImageType::PixelType value =
+  //       std::conj(outputPtr->GetPixel(index));
+  //     outputPtr->SetPixel(modIndex, value);
+  //     // The stored nyquiist value corresponds to  the positive side.
+  //     outputPtr->SetPixel(index, value);
+  //     }
+  //     // The stored nyquiist value corresponds to  the positive side.
+  //     index.SetElement(dim, indexOrigOut[dim]);
+  //     outputPtr->SetPixel(index, std::conj(outputPtr->GetPixel(index)));
+  //   }
+  // }
 
-      typename ImageType::SizeType nyquistRegionSize;
-      typename ImageType::IndexType nyquistRegionIndex;
-      typename ImageType::SizeType positiveRegionSize;
-      typename ImageType::IndexType positiveRegionIndex;
-      typename ImageType::SizeType negativeRegionSize;
-      typename ImageType::IndexType negativeRegionIndex;
-      for(unsigned int dimInner = 0; dimInner < ImageDimension; ++dimInner)
-        {
-        if(dimInner == dim)
-          {
-          nyquistRegionSize[dimInner] = 1;
-          positiveRegionSize[dimInner] = 1;
-          negativeRegionSize[dimInner] = 1;
-          nyquistRegionIndex[dimInner] = indexOrigOut[dimInner] + outputSize[dimInner]/2;
-          positiveRegionIndex[dimInner] = indexOrigIn[dimInner] + (sizeInputRegionToCopy[dimInner] + 1);
-          negativeRegionIndex[dimInner] = indexOrigIn[dimInner] +
-            inputSize[dimInner] - (sizeInputRegionToCopy[dimInner] + 2);
-          }
-        else
-          {
-          nyquistRegionSize[dimInner] = outputSize[dimInner];
-          positiveRegionSize[dimInner] = outputSize[dimInner];
-          negativeRegionSize[dimInner] = outputSize[dimInner];
-          nyquistRegionIndex[dimInner] = indexOrigOut[dimInner];
-          positiveRegionIndex[dimInner] = indexOrigIn[dimInner];
-          negativeRegionIndex[dimInner] = indexOrigIn[dimInner] +
-            inputSize[dimInner] - outputSize[dimInner];
-          }
-        }
-
-      typedef itk::ImageLinearIteratorWithIndex< ImageType > ImageIterator;
-      typedef itk::ImageLinearConstIteratorWithIndex< ImageType > ImageConstIterator;
-      unsigned int iteratorLineDirection = (dim + 1) % ImageDimension;
-      RegionType nyquistRegion;
-      nyquistRegion.SetSize(nyquistRegionSize);
-      nyquistRegion.SetIndex(nyquistRegionIndex);
-      ImageIterator nyquistIt(outputPtr, nyquistRegion);
-      nyquistIt.SetDirection(iteratorLineDirection);
-      nyquistIt.GoToBegin();
-
-      RegionType positiveRegion;
-      positiveRegion.SetSize(positiveRegionSize);
-      positiveRegion.SetIndex(positiveRegionIndex);
-      ImageConstIterator positiveIt(inputPtr, positiveRegion);
-      positiveIt.SetDirection(iteratorLineDirection);
-      positiveIt.GoToBegin();
-
-      RegionType negativeRegion;
-      negativeRegion.SetSize(negativeRegionSize);
-      negativeRegion.SetIndex(negativeRegionIndex);
-      ImageConstIterator negativeIt(inputPtr, negativeRegion);
-      negativeIt.SetDirection(iteratorLineDirection);
-      negativeIt.GoToBegin();
-      negativeIt.GoToReverseBeginOfLine();
-      while( !nyquistIt.IsAtEnd() )
-        {
-        while( !nyquistIt.IsAtEndOfLine() )
-          {
-          nyquistIt.Set(
-            (positiveIt.Get()
-             + std::conj(negativeIt.Get())
-            ) * static_cast<typename ImageType::PixelType::value_type>(0.5) );
-          ++nyquistIt; ++positiveIt;
-          --negativeIt;
-          }
-        nyquistIt.NextLine(); positiveIt.NextLine();
-        negativeIt.NextLine();
-        negativeIt.GoToReverseBeginOfLine();
-        }
-      }
-    }
+  // // Apply a gaussian window of the size of the output.
+  // typedef itk::GaussianSpatialFunction<double, ImageDimension> FunctionType;
+  // typename FunctionType::Pointer gaussian = FunctionType::New();
+  // typedef FixedArray< double, ImageDimension > ArrayType;
+  // ArrayType m_Mean;
+  // ArrayType m_Sigma;
+  // double m_Scale = 1.0;
+  // bool m_Normalized = true;
+  // for (unsigned int i = 0; i<ImageDimension; ++i)
+  //   {
+  //   m_Mean[i] = indexOrigOut[i];
+  //   // 6.0 is equivalent to 3sigmas (border values are close to zero)
+  //   // m_Sigma[i] = outputSize[i]/(2*3.0);
+  //   m_Sigma[i] = outputSize[i]/(2.0*2.35);
+  //   }
+  // gaussian->SetSigma(m_Sigma);
+  // gaussian->SetMean(m_Mean);
+  // gaussian->SetScale(m_Scale);
+  // gaussian->SetNormalized(m_Normalized);
+  //
+  // // Create an iterator that will walk the output region
+  // typedef itk::FrequencyImageRegionIteratorWithIndex< TImageType > OutputIterator;
+  // OutputIterator outIt = OutputIterator( outputPtr,
+  //     outputPtr->GetRequestedRegion() );
+  // outIt.GoToBegin();
+  // while( !outIt.IsAtEnd() )
+  //   {
+  //   typename TImageType::IndexType ind = outIt.GetFrequencyBin();
+  //   typename FunctionType::InputType f;
+  //   for (unsigned int i = 0; i<ImageDimension; ++i)
+  //     {
+  //     f[i] = static_cast<typename FunctionType::InputType::ValueType>(ind[i]);
+  //     }
+  //   const double value = gaussian->Evaluate(f);
+  //   // Set the pixel value to the function value
+  //   outIt.Set( outIt.Get() * static_cast<typename TImageType::PixelType::value_type>(value) );
+  //   ++outIt;
+  //   }
 }
 
 template<class TImageType>
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkFFTRealImageFilter<TImageType>
 ::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
@@ -387,7 +336,7 @@ FrequencyShrinkImageFilter<TImageType>
 
 template<class TImageType>
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkFFTRealImageFilter<TImageType>
 ::GenerateOutputInformation()
 {
   // Call the superclass' implementation of this method
@@ -462,7 +411,7 @@ FrequencyShrinkImageFilter<TImageType>
 
 template<class TImageType>
 void
-FrequencyShrinkImageFilter< TImageType >
+FrequencyShrinkFFTRealImageFilter< TImageType >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
