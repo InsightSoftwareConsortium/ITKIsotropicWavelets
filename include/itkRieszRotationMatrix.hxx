@@ -93,6 +93,43 @@ RieszRotationMatrix< T, VImageDimension >
 }
 
 template<typename T, unsigned int VImageDimension>
+typename RieszRotationMatrix< T, VImageDimension >::IndicesMatrix
+RieszRotationMatrix< T, VImageDimension >
+::GenerateIndicesMatrix()
+{
+  typedef std::vector<unsigned int>     IndicesArrayType;
+  typedef std::vector<IndicesArrayType> IndicesVector;
+  typedef std::vector<IndicesVector>    IndicesMatrixRow;
+  typedef std::vector<IndicesMatrixRow> IndicesMatrix;
+  IndicesMatrix allIndicesPairs( this->m_Components, // number of rows
+    IndicesMatrixRow(this->m_Components, // number of columns
+       IndicesVector(2, // pair of indices
+         IndicesArrayType(VImageDimension) // dimension of the indices.
+         )));
+
+  typedef std::set<IndicesArrayType, std::greater<IndicesArrayType> > SetType;
+  SetType allIndices = itk::utils::ComputeAllPossibleIndices<IndicesArrayType, VImageDimension>(this->m_Order);
+
+  // Populate IndicesMatrix.
+    {
+    unsigned int ind_i = 0, ind_j = 0;
+    for(typename SetType::const_iterator itN = allIndices.begin(); itN != allIndices.end(); ++itN)
+      {
+      ind_j = 0;
+      for(typename SetType::const_iterator itM = allIndices.begin(); itM != allIndices.end(); ++itM)
+        {
+        allIndicesPairs[ind_i][ind_j][0] = *itN;
+        allIndicesPairs[ind_i][ind_j][1] = *itM;
+        ++ind_j;
+        }
+      ++ind_i;
+      }
+    }
+
+  return allIndicesPairs;
+}
+
+template<typename T, unsigned int VImageDimension>
 const typename RieszRotationMatrix< T, VImageDimension >::InternalMatrixType &
 RieszRotationMatrix< T, VImageDimension >
 ::ComputeSteerableMatrix()
@@ -107,43 +144,19 @@ RieszRotationMatrix< T, VImageDimension >
   if(this->m_Order == 1)
     {
     S = this->GetSpatialRotationMatrix().GetVnlMatrix();
-    // return this->GetVnlMatrix();
+    return this->GetVnlMatrix();
     }
 
-  //Create map between i,j matrix indices and n,m multiindex.
-  typedef std::vector<unsigned int> IndicesArrayType;
-  typedef std::vector<IndicesArrayType> IndicesVector;
-  typedef std::vector<IndicesVector> IndicesMatrixRow;
-  typedef std::vector<IndicesMatrixRow> IndicesMatrix;
-  IndicesMatrix allIndicesPairs( this->m_Components, // number of rows
-    IndicesMatrixRow(this->m_Components, // number of columns
-       IndicesVector(2, // pair of indices
-         IndicesArrayType(VImageDimension) // dimension of the indices.
-         )));
-
   typedef std::set<IndicesArrayType, std::greater<IndicesArrayType> > SetType;
-  SetType allIndices = itk::utils::ComputeAllPossibleIndices<IndicesArrayType, VImageDimension>(this->m_Order);
+
+  //Create map between i,j matrix indices and n,m multiindex.
+  IndicesMatrix allIndicesPairs(this->GenerateIndicesMatrix());
+
   std::vector<SetType> allIndicesOrder(this->m_Order + 1);
   for (unsigned int ord = 1; ord < this->m_Order + 1; ++ord)
     {
     allIndicesOrder[ord] = itk::utils::ComputeAllPossibleIndices<IndicesArrayType, VImageDimension>(ord);
     }
-
-  // Populate IndicesMatrix.
- {
-  unsigned int ind_i = 0, ind_j = 0;
-  for(typename SetType::const_iterator itN = allIndices.begin(); itN != allIndices.end(); ++itN)
-    {
-    ind_j = 0;
-    for(typename SetType::const_iterator itM = allIndices.begin(); itM != allIndices.end(); ++itM)
-      {
-      allIndicesPairs[ind_i][ind_j][0] = *itN;
-      allIndicesPairs[ind_i][ind_j][1] = *itM;
-      ++ind_j;
-      }
-    ++ind_i;
-    }
- }
 
   for (unsigned int i = 0; i<this->m_Components; ++i)
     {
@@ -310,7 +323,7 @@ RieszRotationMatrix< T, VImageDimension >
           std::cout <<"    ";
           }
 
-        std::cout <<"\n InitialValidIndices" << std::endl;;
+        std::cout <<"\n InitialValidIndices" << std::endl;
         for (unsigned int dim = 0; dim<VImageDimension; ++dim)
           {
           std::cout <<"dim:" <<dim<< std::endl;
@@ -323,7 +336,7 @@ RieszRotationMatrix< T, VImageDimension >
               }
             std::cout <<")";
             }
-          std::cout << std::endl;;
+          std::cout << std::endl;
           }
         } // end Debug
       } // end j
