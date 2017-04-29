@@ -57,7 +57,7 @@ namespace utils
     std::set< TIndicesArrayType, std::greater<TIndicesArrayType> > &uniqueIndices,
     unsigned int init = 0 )
   {
-  unsigned int subIndiceSize = subIndice.size();
+  unsigned int subIndiceSize = static_cast<unsigned int>( subIndice.size() );
   if (init == subIndiceSize - 1)
     {
     return;
@@ -125,7 +125,7 @@ namespace utils
   TIndicesArrayType indice(VImageDimension);
   indice[0] = order;
   itk::utils::ComputeUniqueIndices<TIndicesArrayType, VImageDimension>(
-      indice, uniqueIndices);
+      indice, uniqueIndices, 0);
   return itk::utils::ComputeAllPermutations<TIndicesArrayType>(uniqueIndices);
   }
 

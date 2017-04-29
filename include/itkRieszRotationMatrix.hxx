@@ -272,7 +272,7 @@ RieszRotationMatrix< T, VImageDimension >
             else
               {
               rotationFactor *= std::pow(
-                this->m_SpatialRotationMatrix[kIndice][dim], k );
+                this->m_SpatialRotationMatrix[kIndice][dim], static_cast<int>(k) );
               }
             }
           }
