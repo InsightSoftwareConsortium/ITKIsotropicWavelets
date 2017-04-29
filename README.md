@@ -13,9 +13,9 @@ Module (external) that adds Isotropic Wavelet analysis.
 ##TODO:
 
 - [x] Add Generalized Riesz Filter Bank of order N (smoothed derivatives)
-- [ ] Add Steering framework.
-  - [ ] General case, U matrix from Chenouard, Unser.
-  - [ ] Simoncelli Equiangular case
+- [x] Add Steering framework (RieszRotationMatrix).
+  - [NA] General case, U matrix from Chenouard, Unser.
+  - [NA] Simoncelli Equiangular case
 - [x] Add FrequencyBandImageFilter
 - [x] Add Monogenic Signal Phase Analysis.
  - It now reproduces Held work as a brightness equalizator / local phase detector.
@@ -41,10 +41,10 @@ spatial resolution (the window) can be modulated, retaining more
 information from the original image.
 
 In this implementation only IsotropicWavelet are considered. These are
-non-separable wavelets that depend on the modulo of the frequency vector.
-There are only 4 or 5 Mother Wavelets developed in the literature,
-I implemented 2 of them here from respective papers (see specific docs for more info).
-The mean advantage of IsotropicWavelets is that they are steerable, as
+wavelets that depend on the modulo of the frequency vector.
+There are not many Mother Isotropic Wavelets developed in the literature,
+I implemented 4 of them here from respective papers (see specific docs for more info).
+The main advantage of IsotropicWavelets is that they are steerable, as
 shown by Simoncelli, steering the wavelet at each location provides
 adaptability to different signal, and can be used along PCA methods to
 select the best matching 'steer' at each location and scale.
@@ -102,11 +102,24 @@ itkVowIsotropicWavelet.h
 itkVowIsotropicWavelet.hxx
 ```
 
+## Wavelets Generators (use functions to create ImageSources)
+
+```
+itkWaveletFrequencyFilterBankGenerator.h
+itkWaveletFrequencyFilterBankGenerator.hxx
+```
+
 ### Riesz Function (FrequencyFunction):
 
 ```
 itkRieszFrequencyFunction.h
 itkRieszFrequencyFunction.hxx
+```
+
+## Riesz Generator (use functions to create ImageSources)
+```
+itkRieszFrequencyFilterBankGenerator.h
+itkRieszFrequencyFilterBankGenerator.hxx
 ```
 
 ## Frequency Related Image Filters:
@@ -139,16 +152,6 @@ itkFrequencyBandImageFilter.h
 itkFrequencyBandImageFilter.hxx
 ```
 
-## Generators (use functions to create ImageSources)
-
-```
-itkWaveletFrequencyFilterBankGenerator.h
-itkWaveletFrequencyFilterBankGenerator.hxx
-
-itkRieszFrequencyFilterBankGenerator.h
-itkRieszFrequencyFilterBankGenerator.hxx
-```
-
 ## Forward/Inverse Wavelet (ImageFilter, apply wavelet pyramid using generators)
 
 ```
@@ -158,7 +161,6 @@ itkWaveletFrequencyForward.hxx
 itkWaveletFrequencyInverse.h
 itkWaveletFrequencyInverse.hxx
 ```
-
 
 ## Wavelet independent:
 
@@ -209,4 +211,14 @@ itkPhaseAnalysisImageFilter.hxx
 
 itkPhaseAnalysisSoftThresholdImageFilter.h
 itkPhaseAnalysisSoftThresholdImageFilter.hxx
+```
+
+### Riesz Rotation Matrix (Steerable Matrix):
+
+```
+itkRieszRotationMatrix.h
+itkRieszRotationMatrix.hxx
+
+itkRieszUtilities.h
+itkRieszUtilities.cxx
 ```
