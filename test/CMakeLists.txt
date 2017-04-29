@@ -43,6 +43,7 @@ set(IsotropicWaveletsTests
     itkRieszWaveletPhaseAnalysisTest.cxx
     itkStructureTensorWithGeneralizedRieszTest.cxx
     # TODO add Steerable framework?
+    itkRieszRotationMatrixTest.cxx
   )
 
 if(ITKVtkGlue_ENABLED)
@@ -119,6 +120,13 @@ itk_add_test(NAME itkRieszFrequencyFilterBankGeneratorTest2
   ${ITK_TEST_OUTPUT_DIR}/itkRieszFrequencyFilterBankGeneratorTest2.tiff
   2
   )
+# Riesz Steerable framework
+itk_add_test(NAME itkRieszRotationMatrixTest2D
+  COMMAND IsotropicWaveletsTestDriver
+  itkRieszRotationMatrixTest 2)
+itk_add_test(NAME itkRieszRotationMatrixTest3D
+  COMMAND IsotropicWaveletsTestDriver
+  itkRieszRotationMatrixTest 3)
 # Monogenic Analysis
 itk_add_test(NAME itkMonogenicSignalFrequencyImageFilterTest
   COMMAND IsotropicWaveletsTestDriver

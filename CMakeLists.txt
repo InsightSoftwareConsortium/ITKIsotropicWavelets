@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(IsotropicWavelets)
 
-# set(IsotropicWavelets_LIBRARIES IsotropicWavelets)
+set(IsotropicWavelets_LIBRARIES IsotropicWavelets)
 
 if(NOT ITK_SOURCE_DIR)
   find_package(ITK REQUIRED)
