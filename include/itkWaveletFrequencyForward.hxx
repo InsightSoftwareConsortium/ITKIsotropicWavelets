@@ -373,10 +373,9 @@ void WaveletFrequencyForward<TInputImage, TOutputImage,
     IndexType  baseIndex  = baseRegion.GetIndex();
     SizeType   baseSize   = baseRegion.GetSize();
 
-    int distanceToReferenceLevel = -1000;
     for (unsigned int level = 0; level < this->m_Levels + 1; ++level)
       {
-      distanceToReferenceLevel = static_cast<int>(refLevel) - static_cast<int>(level);
+      int distanceToReferenceLevel = static_cast<int>(refLevel) - static_cast<int>(level);
       for (unsigned int idim = 0; idim < TOutputImage::ImageDimension; idim++)
         {
         outputIndex[idim] = baseIndex[idim] 

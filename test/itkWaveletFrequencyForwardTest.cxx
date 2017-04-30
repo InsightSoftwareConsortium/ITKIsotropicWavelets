@@ -201,7 +201,6 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
   for( unsigned int level = 0; level < levels + 1; ++level )
     {
     double scaleFactorPerLevel = std::pow( static_cast<double>(forwardWavelet->GetScaleFactor()), static_cast<double>(level) );
-    unsigned int nOutput;
     for (unsigned int i = 0; i < Dimension; ++i)
     {
       expectedSize[i] = inputSize[i] / scaleFactorPerLevel;
@@ -214,7 +213,8 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       bool spacingIsCorrect = true;
       bool originIsCorrect = true;
 
-      nOutput = level * forwardWavelet->GetHighPassSubBands() + band;
+    unsigned int nOutput =
+      level * forwardWavelet->GetHighPassSubBands() + band;
 
       // Do not compute bands in low-pass level.
       if( level == levels && band == 0 )
