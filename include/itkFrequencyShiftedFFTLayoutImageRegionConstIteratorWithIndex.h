@@ -138,7 +138,7 @@ public:
     ImageRegionConstIteratorWithIndex< TImage >()
   {
     this->Init();
-  };
+  }
 
   /** Constructor establishes an iterator to walk a particular image and a
    * particular region of that image. */
@@ -146,7 +146,7 @@ public:
     ImageRegionConstIteratorWithIndex< TImage >(ptr, region)
   {
     this->Init();
-  };
+  }
 
   /** Constructor that can be used to cast from an ImageIterator to an
    * ImageRegionIteratorWithIndex. Many routines return an ImageIterator, but for a
@@ -158,7 +158,7 @@ public:
     ImageRegionConstIteratorWithIndex< TImage >(it)
   {
     this->Init();
-  };
+  }
 
   /*
    * Image Index [0, N - 1] returns [-N/2 + 1, -1] (negative) union [0 to N/2] (positive). So index N/2 + 1 returns the bin 0.
