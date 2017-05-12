@@ -15,10 +15,10 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef itkFrequencyExpandImageFilter_hxx
-#define itkFrequencyExpandImageFilter_hxx
+#ifndef itkFrequencyExpandFFTRealImageFilter_hxx
+#define itkFrequencyExpandFFTRealImageFilter_hxx
 
-#include <itkFrequencyExpandImageFilter.h>
+#include <itkFrequencyExpandFFTRealImageFilter.h>
 #include <itkProgressReporter.h>
 #include "itkInd2Sub.h"
 #include <itkPasteImageFilter.h>
@@ -29,8 +29,8 @@ namespace itk
  * Default constructor
  */
 template< typename TImageType >
-FrequencyExpandImageFilter< TImageType >
-::FrequencyExpandImageFilter()
+FrequencyExpandFFTRealImageFilter< TImageType >
+::FrequencyExpandFFTRealImageFilter()
 {
   // Set default factors to 1
   for ( unsigned int j = 0; j < ImageDimension; j++ )
@@ -44,7 +44,7 @@ FrequencyExpandImageFilter< TImageType >
  */
 template< typename TImageType >
 void
-FrequencyExpandImageFilter< TImageType >
+FrequencyExpandFFTRealImageFilter< TImageType >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
@@ -63,7 +63,7 @@ FrequencyExpandImageFilter< TImageType >
  */
 template< typename TImageType >
 void
-FrequencyExpandImageFilter< TImageType >
+FrequencyExpandFFTRealImageFilter< TImageType >
 ::SetExpandFactors(
   const unsigned int factor)
 {
@@ -106,44 +106,38 @@ FrequencyExpandImageFilter< TImageType >
  * Region = Nr - 1  -----> Ind2Sub(Nr-1, [2,2,2]) = [1,1,1]
  * So, if the result of Ind2Sub is 0 we paste the positive frequencies, if 1, negative freq
  */
-template< typename TImageType>
+template< typename TImageType >
 void
-FrequencyExpandImageFilter< TImageType >
+FrequencyExpandFFTRealImageFilter< TImageType >
 ::GenerateData()
 {
   const ImageType * inputPtr  = this->GetInput();
-  ImagePointer      outputPtr = this->GetOutput();
+  ImagePointer outputPtr = this->GetOutput();
+
   // complex is initialized to zero directly.
 
   this->AllocateOutputs();
   outputPtr->FillBuffer(0);
   typename TImageType::SizeType inputSize = inputPtr->GetLargestPossibleRegion().GetSize();
+  typename TImageType::IndexType inputOriginIndex = inputPtr->GetLargestPossibleRegion().GetIndex();
   typename TImageType::SizeType outputSize = outputPtr->GetLargestPossibleRegion().GetSize();
-  FixedArray<bool, TImageType::ImageDimension> inputSizeIsEven;
+  FixedArray< bool, TImageType::ImageDimension > inputSizeIsEven;
 
-  typename TImageType::SizeType halfInputSize;
-  for ( unsigned int dim=0; dim < TImageType::ImageDimension; ++dim )
-  {
-    inputSizeIsEven[dim] = (inputSize[dim] % 2 == 0);
-    // halfInputSize[dim]   = inputSizeIsEven[dim] ? inputSize[dim]/2 : (inputSize[dim] + 1)/2;
-    halfInputSize[dim]  = Math::Floor<SizeValueType>(inputSize[dim]/2.0);
-  }
   const typename TImageType::IndexType indexRequested = outputPtr->GetLargestPossibleRegion().GetIndex();
 
   // Manage ImageDimension array linearly:{{{
-  FixedArray<unsigned int , ImageDimension> nsizes;
+  FixedArray< unsigned int, ImageDimension > nsizes;
   unsigned int numberOfRegions = 1;
-  for (unsigned int dim = 0; dim < ImageDimension; ++dim)
+  for ( unsigned int dim = 0; dim < ImageDimension; ++dim )
     {
-    nsizes[dim] = 2;
+    nsizes[dim]      = 2;
     numberOfRegions *= nsizes[dim];
     }
-  FixedArray<unsigned int, ImageDimension> subIndices;
+  FixedArray< unsigned int, ImageDimension > subIndices;
   /// }}}
 
-
   // Prepare filter to paste the different regions into output.
-  typedef itk::PasteImageFilter<ImageType> PasteFilterType;
+  typedef itk::PasteImageFilter< ImageType > PasteFilterType;
   typename PasteFilterType::Pointer pasteFilter = PasteFilterType::New();
   pasteFilter->SetSourceImage(inputPtr);
   pasteFilter->SetDestinationImage(outputPtr);
@@ -151,31 +145,24 @@ FrequencyExpandImageFilter< TImageType >
 
   typedef typename ImageType::RegionType RegionType;
   ProgressReporter progress(this, 0, numberOfRegions );
-
-  for (unsigned int n = 0; n < numberOfRegions; ++n)
+  for ( unsigned int n = 0; n < numberOfRegions; ++n )
     {
-    subIndices = Ind2Sub<ImageDimension>(n, nsizes);
+    subIndices = Ind2Sub< ImageDimension >(n, nsizes);
     RegionType zoneRegion;
-    typename ImageType::SizeType zoneSize;
-    typename ImageType::IndexType  inputIndex  = indexRequested;
+    typename ImageType::SizeType zoneSize = inputSize;
+    typename ImageType::IndexType inputIndex = inputOriginIndex;
     typename ImageType::IndexType outputIndex = indexRequested;
     // We have to avoid break simmetry and the hermitian property.
     // So the output of a ComplexInverseFFT will generate complex images with non-zero imaginary part.
-    // Note that halfInputSize is inputSize/2 if inputSize is even, (inputSize - 1)/2 if odd.
-    for (unsigned int dim = 0; dim < ImageDimension; ++dim)
+    for ( unsigned int dim = 0; dim < ImageDimension; ++dim )
       {
-      if(subIndices[dim] == 0) // positive frequencies
+      if ( subIndices[dim] == 0 ) // positive frequencies
         {
-        // Nyquist frequency is shared by negative and positive freq if halfInputSize[dim] is even. Duplicate it if even.
-        zoneSize[dim]    = halfInputSize[dim] + 1;
-        inputIndex[dim]  = 0;
-        outputIndex[dim] = 0;
+        outputIndex[dim] = indexRequested[dim];
         }
       else // negative frequencies
         {
-        zoneSize[dim]    = halfInputSize[dim];
-        inputIndex[dim]  = halfInputSize[dim] + (inputSizeIsEven[dim] ? 0 : 1 );
-        outputIndex[dim] = outputSize[dim] - zoneSize[dim];
+        outputIndex[dim] = indexRequested[dim] + outputSize[dim] - zoneSize[dim];
         }
       }
     zoneRegion.SetIndex(inputIndex);
@@ -184,11 +171,11 @@ FrequencyExpandImageFilter< TImageType >
 
     pasteFilter->SetSourceRegion(zoneRegion);
     pasteFilter->SetDestinationIndex(outputIndex);
-    if (n == numberOfRegions - 1) // Graft the output.
+    if ( n == numberOfRegions - 1 ) // Graft the output.
       {
       pasteFilter->GraftOutput(outputPtr);
       pasteFilter->Update();
-      this->GraftOutput(pasteFilter->GetOutput());
+      this->GraftOutput(pasteFilter->GetOutput() );
       }
     else // update output
       {
@@ -204,7 +191,7 @@ FrequencyExpandImageFilter< TImageType >
  */
 template< typename TImageType >
 void
-FrequencyExpandImageFilter< TImageType >
+FrequencyExpandFFTRealImageFilter< TImageType >
 ::GenerateInputRequestedRegion()
 {
   // Call the superclass' implementation of this method
@@ -260,7 +247,7 @@ FrequencyExpandImageFilter< TImageType >
  */
 template< typename TImageType >
 void
-FrequencyExpandImageFilter< TImageType >
+FrequencyExpandFFTRealImageFilter< TImageType >
 ::GenerateOutputInformation()
 {
   // Call the superclass' implementation of this method
