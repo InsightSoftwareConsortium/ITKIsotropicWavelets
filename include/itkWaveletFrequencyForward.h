@@ -125,7 +125,7 @@ public:
    * If the size on any dimension is not a power of 2, the max level will be 1.
    * If the sizes are different, but all of them are power of 2, the max level will be the minimum $J_i$.
    */
-  static unsigned int ComputeMaxNumberOfLevels(typename InputImageType::SizeType& input_size);
+  static unsigned int ComputeMaxNumberOfLevels(typename InputImageType::SizeType& input_size, unsigned int scaleFactor = 2);
 
   /** (Level, band) pair.
    * Level from: [0, m_Levels), and equal to m_Levels only for the low_pass image.
