@@ -22,17 +22,18 @@
 
 namespace itk
 {
-template<typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
-RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>
+template< typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator >
+RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator >
 ::RieszFrequencyFilterBankGenerator()
-: m_Order(0)
+  : m_Order(0)
 {
   this->m_Evaluator = RieszFunctionType::New();
   this->SetOrder(1);
 }
 
-template<typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
-void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>
+template< typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator >
+void
+RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
@@ -41,29 +42,29 @@ void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequency
 }
 
 /* ******* Get Outputs *****/
-template<typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
-std::vector<typename RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction,
-    TFrequencyRegionIterator>::OutputImagePointer>
-RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>
+template< typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator >
+std::vector< typename RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction,
+    TFrequencyRegionIterator >::OutputImagePointer >
+RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator >
 ::GetOutputs()
 {
-  std::vector<OutputImagePointer> outputList;
-  for (unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp)
+  std::vector< OutputImagePointer > outputList;
+  for ( unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp )
     {
     outputList.push_back(this->GetOutput(comp));
     }
   return outputList;
 }
 
-template<typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator>
-void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator>
+template< typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator >
+void
+RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator >
 ::GenerateData()
 {
-
   /***************** Allocate Outputs *****************/
-  std::vector<OutputImagePointer>   outputList;
-  std::vector<OutputRegionIterator> outputItList;
-  for (unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp)
+  std::vector< OutputImagePointer > outputList;
+  std::vector< OutputRegionIterator > outputItList;
+  for ( unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp )
     {
     outputList.push_back(this->GetOutput(comp));
     OutputImagePointer& outputPtr = outputList.back();
@@ -77,19 +78,19 @@ void RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequency
 
   /***************** Set Outputs *****************/
   OutputRegionIterator frequencyIt(outputList[0], outputList[0]->GetRequestedRegion());
-  for (frequencyIt.GoToBegin(); !frequencyIt.IsAtEnd(); ++frequencyIt)
+  for ( frequencyIt.GoToBegin(); !frequencyIt.IsAtEnd(); ++frequencyIt )
     {
     typename TRieszFunction::OutputComponentsType evaluatedArray =
       this->m_Evaluator->EvaluateAllComponents(frequencyIt.GetFrequency());
-    for (unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp)
+    for ( unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp )
       {
-      outputItList[comp].Set( static_cast<typename OutputImageType::PixelType>(evaluatedArray[comp]) );
+      outputItList[comp].Set( static_cast< typename OutputImageType::PixelType >(evaluatedArray[comp]) );
       ++outputItList[comp];
       }
     itkDebugMacro(<< "w_vector: " << frequencyIt.GetFrequency()
                   << " w2: " << frequencyIt.GetFrequencyModuloSquare()
                   << "  frequencyItIndex: " << frequencyIt.GetIndex()
-                  // << "  Evaluated Riesz Components: " << evaluatedArray
+// << "  Evaluated Riesz Components: " << evaluatedArray
                   << " outputIndex: " << outputItList[0].GetIndex());
     }
 }

@@ -35,20 +35,20 @@ itk::VectorInverseFFTImageFilter< TInputImage, TOutputImage >
 
   this->AllocateOutputs();
 
-  typedef itk::Image<typename InputImageType::PixelType::ComponentType, ImageDimension>  InputSingleImageType;
-  typedef itk::VectorIndexSelectionCastImageFilter<InputImageType, InputSingleImageType> VectorCastFilterType;
-  typedef itk::InverseFFTImageFilter<InputSingleImageType>                               FFTInverseFilterType;
-  typedef typename FFTInverseFilterType::OutputImageType                                 OutputSingleImageType;
-  typedef itk::ComposeImageFilter<OutputSingleImageType, OutputImageType>                ComposeFilterType;
+  typedef itk::Image< typename InputImageType::PixelType::ComponentType, ImageDimension >  InputSingleImageType;
+  typedef itk::VectorIndexSelectionCastImageFilter< InputImageType, InputSingleImageType > VectorCastFilterType;
+  typedef itk::InverseFFTImageFilter< InputSingleImageType >                               FFTInverseFilterType;
+  typedef typename FFTInverseFilterType::OutputImageType                                   OutputSingleImageType;
+  typedef itk::ComposeImageFilter< OutputSingleImageType, OutputImageType >                ComposeFilterType;
 
   typename VectorCastFilterType::Pointer vectorCastFilter = VectorCastFilterType::New();
   vectorCastFilter->SetInput(this->GetInput());
   progress->RegisterInternalFilter(vectorCastFilter, 1.0 / this->GetInput()->GetNumberOfComponentsPerPixel());
   typename FFTInverseFilterType::Pointer fftInverseFilter = FFTInverseFilterType::New();
-  typename ComposeFilterType::Pointer    composeFilter    = ComposeFilterType::New();
+  typename ComposeFilterType::Pointer composeFilter    = ComposeFilterType::New();
 
-  std::vector<typename OutputSingleImageType::Pointer> inverseFFToutputs;
-  for(unsigned int c = 0; c < this->GetInput()->GetNumberOfComponentsPerPixel(); c++ )
+  std::vector< typename OutputSingleImageType::Pointer > inverseFFToutputs;
+  for ( unsigned int c = 0; c < this->GetInput()->GetNumberOfComponentsPerPixel(); c++ )
     {
     vectorCastFilter->SetIndex(c);
     vectorCastFilter->Update();

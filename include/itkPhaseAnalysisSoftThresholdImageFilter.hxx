@@ -36,8 +36,7 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
 {
   this->SetNumberOfRequiredInputs(1);
   this->SetNumberOfRequiredOutputs(3);
-
-  for (unsigned int n_output = 0; n_output < 3; ++n_output)
+  for ( unsigned int n_output = 0; n_output < 3; ++n_output )
     {
     this->SetNthOutput(n_output, this->MakeOutput(n_output));
     }
@@ -62,7 +61,7 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
 {
   unsigned int nC = this->GetInput()->GetNumberOfComponentsPerPixel();
 
-  if (nC < 2 )
+  if ( nC < 2 )
     {
     itkExceptionMacro(
         << "Number of components of input image (" << nC
@@ -75,8 +74,7 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
   // the number of threads requested.
   OutputImageRegionType dummy;
   unsigned int actualThreads = this->SplitRequestedRegion(
-    0, this->GetNumberOfThreads(),
-    dummy);
+      0, this->GetNumberOfThreads(), dummy);
 
   m_Barrier1 = Barrier::New();
   m_Barrier1->Initialize(actualThreads);
@@ -100,12 +98,12 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
   typename OutputImageType::Pointer outputPtr    = this->GetOutputCosPhase();
 
   // Wait for mean/variance calculation. Stats only once.
-  if(this->GetApplySoftThreshold())
+  if ( this->GetApplySoftThreshold() )
     {
     m_Barrier1->Wait();
-    if(threadId == this->GetNumberOfThreads() - 1)
+    if ( threadId == this->GetNumberOfThreads() - 1 )
       {
-      typedef itk::StatisticsImageFilter<OutputImageType> StatisticsImageFilter;
+      typedef itk::StatisticsImageFilter< OutputImageType > StatisticsImageFilter;
       typename StatisticsImageFilter::Pointer statsFilter = StatisticsImageFilter::New();
       statsFilter->SetInput(amplitudePtr);
       statsFilter->Update();
@@ -117,21 +115,21 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
     }
 
   // Set output to cos(phase) applying SoftThreshold if requested.
-  typedef typename itk::ImageScanlineIterator<OutputImageType> OutputImageRegionIterator;
+  typedef typename itk::ImageScanlineIterator< OutputImageType > OutputImageRegionIterator;
   OutputImageRegionIterator outIt(outputPtr, outputRegionForThread);
-  typedef typename itk::ImageScanlineConstIterator<OutputImageType> OutputImageRegionConstIterator;
+  typedef typename itk::ImageScanlineConstIterator< OutputImageType > OutputImageRegionConstIterator;
   OutputImageRegionConstIterator ampIt(amplitudePtr, outputRegionForThread);
   OutputImageRegionConstIterator phaseIt(phasePtr, outputRegionForThread);
 
   outIt.GoToBegin(), ampIt.GoToBegin(), phaseIt.GoToBegin();
-  while(!outIt.IsAtEnd())
+  while ( !outIt.IsAtEnd() )
     {
-    while( !outIt.IsAtEndOfLine() )
+    while ( !outIt.IsAtEndOfLine() )
       {
       OutputImagePixelType out_value = cos(phaseIt.Get());
-      if(this->GetApplySoftThreshold())
+      if ( this->GetApplySoftThreshold() )
         {
-        if (ampIt.Get() < this->m_Threshold)
+        if ( ampIt.Get() < this->m_Threshold )
           {
           out_value *= ampIt.Get() / this->m_Threshold;
           }
@@ -139,6 +137,7 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
       outIt.Set(out_value);
       ++outIt, ++ampIt, ++phaseIt;
       }
+
     outIt.NextLine(), ampIt.NextLine(), phaseIt.NextLine();
     progress.CompletedPixel(); // Per line
     }

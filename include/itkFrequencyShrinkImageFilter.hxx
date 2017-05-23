@@ -31,10 +31,10 @@
 
 namespace itk
 {
-template<class TImageType>
+template< class TImageType >
 FrequencyShrinkImageFilter< TImageType >
 ::FrequencyShrinkImageFilter()
-: m_ApplyBandFilter(false)
+  : m_ApplyBandFilter(false)
 {
   for ( unsigned int j = 0; j < ImageDimension; j++ )
     {
@@ -53,9 +53,9 @@ FrequencyShrinkImageFilter< TImageType >
   this->m_FrequencyBandFilter->SetPassNegativeHighFrequencyThreshold(false);
 }
 
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkImageFilter< TImageType >
 ::SetShrinkFactors(unsigned int factor)
 {
   unsigned int j;
@@ -81,9 +81,9 @@ FrequencyShrinkImageFilter<TImageType>
   this->Modified();
 }
 
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkImageFilter< TImageType >
 ::SetShrinkFactor(unsigned int i, unsigned int factor)
 {
   if ( m_ShrinkFactors[i] == factor )
@@ -109,9 +109,9 @@ FrequencyShrinkImageFilter<TImageType>
  * Region = Nr - 1  -----> Ind2Sub(Nr-1, [2,2,2]) = [1,1,1]
  * So, if the result of Ind2Sub is 0 we paste the positive frequencies, if 1, negative freq
  */
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkImageFilter< TImageType >
 ::GenerateData()
 {
   // Get the input and output pointers
@@ -125,30 +125,30 @@ FrequencyShrinkImageFilter<TImageType>
   // Output is the sum of the four(2D) or eight(3D) quadrants.
   // We can do it only because high freqs are removed.
   // This filter will remove it by default a BandPass Filter.
-  if( this->m_ApplyBandFilter )
+  if ( this->m_ApplyBandFilter )
     {
     typename ImageType::SpacingType inputSpacing = this->GetInput()->GetSpacing();
     const typename ImageType::SpacingType::ValueType spacingValue = inputSpacing[0];
     // Check that the spacing is the same in all directions.
       {
       bool all_equal = true;
-      for (unsigned int i = 1; i < ImageDimension; ++i)
+      for ( unsigned int i = 1; i < ImageDimension; ++i )
         {
-        if(itk::Math::NotAlmostEquals(inputSpacing[i], spacingValue))
+        if ( itk::Math::NotAlmostEquals(inputSpacing[i], spacingValue) )
           {
           all_equal = false;
           }
         }
-      if(!all_equal)
+      if ( !all_equal )
         {
-        itkExceptionMacro(<<"Spacing of input image is not the same in all directions " << inputSpacing);
+        itkExceptionMacro(<< "Spacing of input image is not the same in all directions " << inputSpacing);
         }
       }
 
     this->m_FrequencyBandFilter->SetInput(this->GetInput());
     this->m_FrequencyBandFilter->SetFrequencyThresholds(
-        this->m_FrequencyBandFilter->GetLowFrequencyThreshold() * spacingValue,
-        this->m_FrequencyBandFilter->GetHighFrequencyThreshold() * spacingValue );
+      this->m_FrequencyBandFilter->GetLowFrequencyThreshold() * spacingValue,
+      this->m_FrequencyBandFilter->GetHighFrequencyThreshold() * spacingValue );
     this->m_FrequencyBandFilter->Update();
     inputPtr = this->m_FrequencyBandFilter->GetOutput();
     }
@@ -157,18 +157,18 @@ FrequencyShrinkImageFilter<TImageType>
   typename TImageType::SizeType outputSize = outputPtr->GetLargestPossibleRegion().GetSize();
   const typename TImageType::IndexType indexOrigOut = outputPtr->GetLargestPossibleRegion().GetIndex();
   // Manage ImageDimension array linearly:{{{
-  FixedArray<unsigned int, ImageDimension> nsizes;
+  FixedArray< unsigned int, ImageDimension > nsizes;
   unsigned int numberOfRegions = 1;
-  for (unsigned int dim = 0; dim < ImageDimension; ++dim)
+  for ( unsigned int dim = 0; dim < ImageDimension; ++dim )
     {
     nsizes[dim]      = 2;
     numberOfRegions *= nsizes[dim];
     }
-  FixedArray<unsigned int, ImageDimension> subIndices;
+  FixedArray< unsigned int, ImageDimension > subIndices;
   /// }}}
 
   // Prepare filter to paste the different regions into output.
-  typedef itk::PasteImageFilter<ImageType> PasteFilterType;
+  typedef itk::PasteImageFilter< ImageType > PasteFilterType;
   typename PasteFilterType::Pointer pasteFilter = PasteFilterType::New();
   pasteFilter->SetSourceImage(inputPtr);
   pasteFilter->SetDestinationImage(outputPtr);
@@ -176,20 +176,19 @@ FrequencyShrinkImageFilter<TImageType>
 
   typedef typename ImageType::RegionType RegionType;
   ProgressReporter progress(this, 0, numberOfRegions );
-
-  for (unsigned int n = 0; n < numberOfRegions; ++n)
+  for ( unsigned int n = 0; n < numberOfRegions; ++n )
     {
-    subIndices = itk::Ind2Sub<ImageDimension>(n, nsizes);
+    subIndices = itk::Ind2Sub< ImageDimension >(n, nsizes);
     RegionType zoneRegion;
-    typename ImageType::SizeType   zoneSize;
+    typename ImageType::SizeType zoneSize;
     typename TImageType::IndexType inputIndex  = indexOrigOut;
     typename TImageType::IndexType outputIndex = indexOrigOut;
     // Note that lowFreqsOfInput is inputSize/2 if outputSize is even, (outputSize - 1)/2 if odd.
-    for (unsigned int dim = 0; dim < ImageDimension; ++dim)
+    for ( unsigned int dim = 0; dim < ImageDimension; ++dim )
       {
       zoneSize[dim]    = outputSize[dim];
       outputIndex[dim] = indexOrigOut[dim];
-      if(subIndices[dim] == 0) // positive frequencies
+      if ( subIndices[dim] == 0 ) // positive frequencies
         {
         inputIndex[dim] = indexOrigOut[dim];
         }
@@ -206,19 +205,19 @@ FrequencyShrinkImageFilter<TImageType>
     pasteFilter->SetDestinationIndex(outputIndex);
     pasteFilter->Update();
     // Sum the quadrants.
-    typedef itk::AddImageFilter<TImageType, TImageType> AddFilterType;
+    typedef itk::AddImageFilter< TImageType, TImageType > AddFilterType;
     typename AddFilterType::Pointer addFilter = AddFilterType::New();
     addFilter->SetInput1(outputPtr);
     addFilter->SetInput2(pasteFilter->GetOutput());
     addFilter->InPlaceOn();
-    if (n == numberOfRegions - 1) // Graft the output.
+    if ( n == numberOfRegions - 1 ) // Graft the output.
       {
       addFilter->Update();
       outputPtr = addFilter->GetOutput();
-      typedef itk::MultiplyImageFilter<TImageType, TImageType, TImageType> MultiplyFilterType;
+      typedef itk::MultiplyImageFilter< TImageType, TImageType, TImageType > MultiplyFilterType;
       typename MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
       multiplyFilter->SetInput(outputPtr);
-      multiplyFilter->SetConstant(static_cast<typename TImageType::PixelType::value_type>(1.0 / numberOfRegions));
+      multiplyFilter->SetConstant(static_cast< typename TImageType::PixelType::value_type >(1.0 / numberOfRegions));
 
       multiplyFilter->GraftOutput(outputPtr);
       multiplyFilter->Update();
@@ -253,29 +252,29 @@ FrequencyShrinkImageFilter<TImageType>
    * /
   */
 // Fix Nyquist band. Folding results for hermiticity.
-  // {
-  // typename TImageType::IndexType index = indexOrigOut + lowFreqsOfInput;
-  // typename TImageType::IndexType modIndex = indexOrigOut + lowFreqsOfInput;
-  // // typename TImageType::SizeType endSize = outputSize - lowFreqsOfInput;
-  // for(unsigned int dim = 0; dim < ImageDimension; ++dim)
-  //   {
-  //   for(int i = 1; i < (int)lowFreqsOfInput[dim]; ++i)
-  //     {
-  //     index = indexOrigOut + lowFreqsOfInput;
-  //     modIndex = indexOrigOut + lowFreqsOfInput;
-  //     index.SetElement(dim, indexOrigOut[dim] + i );
-  //     modIndex.SetElement(dim, indexOrigOut[dim] + outputSize[dim] - i );
-  //     typename TImageType::PixelType value =
-  //       std::conj(outputPtr->GetPixel(index));
-  //     outputPtr->SetPixel(modIndex, value);
-  //     // The stored nyquiist value corresponds to  the positive side.
-  //     outputPtr->SetPixel(index, value);
-  //     }
-  //     // The stored nyquiist value corresponds to  the positive side.
-  //     index.SetElement(dim, indexOrigOut[dim]);
-  //     outputPtr->SetPixel(index, std::conj(outputPtr->GetPixel(index)));
-  //   }
-  // }
+// {
+// typename TImageType::IndexType index = indexOrigOut + lowFreqsOfInput;
+// typename TImageType::IndexType modIndex = indexOrigOut + lowFreqsOfInput;
+// // typename TImageType::SizeType endSize = outputSize - lowFreqsOfInput;
+// for(unsigned int dim = 0; dim < ImageDimension; ++dim)
+//   {
+//   for(int i = 1; i < (int)lowFreqsOfInput[dim]; ++i)
+//     {
+//     index = indexOrigOut + lowFreqsOfInput;
+//     modIndex = indexOrigOut + lowFreqsOfInput;
+//     index.SetElement(dim, indexOrigOut[dim] + i );
+//     modIndex.SetElement(dim, indexOrigOut[dim] + outputSize[dim] - i );
+//     typename TImageType::PixelType value =
+//       std::conj(outputPtr->GetPixel(index));
+//     outputPtr->SetPixel(modIndex, value);
+//     // The stored nyquiist value corresponds to  the positive side.
+//     outputPtr->SetPixel(index, value);
+//     }
+//     // The stored nyquiist value corresponds to  the positive side.
+//     index.SetElement(dim, indexOrigOut[dim]);
+//     outputPtr->SetPixel(index, std::conj(outputPtr->GetPixel(index)));
+//   }
+// }
 
   // // Apply a gaussian window of the size of the output.
   // typedef itk::GaussianSpatialFunction<double, ImageDimension> FunctionType;
@@ -317,16 +316,16 @@ FrequencyShrinkImageFilter<TImageType>
   //   }
 }
 
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkImageFilter< TImageType >
 ::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  ImagePointer inputPtr  = const_cast<TImageType *>(this->GetInput() );
+  ImagePointer inputPtr  = const_cast< TImageType * >(this->GetInput() );
   ImagePointer outputPtr = this->GetOutput();
 
   // The filter chops high frequencys [0 1...H,H-1 H-2...1].
@@ -334,9 +333,9 @@ FrequencyShrinkImageFilter<TImageType>
   inputPtr->SetRequestedRegion( inputPtr->GetLargestPossibleRegion() );
 }
 
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkImageFilter<TImageType>
+FrequencyShrinkImageFilter< TImageType >
 ::GenerateOutputInformation()
 {
   // Call the superclass' implementation of this method
@@ -344,7 +343,7 @@ FrequencyShrinkImageFilter<TImageType>
 
   // Get pointers to the input and output
   ImageConstPointer inputPtr  = this->GetInput();
-  ImagePointer      outputPtr = this->GetOutput();
+  ImagePointer outputPtr = this->GetOutput();
 
   if ( !inputPtr || !outputPtr )
     {
@@ -365,10 +364,9 @@ FrequencyShrinkImageFilter<TImageType>
   // ContinuousIndex<double,ImageDimension> inputIndexOutputOrigin;
 
   typename TImageType::SpacingType outputSpacing(inputSpacing);
-  typename TImageType::SizeType    outputSize;
-  typename TImageType::PointType   outputOrigin;
-  typename TImageType::IndexType   outputStartIndex;
-
+  typename TImageType::SizeType outputSize;
+  typename TImageType::PointType outputOrigin;
+  typename TImageType::IndexType outputStartIndex;
   // TODO Check if you want to modify metadata in this filter.
   // Reduce Spacing, a frequency shrinker deletes high frequency domain.
   // The spacing is taken into account by FrequencyIterators method GetFrequency().
@@ -384,9 +382,9 @@ FrequencyShrinkImageFilter<TImageType>
     //     / static_cast<double>(m_ShrinkFactors[i])
     //     );
     outputStartIndex[i] = inputStartIndex[i];
-    outputSize[i] = Math::Floor<SizeValueType>(
-        static_cast<double>( inputSize[i] )
-        / static_cast<double>(m_ShrinkFactors[i])
+    outputSize[i] = Math::Floor< SizeValueType >(
+        static_cast< double >( inputSize[i] )
+        / static_cast< double >(m_ShrinkFactors[i])
         );
 
     if ( outputSize[i] < 1 )
@@ -409,7 +407,7 @@ FrequencyShrinkImageFilter<TImageType>
   outputPtr->SetLargestPossibleRegion(outputLargestPossibleRegion);
 }
 
-template<class TImageType>
+template< class TImageType >
 void
 FrequencyShrinkImageFilter< TImageType >
 ::PrintSelf(std::ostream & os, Indent indent) const
@@ -425,7 +423,6 @@ FrequencyShrinkImageFilter< TImageType >
   os << "ApplyBandFilter: " << this->m_ApplyBandFilter << std::endl;
 
   itkPrintSelfObjectMacro(FrequencyBandFilter);
-
 }
 } // end namespace itk
 

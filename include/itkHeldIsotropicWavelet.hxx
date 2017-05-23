@@ -53,15 +53,19 @@ HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 ::EvaluateMagnitude(const FunctionValueType & freq_norm_in_hz) const
 {
   // freq_in_rad_per_sec = freq_norm_in_hz * 2 * pi
-  if(freq_norm_in_hz > 0.125 && freq_norm_in_hz <= 0.25 )
-    return static_cast<TFunctionValue>(std::cos(2.0 * Math::pi
-                                                * this->ComputePolynom(freq_norm_in_hz,
-                                                                       this->m_PolynomialOrder)));
+  if ( freq_norm_in_hz > 0.125 && freq_norm_in_hz <= 0.25 )
+    {
+    return static_cast< TFunctionValue >(std::cos(2.0 * Math::pi
+                                           * this->ComputePolynom(freq_norm_in_hz,
+                                             this->m_PolynomialOrder)));
+    }
 
-  if(freq_norm_in_hz > 0.25 && freq_norm_in_hz <= 0.5 )
-    return static_cast<TFunctionValue>(std::sin(2.0 * Math::pi
-                                                * this->ComputePolynom(freq_norm_in_hz / 2.0,
-                                                                       this->m_PolynomialOrder)));
+  if ( freq_norm_in_hz > 0.25 && freq_norm_in_hz <= 0.5 )
+    {
+    return static_cast< TFunctionValue >(std::sin(2.0 * Math::pi
+                                           * this->ComputePolynom(freq_norm_in_hz / 2.0,
+                                             this->m_PolynomialOrder)));
+    }
 
   return 0;
 }
@@ -74,7 +78,7 @@ HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
   FunctionValueType y  = 0.0;
   FunctionValueType x8 = 8 * x;
 
-  switch (order)
+  switch ( order )
     {
     case 0:
       y = 0.5 - 0.25 * x8;
@@ -130,7 +134,7 @@ HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
         + 63.0     * std::pow(x8, 11.0);
       break;
     default:
-      itkExceptionMacro( <<"Order of polynom must be less than 6." );
+      itkExceptionMacro( << "Order of polynom must be less than 6." );
     }
   return y;
 }

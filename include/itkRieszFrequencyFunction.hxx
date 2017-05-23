@@ -26,14 +26,13 @@
 
 namespace itk
 {
-
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
 RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::RieszFrequencyFunction()
-: m_Order(0)
+  : m_Order(0)
 {
   // SetOrder also sets m_Indices.
-  this->SetOrder(1); 
+  this->SetOrder(1);
 }
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
@@ -70,8 +69,8 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 
   // rieszComponent = (-j)^{m_Order} * sqrt(m_Order!/(n1!n2!...nd!)) * w1^n1...wd^nd / ||w||^m_Order
   return this->ComputeNormalizingFactor(indices)
-    * static_cast<typename OutputComplexType::value_type>( freqProduct
-    / std::pow(magn, static_cast<double>(this->m_Order)) );
+         * static_cast<typename OutputComplexType::value_type>( freqProduct
+                                                                / std::pow(magn, static_cast<double>(this->m_Order)) );
 }
 
 template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
@@ -82,9 +81,9 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
   // normalizeFactor: sqrt(m_Order!/(n1!n2!...nd!))
   typename OutputComplexType::value_type normalizeFactor(1);
   for( unsigned int dim = 0; dim < VImageDimension; ++dim)
-  {
+    {
     normalizeFactor *= Self::Factorial(indices[dim]);
-  }
+    }
   normalizeFactor = sqrt( Self::Factorial(this->m_Order) / normalizeFactor );
 
   // assert(this->m_Order > 0)
@@ -94,18 +93,18 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
   unsigned int modulo4 = this->m_Order % 4;
   switch (modulo4)
     {
-  case 1: //(-j)
-    powComplex = OutputComplexType(0,-1);
-    break;
-  case 2: // (-j)(-j) = -1
-    powComplex = OutputComplexType(-1,0);
-    break;
-  case 3: // -1(-j) = j
-    powComplex = OutputComplexType(0,1);
-    break;
-  case 0: // j(-j) = 1
-    powComplex = OutputComplexType(1,0);
-    break;
+    case 1: //(-j)
+      powComplex = OutputComplexType(0,-1);
+      break;
+    case 2: // (-j)(-j) = -1
+      powComplex = OutputComplexType(-1,0);
+      break;
+    case 3: // -1(-j) = j
+      powComplex = OutputComplexType(0,1);
+      break;
+    case 0: // j(-j) = 1
+      powComplex = OutputComplexType(1,0);
+      break;
     }
   // itkDebugMacro(<< "\n (-j)^Order: "<< powComplex << " output: " << normalizeFactor * powComplex)
 
@@ -119,6 +118,7 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateAllComponents( const TInput & frequency_point) const
 {
   double magn(this->Magnitude(frequency_point));
+
   // Precondition:
   if(itk::Math::FloatAlmostEqual(magn, 0.0) )
     {
@@ -144,7 +144,7 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
     // rieszComponent = (-j)^{m_Order} * sqrt(m_Order!/(n1!n2!...nd!)) * w1^n1...wd^nd / ||w||^m_Order
     OutputComplexType outPerIndice = this->ComputeNormalizingFactor(indice);
     outPerIndice *= static_cast<typename OutputComplexType::value_type>(
-      freqProduct / std::pow(magn, static_cast<double>(this->m_Order)) );
+        freqProduct / std::pow(magn, static_cast<double>(this->m_Order)) );
     out.push_back(outPerIndice);
     }
 
@@ -169,7 +169,6 @@ RieszFrequencyFunction< TFunctionValue, VImageDimension, TInput >
     std::cout << ")" << std::endl;
     }
 }
-
 } // end namespace itk
 
 #endif

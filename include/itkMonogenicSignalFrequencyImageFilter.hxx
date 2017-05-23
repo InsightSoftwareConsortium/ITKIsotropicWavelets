@@ -21,17 +21,17 @@
 #include "itkImageRegionIterator.h"
 namespace itk
 {
-template< typename TInputImage, typename TFrequencyImageRegionConstIterator>
-MonogenicSignalFrequencyImageFilter<TInputImage, TFrequencyImageRegionConstIterator>
+template< typename TInputImage, typename TFrequencyImageRegionConstIterator >
+MonogenicSignalFrequencyImageFilter< TInputImage, TFrequencyImageRegionConstIterator >
 ::MonogenicSignalFrequencyImageFilter()
 {
   m_Evaluator = RieszFunctionType::New();
   m_Evaluator->SetOrder(1);
 }
 
-template< typename TInputImage, typename TFrequencyImageRegionConstIterator>
+template< typename TInputImage, typename TFrequencyImageRegionConstIterator >
 void
-MonogenicSignalFrequencyImageFilter<TInputImage, TFrequencyImageRegionConstIterator>
+MonogenicSignalFrequencyImageFilter< TInputImage, TFrequencyImageRegionConstIterator >
 ::GenerateOutputInformation(void)
 {
   this->Superclass::GenerateOutputInformation();
@@ -40,11 +40,11 @@ MonogenicSignalFrequencyImageFilter<TInputImage, TFrequencyImageRegionConstItera
   output->SetNumberOfComponentsPerPixel( ImageDimension + 1 );
 }
 
-template< typename TInputImage, typename TFrequencyImageRegionConstIterator>
+template< typename TInputImage, typename TFrequencyImageRegionConstIterator >
 void
-MonogenicSignalFrequencyImageFilter<TInputImage, TFrequencyImageRegionConstIterator>
+MonogenicSignalFrequencyImageFilter< TInputImage, TFrequencyImageRegionConstIterator >
 ::ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-                       ThreadIdType itkNotUsed(threadId))
+  ThreadIdType itkNotUsed(threadId))
 {
   // Allocate the outputs
   this->AllocateOutputs();
@@ -53,12 +53,12 @@ MonogenicSignalFrequencyImageFilter<TInputImage, TFrequencyImageRegionConstItera
 
   typename RieszFunctionType::OutputComponentsType evaluatedArray;
   typename OutputImageType::PixelType out_value;
-  for (inFreqIt.GoToBegin(), outIt.GoToBegin(); !inFreqIt.IsAtEnd(); ++inFreqIt, ++outIt)
+  for ( inFreqIt.GoToBegin(), outIt.GoToBegin(); !inFreqIt.IsAtEnd(); ++inFreqIt, ++outIt )
     {
     evaluatedArray = this->m_Evaluator->EvaluateAllComponents(inFreqIt.GetFrequency());
     out_value = outIt.Get();
     out_value[0] = inFreqIt.Get();
-    for (unsigned int dir = 0; dir < ImageDimension; ++dir)
+    for ( unsigned int dir = 0; dir < ImageDimension; ++dir )
       {
       // This is a complex number multiplication.
       out_value[dir + 1] = inFreqIt.Get() * evaluatedArray[dir];
@@ -67,14 +67,14 @@ MonogenicSignalFrequencyImageFilter<TInputImage, TFrequencyImageRegionConstItera
     }
 }
 
-template< typename TInputImage, typename TFrequencyImageRegionConstIterator>
+template< typename TInputImage, typename TFrequencyImageRegionConstIterator >
 void
-MonogenicSignalFrequencyImageFilter<TInputImage, TFrequencyImageRegionConstIterator>
+MonogenicSignalFrequencyImageFilter< TInputImage, TFrequencyImageRegionConstIterator >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf(os, indent);
   os << indent << "m_Evaluator: ";
-  if(!this->m_Evaluator)
+  if ( !this->m_Evaluator )
     {
     os << "0" << std::endl;
     }

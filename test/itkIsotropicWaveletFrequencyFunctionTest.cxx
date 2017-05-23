@@ -86,7 +86,7 @@ int runIsotropicWaveletFrequencyFunctionTest(
   // Generate mother wavelet profile h(2^i w) at different levels
   std::vector< std::vector< double > > radialFrequenciesMotherWavelet;
   unsigned int numLevels = 4;
-  for (unsigned int levels = 0; levels < numLevels ; ++levels)
+  for (unsigned int levels = 0; levels < numLevels; ++levels)
     {
     std::vector< double > resultPerLevel;
     double levelFactor = (levels == 0) ? 1.0 : std::pow(2.0, static_cast<double>(levels));
@@ -116,7 +116,7 @@ int runIsotropicWaveletFrequencyFunctionTest(
   for( unsigned int i = 0; i < points; ++i )
     {
     ofsMW << wArray[i];
-    for (unsigned int levels = 0; levels < numLevels ; ++levels)
+    for (unsigned int levels = 0; levels < numLevels; ++levels)
       {
       ofsMW << "," << radialFrequenciesMotherWavelet[levels][i];
       }

@@ -28,8 +28,7 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
 {
   this->SetNumberOfRequiredInputs(1);
   this->SetNumberOfRequiredOutputs(2);
-
-  for (unsigned int n_output = 0; n_output < 2; ++n_output)
+  for ( unsigned int n_output = 0; n_output < 2; ++n_output )
     {
     this->SetNthOutput(n_output, this->MakeOutput(n_output));
     }
@@ -50,7 +49,7 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
 {
   unsigned int nC = this->GetInput()->GetNumberOfComponentsPerPixel();
 
-  if (nC < 2 )
+  if ( nC < 2 )
     {
     itkExceptionMacro(
         << "Number of components of input image (" << nC
@@ -66,7 +65,7 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
   ThreadIdType threadId)
 {
   ProgressReporter progress(this, threadId,
-                            outputRegionForThread.GetNumberOfPixels() / outputRegionForThread.GetSize()[0]);
+    outputRegionForThread.GetNumberOfPixels() / outputRegionForThread.GetSize()[0]);
 
   typename OutputImageType::Pointer phasePtr     = this->GetOutputPhase();
   typename OutputImageType::Pointer amplitudePtr = this->GetOutputAmplitude();
@@ -75,12 +74,12 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
   OutputImageRegionIterator phaseIt(phasePtr, outputRegionForThread);
   InputImageRegionConstIterator inputIt(this->GetInput(), outputRegionForThread);
 
-  InputImagePixelType  vecValue;
+  InputImagePixelType vecValue;
   OutputImagePixelType featureAmpSquare;
   inputIt.GoToBegin(); ampIt.GoToBegin(); phaseIt.GoToBegin();
-  while(!inputIt.IsAtEnd())
+  while ( !inputIt.IsAtEnd() )
     {
-    while(!inputIt.IsAtEndOfLine())
+    while ( !inputIt.IsAtEndOfLine() )
       {
       vecValue = inputIt.Get();
       featureAmpSquare = this->ComputeFeatureVectorNormSquare(vecValue);
@@ -88,6 +87,7 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
       phaseIt.Set(this->ComputePhase(vecValue, featureAmpSquare));
       ++inputIt; ++ampIt; ++phaseIt;
       }
+
     inputIt.NextLine(); ampIt.NextLine(); phaseIt.NextLine();
     progress.CompletedPixel();
     }

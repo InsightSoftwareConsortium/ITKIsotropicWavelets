@@ -51,10 +51,11 @@ SimoncelliIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 {
   // freq_in_rad_per_sec = freq_norm_in_hz * 2 * pi
   // Dev: std::log2 is c++11 only.  std::log2(x) = std::log(x)/vnl_math::ln2
-  if(freq_norm_in_hz > 0.125 && freq_norm_in_hz <= 0.5 )
+  if ( freq_norm_in_hz > 0.125 && freq_norm_in_hz <= 0.5 )
     {
-    return static_cast<TFunctionValue>(std::cos( 0.5 * Math::pi
-                                                 * std::log(4 * freq_norm_in_hz) / vnl_math::ln2 ) );
+    return static_cast< TFunctionValue >(
+        std::cos( 0.5 * Math::pi
+          * std::log(4 * freq_norm_in_hz) / vnl_math::ln2 ) );
     }
   return 0;
 }

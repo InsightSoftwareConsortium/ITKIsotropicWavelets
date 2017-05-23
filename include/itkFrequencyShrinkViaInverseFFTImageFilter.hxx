@@ -23,7 +23,7 @@
 
 namespace itk
 {
-template<class TImageType>
+template< class TImageType >
 FrequencyShrinkViaInverseFFTImageFilter< TImageType >
 ::FrequencyShrinkViaInverseFFTImageFilter()
 {
@@ -37,7 +37,7 @@ FrequencyShrinkViaInverseFFTImageFilter< TImageType >
   m_ChangeInformation = ChangeInformationFilterType::New();
 }
 
-template<class TImageType>
+template< class TImageType >
 void
 FrequencyShrinkViaInverseFFTImageFilter< TImageType >
 ::PrintSelf(std::ostream & os, Indent indent) const
@@ -52,9 +52,9 @@ FrequencyShrinkViaInverseFFTImageFilter< TImageType >
   os << std::endl;
 }
 
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkViaInverseFFTImageFilter<TImageType>
+FrequencyShrinkViaInverseFFTImageFilter< TImageType >
 ::SetShrinkFactors(unsigned int factor)
 {
   unsigned int j;
@@ -80,9 +80,9 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
     }
 }
 
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkViaInverseFFTImageFilter<TImageType>
+FrequencyShrinkViaInverseFFTImageFilter< TImageType >
 ::SetShrinkFactor(unsigned int i, unsigned int factor)
 {
   if ( m_ShrinkFactors[i] == factor )
@@ -97,9 +97,9 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
 /**
  * Perform an expensive
  */
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkViaInverseFFTImageFilter<TImageType>
+FrequencyShrinkViaInverseFFTImageFilter< TImageType >
 ::GenerateData()
 {
   // Get the input and output pointers
@@ -122,16 +122,16 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
   this->GraftOutput(m_ChangeInformation->GetOutput());
 }
 
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkViaInverseFFTImageFilter<TImageType>
+FrequencyShrinkViaInverseFFTImageFilter< TImageType >
 ::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  ImagePointer inputPtr  = const_cast<TImageType *>(this->GetInput() );
+  ImagePointer inputPtr  = const_cast< TImageType * >(this->GetInput() );
   ImagePointer outputPtr = this->GetOutput();
 
   // The filter chops high frequencys [0 1...H,H-1 H-2...1].
@@ -139,9 +139,9 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
   inputPtr->SetRequestedRegion( inputPtr->GetLargestPossibleRegion() );
 }
 
-template<class TImageType>
+template< class TImageType >
 void
-FrequencyShrinkViaInverseFFTImageFilter<TImageType>
+FrequencyShrinkViaInverseFFTImageFilter< TImageType >
 ::GenerateOutputInformation()
 {
   // Call the superclass' implementation of this method
@@ -149,7 +149,7 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
 
   // Get pointers to the input and output
   ImageConstPointer inputPtr  = this->GetInput();
-  ImagePointer      outputPtr = this->GetOutput();
+  ImagePointer outputPtr = this->GetOutput();
 
   if ( !inputPtr || !outputPtr )
     {
@@ -170,10 +170,9 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
   // ContinuousIndex<double,ImageDimension> inputIndexOutputOrigin;
 
   typename TImageType::SpacingType outputSpacing(inputSpacing);
-  typename TImageType::SizeType    outputSize;
-  typename TImageType::PointType   outputOrigin;
-  typename TImageType::IndexType   outputStartIndex;
-
+  typename TImageType::SizeType outputSize;
+  typename TImageType::PointType outputOrigin;
+  typename TImageType::IndexType outputStartIndex;
   // TODO Check if you want to modify metada in this filter.
   for ( unsigned int i = 0; i < TImageType::ImageDimension; i++ )
     {
@@ -187,9 +186,9 @@ FrequencyShrinkViaInverseFFTImageFilter<TImageType>
     //     / static_cast<double>(m_ShrinkFactors[i])
     //     );
     outputStartIndex[i] = inputStartIndex[i];
-    outputSize[i] = Math::Floor<SizeValueType>(
-        static_cast<double>( inputSize[i] )
-        / static_cast<double>(m_ShrinkFactors[i])
+    outputSize[i] = Math::Floor< SizeValueType >(
+        static_cast< double >( inputSize[i] )
+        / static_cast< double >(m_ShrinkFactors[i])
         );
 
     if ( outputSize[i] < 1 )

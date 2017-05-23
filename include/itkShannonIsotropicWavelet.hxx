@@ -50,8 +50,10 @@ ShannonIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 ::EvaluateMagnitude(const FunctionValueType & freq_norm_in_hz) const
 {
   // freq_in_rad_per_sec = freq_norm_in_hz * 2 * pi
-  if(freq_norm_in_hz >= 0.25 && freq_norm_in_hz <= 0.5 )
+  if ( freq_norm_in_hz >= 0.25 && freq_norm_in_hz <= 0.5 )
+    {
     return 1;
+    }
   return 0;
 }
 } // end namespace itk

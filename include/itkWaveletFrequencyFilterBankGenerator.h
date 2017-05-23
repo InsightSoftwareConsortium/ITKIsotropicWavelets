@@ -34,7 +34,9 @@ namespace itk
  * The minimum output are two images, one low-pass and other high-pass,
  * and again if HighPassSubBands > 1, multiple high-sub-bands.
  *
- * The wavelet operation is defined in the chosen TWaveletFuntion, using TWaveletFunction::EvaluateForwardSubBand, or EvaluateInverseSubBand, where SubBand can be: LowPass, HighPass, or any HighPassSubBand.
+ * The wavelet operation is defined in the chosen TWaveletFuntion,
+ * using TWaveletFunction::EvaluateForwardSubBand, or EvaluateInverseSubBand,
+ * where SubBand can be: LowPass, HighPass, or any HighPassSubBand.
  * Also accepts a template FrequencyIterator, to generate images with different frequency layouts.
  *
  * \sa WaveletFrequencyForward

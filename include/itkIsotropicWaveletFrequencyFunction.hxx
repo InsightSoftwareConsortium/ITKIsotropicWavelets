@@ -52,9 +52,11 @@ void
 IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::SetHighPassSubBands(const unsigned int & high_pass_bands)
 {
-  if(high_pass_bands == 0)
+  if ( high_pass_bands == 0 )
+    {
     itkExceptionMacro(
       "HighPassSubands must be greater than zero. At least one high band must exist.");
+    }
   this->m_HighPassSubBands = high_pass_bands;
 }
 
@@ -64,11 +66,13 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateForwardLowPassFilter(const FunctionValueType& freq_norm_in_hz) const
 {
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands))
-    * std::pow(2.0, static_cast<int>(2 * this->m_HighPassSubBands - 1));
+    std::pow(freq_norm_in_hz, static_cast< int >(this->m_HighPassSubBands))
+    * std::pow(2.0, static_cast< int >(2 * this->m_HighPassSubBands - 1));
 
   if ( value > this->m_FreqCutOff )
+    {
     return this->EvaluateMagnitude(value);
+    }
   return 1;
 }
 
@@ -78,11 +82,13 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateForwardHighPassFilter(const FunctionValueType & freq_norm_in_hz) const
 {
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands))
-    * std::pow(2.0, static_cast<int>(this->m_HighPassSubBands - 1));
+    std::pow(freq_norm_in_hz, static_cast< int >(this->m_HighPassSubBands))
+    * std::pow(2.0, static_cast< int >(this->m_HighPassSubBands - 1));
 
   if ( value < this->m_FreqCutOff )
+    {
     return this->EvaluateMagnitude(value);
+    }
   return 1;
 }
 
@@ -92,15 +98,21 @@ IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 ::EvaluateForwardSubBand(const FunctionValueType & freq_norm_in_hz, unsigned int j)
 const
 {
-  if (j == this->m_HighPassSubBands)
+  if ( j == this->m_HighPassSubBands )
+    {
     return this->EvaluateForwardHighPassFilter(freq_norm_in_hz);
-  if (j == 0)
+    }
+  if ( j == 0 )
+    {
     return this->EvaluateForwardLowPassFilter(freq_norm_in_hz);
-  if (j > this->m_HighPassSubBands || j < 0)
-    itkExceptionMacro( <<"Invalid sub-band." );
+    }
+  if ( j > this->m_HighPassSubBands || j < 0 )
+    {
+    itkExceptionMacro( << "Invalid sub-band." );
+    }
   FunctionValueType value =
-    std::pow(freq_norm_in_hz, static_cast<int>(this->m_HighPassSubBands))
-    * std::pow(2.0, static_cast<int>(2 * this->m_HighPassSubBands - 1 - j));
+    std::pow(freq_norm_in_hz, static_cast< int >(this->m_HighPassSubBands))
+    * std::pow(2.0, static_cast< int >(2 * this->m_HighPassSubBands - 1 - j));
   return this->EvaluateMagnitude(value);
 }
 

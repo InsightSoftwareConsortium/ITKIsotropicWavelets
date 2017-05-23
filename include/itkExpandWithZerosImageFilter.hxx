@@ -109,7 +109,7 @@ template< typename TInputImage, typename TOutputImage >
 void
 ExpandWithZerosImageFilter< TInputImage, TOutputImage >
 ::ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-                       ThreadIdType threadId)
+  ThreadIdType threadId)
 {
   // Get the input and output pointers
   OutputImagePointer outputPtr    = this->GetOutput();
@@ -122,12 +122,12 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
 
   // Report progress on a per scanline basis
   const SizeValueType size0 = outputRegionForThread.GetSize(0);
-  if( size0 == 0)
+  if ( size0 == 0 )
     {
     return;
     }
   const size_t numberOfLinesToProcess = outputRegionForThread.GetNumberOfPixels() / size0;
-  ProgressReporter progress( this, threadId, static_cast<SizeValueType>( numberOfLinesToProcess ) );
+  ProgressReporter progress( this, threadId, static_cast< SizeValueType >( numberOfLinesToProcess ) );
 
   const typename OutputImageType::IndexType outputOriginIndex = outputPtr->GetLargestPossibleRegion().GetIndex();
   // Walk the output region, and interpolate the input image
@@ -140,14 +140,14 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
       for ( unsigned int j = 0; j < ImageDimension; j++ )
         {
         // Check that index (normalized to start with zero) is multiple of ExpandFactors
-        if((outputIndex[j] - outputOriginIndex[j]) % m_ExpandFactors[j] != 0)
+        if ( (outputIndex[j] - outputOriginIndex[j]) % m_ExpandFactors[j] != 0 )
           {
           indexIsMultipleOfFactor = false;
           break;
           }
         }
       // Copy value from input if index is multiplo, or set it to zero otherwise.
-      if(indexIsMultipleOfFactor)
+      if ( indexIsMultipleOfFactor )
         {
         // Determine the input pixel location associated with this output
         // pixel at the start of the scanline.
@@ -160,7 +160,7 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
           inputIndex[j] = outputIndex[j] / m_ExpandFactors[j];
           }
         outIt.Set( static_cast< OutputPixelType >(
-                     inputPtr->GetPixel(inputIndex) ) );
+            inputPtr->GetPixel(inputIndex) ) );
         }
       else
         {
@@ -168,6 +168,7 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
         }
       ++outIt;
       }
+
     outIt.NextLine();
     progress.CompletedPixel();
     }
@@ -201,9 +202,8 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
   const typename TOutputImage::IndexType & outputRequestedRegionStartIndex =
     outputPtr->GetRequestedRegion().GetIndex();
 
-  typename TInputImage::SizeType  inputRequestedRegionSize;
+  typename TInputImage::SizeType inputRequestedRegionSize;
   typename TInputImage::IndexType inputRequestedRegionStartIndex;
-
   /**
    * inputRequestedSize = (outputRequestedSize / ExpandFactor) + 1)
    * The extra 1 above is to take care of edge effects when streaming.
@@ -211,12 +211,14 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
   for ( i = 0; i < TInputImage::ImageDimension; i++ )
     {
     inputRequestedRegionSize[i] =
-      (SizeValueType)std::ceil( (double)outputRequestedRegionSize[i]
-                                / (double)m_ExpandFactors[i] ) + 1;
+      static_cast<SizeValueType>(
+          std::ceil( static_cast< double >(outputRequestedRegionSize[i])
+            / static_cast< double >(m_ExpandFactors[i]) ) + 1 );
 
     inputRequestedRegionStartIndex[i] =
-      (SizeValueType)std::floor( (double)outputRequestedRegionStartIndex[i]
-                                 / (double)m_ExpandFactors[i] );
+      static_cast<SizeValueType>(
+          std::floor( static_cast< double >(outputRequestedRegionStartIndex[i])
+            / static_cast< double >(m_ExpandFactors[i]) ) );
     }
 
   typename TInputImage::RegionType inputRequestedRegion;
@@ -263,23 +265,23 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
   inputOrigin = inputPtr->GetOrigin();
 
   typename TOutputImage::SpacingType outputSpacing;
-  typename TOutputImage::SizeType    outputSize;
-  typename TOutputImage::IndexType   outputStartIndex;
-  typename TOutputImage::PointType   outputOrigin;
+  typename TOutputImage::SizeType outputSize;
+  typename TOutputImage::IndexType outputStartIndex;
+  typename TOutputImage::PointType outputOrigin;
 
   typename TInputImage::SpacingType inputOriginShift;
-
   for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
     outputSpacing[i]    = inputSpacing[i] / (float)m_ExpandFactors[i];
     outputSize[i]       = inputSize[i] * (SizeValueType)m_ExpandFactors[i];
     outputStartIndex[i] = inputStartIndex[i] * (IndexValueType)m_ExpandFactors[i];
-    const double fraction = (double)( m_ExpandFactors[i] - 1 ) / (double)m_ExpandFactors[i];
+    const double fraction = static_cast< double >(m_ExpandFactors[i] - 1)
+      / static_cast< double >(m_ExpandFactors[i]);
     inputOriginShift[i] = -( inputSpacing[i] / 2.0 ) * fraction;
     }
 
-  const typename TInputImage::DirectionType inputDirection    = inputPtr->GetDirection();
-  const typename TOutputImage::SpacingType  outputOriginShift = inputDirection * inputOriginShift;
+  const typename TInputImage::DirectionType inputDirection   = inputPtr->GetDirection();
+  const typename TOutputImage::SpacingType outputOriginShift = inputDirection * inputOriginShift;
 
   outputOrigin = inputOrigin + outputOriginShift;
 
