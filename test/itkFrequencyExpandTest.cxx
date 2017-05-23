@@ -41,7 +41,8 @@
 #endif
 
 template< unsigned int VDimension >
-int runFrequencyExpandTest(const std::string & inputImage, const std::string & outputImage)
+int
+runFrequencyExpandTest(const std::string & inputImage, const std::string & outputImage)
 {
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
@@ -81,12 +82,12 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
   expandFilter->Update();
 
   // Test size and metadata
-  typename ComplexImageType::PointType   fftOrigin     = fftFilter->GetOutput()->GetOrigin();
+  typename ComplexImageType::PointType fftOrigin     = fftFilter->GetOutput()->GetOrigin();
   typename ComplexImageType::SpacingType fftSpacing    = fftFilter->GetOutput()->GetSpacing();
-  typename ComplexImageType::PointType   expandOrigin  = expandFilter->GetOutput()->GetOrigin();
+  typename ComplexImageType::PointType expandOrigin  = expandFilter->GetOutput()->GetOrigin();
   typename ComplexImageType::SpacingType expandSpacing = expandFilter->GetOutput()->GetSpacing();
 
-  if( expandOrigin != fftOrigin )
+  if ( expandOrigin != fftOrigin )
     {
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error in Origin (has changed afterExpand): " << std::endl;
@@ -95,7 +96,7 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
     testPassed = false;
     }
 
-  if( expandSpacing != fftSpacing / expandFactor )
+  if ( expandSpacing != fftSpacing / expandFactor )
     {
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error in Spacing : " << std::endl;
@@ -113,12 +114,12 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
   /***************** Hermitian property (sym) *****************************/
   bool fftIsHermitian    = itk::Testing::ComplexImageIsHermitian(fftFilter->GetOutput());
   bool expandIsHermitian = itk::Testing::ComplexImageIsHermitian(expandFilter->GetOutput());
-  if( !fftIsHermitian )
+  if ( !fftIsHermitian )
     {
     std::cerr << "fft is not Hermitian" << std::endl;
     // return EXIT_FAILURE;
     }
-  if( !expandIsHermitian )
+  if ( !expandIsHermitian )
     {
     std::cerr << "expand is not Hermitian" << std::endl;
     // return EXIT_FAILURE;
@@ -130,34 +131,34 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
   for ( unsigned int dim = 0; dim < Dimension; ++dim )
     {
     inputSizeIsEven[dim] = (reader->GetOutput()->GetLargestPossibleRegion().GetSize()[dim] % 2 == 0);
-    if (inputSizeIsEven[dim] == false)
+    if ( inputSizeIsEven[dim] == false )
       {
       imageIsEven = false;
       }
     }
 
-  if(imageIsEven)
+  if ( imageIsEven )
     {
     // Simmetry and Hermitian test: ComplexInverseFFT will generate output with zero imaginary part.
     // Check that complex part is almost 0 after FFT and complex inverse FFT.
       {
       std::cout << "Even Image?: " << imageIsEven << std::endl;
-      typedef itk::ComplexToComplexFFTImageFilter<ComplexImageType> ComplexFFTType;
+      typedef itk::ComplexToComplexFFTImageFilter< ComplexImageType > ComplexFFTType;
       typename ComplexFFTType::Pointer complexInverseFFT = ComplexFFTType::New();
       complexInverseFFT->SetTransformDirection(ComplexFFTType::INVERSE);
       complexInverseFFT->SetInput(fftFilter->GetOutput());
       complexInverseFFT->Update();
 
-      itk::ImageRegionConstIterator<ComplexImageType> complexInverseIt(
+      itk::ImageRegionConstIterator< ComplexImageType > complexInverseIt(
         complexInverseFFT->GetOutput(),
         complexInverseFFT->GetOutput()->GetLargestPossibleRegion());
       complexInverseIt.GoToBegin();
       unsigned int notZeroComplexError = 0;
       double accumSqDiff = 0;
-      while( !complexInverseIt.IsAtEnd() )
+      while ( !complexInverseIt.IsAtEnd() )
         {
         typename ComplexImageType::PixelType::value_type imageValue = complexInverseIt.Get().imag();
-        if( itk::Math::NotAlmostEquals< typename ComplexImageType::PixelType::value_type >( imageValue, 0.0 ) )
+        if ( itk::Math::NotAlmostEquals< typename ComplexImageType::PixelType::value_type >( imageValue, 0.0 ) )
           {
           ++notZeroComplexError;
           accumSqDiff += imageValue * imageValue;
@@ -165,6 +166,7 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
 
         ++complexInverseIt;
         }
+
       // accumSqDiff /= notZeroComplexError;
       if ( notZeroComplexError > 0 )
         {
@@ -177,30 +179,31 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
       }
     // Check that complex part is almost 0 filter is correct after expand
       {
-      typedef itk::ComplexToComplexFFTImageFilter<ComplexImageType> ComplexFFTType;
+      typedef itk::ComplexToComplexFFTImageFilter< ComplexImageType > ComplexFFTType;
       typename ComplexFFTType::Pointer complexInverseFFT = ComplexFFTType::New();
       complexInverseFFT->SetTransformDirection(ComplexFFTType::INVERSE);
       complexInverseFFT->SetInput(expandFilter->GetOutput());
       complexInverseFFT->Update();
 
-      itk::ImageRegionConstIterator<ComplexImageType> complexInverseIt(
+      itk::ImageRegionConstIterator< ComplexImageType > complexInverseIt(
         complexInverseFFT->GetOutput(),
         complexInverseFFT->GetOutput()->GetLargestPossibleRegion());
       complexInverseIt.GoToBegin();
       unsigned int notZeroComplexError = 0;
       double accumSqDiff = 0;
-      while( !complexInverseIt.IsAtEnd() )
+      while ( !complexInverseIt.IsAtEnd() )
         {
         typename ComplexImageType::PixelType::value_type imageValue = complexInverseIt.Get().imag();
-        if( itk::Math::NotAlmostEquals< typename ComplexImageType::PixelType::value_type >( imageValue, 0.0 ) )
+        if ( itk::Math::NotAlmostEquals< typename ComplexImageType::PixelType::value_type >( imageValue, 0.0 ) )
           {
           ++notZeroComplexError;
           accumSqDiff += imageValue * imageValue;
           }
         ++complexInverseIt;
         }
+
       // accumSqDiff /= notZeroComplexError;
-      if( notZeroComplexError > 0 )
+      if ( notZeroComplexError > 0 )
         {
         std::cout << "Dev note: After the EXPAND filter the image is not "
           "Hermitian. #Not_zero_imag_value Pixels: "
@@ -230,7 +233,7 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
   itk::Testing::ViewImage( zeroDCFilter->GetOutput(), "Original" );
   itk::Testing::ViewImage( inverseFFT->GetOutput(), "FrequencyExpander" );
   // Compare with regular expand filter.
-  typedef itk::ExpandWithZerosImageFilter<ImageType, ImageType> RegularExpandType;
+  typedef itk::ExpandWithZerosImageFilter< ImageType, ImageType > RegularExpandType;
   typename RegularExpandType::Pointer regularExpandFilter = RegularExpandType::New();
   regularExpandFilter->SetInput( reader->GetOutput() );
   regularExpandFilter->SetExpandFactors( 2 );
@@ -249,7 +252,7 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
   // itk::Testing::ViewImage(complexToRealFilterExpand->GetOutput());
 #endif
 
-  if(testPassed)
+  if ( testPassed )
     {
     return EXIT_SUCCESS;
     }
@@ -259,9 +262,10 @@ int runFrequencyExpandTest(const std::string & inputImage, const std::string & o
     }
 }
 
-int itkFrequencyExpandTest( int argc, char* argv[] )
+int
+itkFrequencyExpandTest( int argc, char* argv[] )
 {
-  if( argc < 3 || argc > 4 )
+  if ( argc < 3 || argc > 4 )
     {
     std::cerr << "Usage: " << argv[0] << " inputImage outputImage [dimension]" << std::endl;
     return EXIT_FAILURE;
@@ -285,19 +289,19 @@ int itkFrequencyExpandTest( int argc, char* argv[] )
     FrequencyExpandImageFilterType::New();
 
   EXERCISE_BASIC_OBJECT_METHODS( expandFilter, FrequencyExpandImageFilter,
-                                 ImageToImageFilter );
+    ImageToImageFilter );
 
   unsigned int dimension = 3;
-  if( argc == 4 )
+  if ( argc == 4 )
     {
     dimension = atoi(argv[3]);
     }
 
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
     return runFrequencyExpandTest< 2 >( inputImage, outputImage );
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
     return runFrequencyExpandTest< 3 >( inputImage, outputImage );
     }

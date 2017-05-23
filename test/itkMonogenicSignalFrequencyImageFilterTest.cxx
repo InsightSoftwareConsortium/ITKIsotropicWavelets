@@ -36,9 +36,10 @@
 #include "itkViewImage.h"
 #endif
 
-int itkMonogenicSignalFrequencyImageFilterTest( int argc, char* argv[] )
+int
+itkMonogenicSignalFrequencyImageFilterTest( int argc, char* argv[] )
 {
-  if( argc != 3 )
+  if ( argc != 3 )
     {
     std::cerr << "Usage: " << argv[0] << " inputImage outputImage" << std::endl;
     return EXIT_FAILURE;
@@ -53,13 +54,13 @@ int itkMonogenicSignalFrequencyImageFilterTest( int argc, char* argv[] )
   typedef float                              PixelType;
   typedef itk::Image< PixelType, Dimension > ImageType;
 
-  typedef itk::ImageFileReader< ImageType>   ReaderType;
+  typedef itk::ImageFileReader< ImageType > ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
   TRY_EXPECT_NO_EXCEPTION( reader->Update() );
 
   // Perform FFT on input image.
-  typedef itk::ForwardFFTImageFilter<ImageType> FFTFilterType;
+  typedef itk::ForwardFFTImageFilter< ImageType > FFTFilterType;
   FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput(reader->GetOutput());
   fftFilter->Update();
@@ -76,24 +77,24 @@ int itkMonogenicSignalFrequencyImageFilterTest( int argc, char* argv[] )
   unsigned int expectedNumberOfComponentsPerPixel =
     monoFilter->GetOutput()->GetNumberOfComponentsPerPixel();
   unsigned int computedNumberOfComponentsPerPixel = Dimension + 1;
-  if( expectedNumberOfComponentsPerPixel != computedNumberOfComponentsPerPixel )
+  if ( expectedNumberOfComponentsPerPixel != computedNumberOfComponentsPerPixel )
     {
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "Wrong number of components" << std::endl;
     std::cerr << "Expected: " << expectedNumberOfComponentsPerPixel
-      <<  ", but got: " << computedNumberOfComponentsPerPixel << std::endl;
+              <<  ", but got: " << computedNumberOfComponentsPerPixel << std::endl;
     testPassed = false;
     }
 
   typedef itk::InverseFFTImageFilter< ComplexImageType, ImageType > InverseFFTFilterType;
   InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
 
-  typedef MonogenicSignalFilterType::OutputImageType MonoFilterOutputImageType;
-  typedef itk::VectorIndexSelectionCastImageFilter<MonoFilterOutputImageType, ComplexImageType> VectorCastFilterType;
+  typedef MonogenicSignalFilterType::OutputImageType
+                                                                                                  MonoFilterOutputImageType;
+  typedef itk::VectorIndexSelectionCastImageFilter< MonoFilterOutputImageType, ComplexImageType > VectorCastFilterType;
   VectorCastFilterType::Pointer vectorCastFilter = VectorCastFilterType::New();
   vectorCastFilter->SetInput(monoFilter->GetOutput());
-
-  for (unsigned int c = 0; c < computedNumberOfComponentsPerPixel; ++c)
+  for ( unsigned int c = 0; c < computedNumberOfComponentsPerPixel; ++c )
     {
     vectorCastFilter->SetIndex(c);
     vectorCastFilter->Update();
@@ -105,7 +106,7 @@ int itkMonogenicSignalFrequencyImageFilterTest( int argc, char* argv[] )
 #endif
     }
 
-  if (testPassed)
+  if ( testPassed )
     {
     return EXIT_SUCCESS;
     }

@@ -16,7 +16,6 @@
  *
  *=========================================================================*/
 
-
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
@@ -41,19 +40,19 @@
 #include "itkViewImage.h"
 #endif
 
-
 template< unsigned int VDimension, typename TWaveletFunction >
-int runWaveletFrequencyInverseTest( const std::string& inputImage,
-                                    const std::string& outputImage,
-                                    const unsigned int& inputLevels,
-                                    const unsigned int& inputBands)
+int
+runWaveletFrequencyInverseTest( const std::string& inputImage,
+  const std::string& outputImage,
+  const unsigned int& inputLevels,
+  const unsigned int& inputBands)
 {
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
 
-  typedef float                               PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+  typedef float                              PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
@@ -106,7 +105,7 @@ int runWaveletFrequencyInverseTest( const std::string& inputImage,
   inverseWavelet->DebugOn();
   inverseWavelet->Update();
 
-  //Check Metadata: Spacing, Origin
+  // Check Metadata: Spacing, Origin
   typename ComplexImageType::SpacingType outputSpacing =
     inverseWavelet->GetOutput()->GetSpacing();
   typename ComplexImageType::SpacingType expectedSpacing;
@@ -120,30 +119,29 @@ int runWaveletFrequencyInverseTest( const std::string& inputImage,
   typename ComplexImageType::SizeType expectedSize =
     fftFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
 
-  if(outputSpacing != expectedSpacing)
+  if ( outputSpacing != expectedSpacing )
     {
     std::cout << "outputSpacing is wrong: " << outputSpacing
-      << " expectedSpacing: " << expectedSpacing
-      << std::endl;
+              << " expectedSpacing: " << expectedSpacing
+              << std::endl;
     testPassed = false;
     }
-  if(outputOrigin != expectedOrigin)
+  if ( outputOrigin != expectedOrigin )
     {
     std::cout << "outputOrigin is wrong: " << outputOrigin
-      << " expectedOrigin: " << expectedOrigin
-      << std::endl;
+              << " expectedOrigin: " << expectedOrigin
+              << std::endl;
     testPassed = false;
     }
-  if(outputSize != expectedSize)
+  if ( outputSize != expectedSize )
     {
     std::cout << "outputSize is wrong: " << outputSize
-      << " expectedSize: " << expectedSize
-      << std::endl;
+              << " expectedSize: " << expectedSize
+              << std::endl;
     testPassed = false;
     }
 
-
-  typedef itk::InverseFFTImageFilter<ComplexImageType, ImageType> InverseFFTFilterType;
+  typedef itk::InverseFFTImageFilter< ComplexImageType, ImageType > InverseFFTFilterType;
   typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
   inverseFFT->SetInput( inverseWavelet->GetOutput() );
   inverseFFT->Update();
@@ -161,24 +159,24 @@ int runWaveletFrequencyInverseTest( const std::string& inputImage,
   itk::Testing::ViewImage( inverseFFT->GetOutput(), "InverseWavelet" );
 #endif
 
-  //TODO move it from here to Forward test.
+  // TODO move it from here to Forward test.
 #ifdef ITK_VISUALIZE_TESTS
-  std::vector<typename ComplexImageType::Pointer> waveletFilterBankPyramid =
+  std::vector< typename ComplexImageType::Pointer > waveletFilterBankPyramid =
     forwardWavelet->GetWaveletFilterBankPyramid();
-  typedef itk::ComplexToRealImageFilter<ComplexImageType, ImageType> ComplexToRealFilterType;
+  typedef itk::ComplexToRealImageFilter< ComplexImageType, ImageType > ComplexToRealFilterType;
   typename ComplexToRealFilterType::Pointer complexToRealFilter = ComplexToRealFilterType::New();
 
   itk::NumberToString< unsigned int > n2s;
-  std::cout <<"Size FilterBankPyramid:" << waveletFilterBankPyramid.size() << std::endl;
-  for (unsigned int i = 0; i < waveletFilterBankPyramid.size(); ++i)
+  std::cout << "Size FilterBankPyramid:" << waveletFilterBankPyramid.size() << std::endl;
+  for ( unsigned int i = 0; i < waveletFilterBankPyramid.size(); ++i )
     {
     complexToRealFilter->SetInput( waveletFilterBankPyramid[i]);
     complexToRealFilter->UpdateLargestPossibleRegion();
     itk::Testing::ViewImage( complexToRealFilter->GetOutput(), "FilterBankPyramid #" + n2s(i) );
     }
 #endif
-  
-  if(testPassed)
+
+  if ( testPassed )
     {
     return EXIT_SUCCESS;
     }
@@ -188,9 +186,10 @@ int runWaveletFrequencyInverseTest( const std::string& inputImage,
     }
 }
 
-int itkWaveletFrequencyInverseTest(int argc, char *argv[])
+int
+itkWaveletFrequencyInverseTest(int argc, char *argv[])
 {
-  if( argc < 6 || argc > 7 )
+  if ( argc < 6 || argc > 7 )
     {
     std::cerr << "Usage: " << argv[0]
               << " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
@@ -204,7 +203,7 @@ int itkWaveletFrequencyInverseTest(int argc, char *argv[])
   const std::string waveletFunction = argv[5];
 
   unsigned int dimension = 3;
-  if( argc == 7 )
+  if ( argc == 7 )
     {
     dimension = atoi( argv[6] );
     }
@@ -247,10 +246,10 @@ int itkWaveletFrequencyInverseTest(int argc, char *argv[])
   //   IsotropicWaveletFrequencyFunction );
   //
   //
-  typedef itk::HeldIsotropicWavelet<>       HeldWavelet;
-  typedef itk::VowIsotropicWavelet<>        VowWavelet;
-  typedef itk::SimoncelliIsotropicWavelet<> SimoncelliWavelet;
-  typedef itk::ShannonIsotropicWavelet<>    ShannonWavelet;
+  typedef itk::HeldIsotropicWavelet< >       HeldWavelet;
+  typedef itk::VowIsotropicWavelet< >        VowWavelet;
+  typedef itk::SimoncelliIsotropicWavelet< > SimoncelliWavelet;
+  typedef itk::ShannonIsotropicWavelet< >    ShannonWavelet;
   //
   //
   // typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, HeldWavelet >
@@ -286,22 +285,21 @@ int itkWaveletFrequencyInverseTest(int argc, char *argv[])
   // EXERCISE_BASIC_OBJECT_METHODS( shannonInverseWavelet, WaveletFrequencyInverse,
   //   ImageToImageFilter );
 
-
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
-    if( waveletFunction == "Held" )
+    if ( waveletFunction == "Held" )
       {
       return runWaveletFrequencyInverseTest< 2, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
       return runWaveletFrequencyInverseTest< 2, VowWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
       return runWaveletFrequencyInverseTest< 2, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
       return runWaveletFrequencyInverseTest< 2, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
@@ -312,21 +310,21 @@ int itkWaveletFrequencyInverseTest(int argc, char *argv[])
       return EXIT_FAILURE;
       }
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
-    if( waveletFunction == "Held" )
+    if ( waveletFunction == "Held" )
       {
       return runWaveletFrequencyInverseTest< 3, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
       return runWaveletFrequencyInverseTest< 3, VowWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if (waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
       return runWaveletFrequencyInverseTest< 3, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
       return runWaveletFrequencyInverseTest< 3, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
@@ -339,7 +337,7 @@ int itkWaveletFrequencyInverseTest(int argc, char *argv[])
     }
   else
     {
-      std::cerr << "Test failed!" << std::endl;
+    std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error: only 2 or 3 dimensions allowed, " << dimension << " selected." << std::endl;
     return EXIT_FAILURE;
     }

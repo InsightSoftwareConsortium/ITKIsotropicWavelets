@@ -45,30 +45,29 @@
 #include "itkNumberToString.h"
 #endif
 
-
 // 1. Wavelet analysis (forward) on input image.
 // 2. Create a Monogenic Signal (from Riesz function ) on each wavelet output..
 // 3. Do a PhaseAnalysis on each Monogenic Signal.
 // 4. Wavelet reconstruction (inverse) using as coefficients the output of the PhaseAnalysis.
 // Without applying reconstruction factors: ApplyReconstructionFactorOff()
 // 5. The result of the reconstruction will be an image that uses phase information at each level/band for improving local structure information, and can also work as an equalizator of brightness.
-template<unsigned int VDimension, typename TWaveletFunction >
-int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
-                                      const std::string&, //outputImage
-                                      const unsigned int& inputLevels,
-                                      const unsigned int& inputBands,
-                                      const bool applySoftThreshold)
+template< unsigned int VDimension, typename TWaveletFunction >
+int
+runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
+  const std::string &, // outputImage
+  const unsigned int& inputLevels,
+  const unsigned int& inputBands,
+  const bool applySoftThreshold)
 {
   const unsigned int Dimension = VDimension;
 
-  typedef double                              PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+  typedef double                             PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
   reader->Update();
-
 
   typedef itk::ZeroDCImageFilter< ImageType > ZeroDCFilterType;
   typename ZeroDCFilterType::Pointer zeroDCFilter = ZeroDCFilterType::New();
@@ -113,7 +112,7 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
 
   typename ForwardWaveletType::OutputsType modifiedWavelets;
   unsigned int numberOfOutputs = forwardWavelet->GetNumberOfOutputs();
-  for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
+  for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
     {
     std::cout << "Output #: " << i << " / " << numberOfOutputs - 1 << std::endl;
     typename MonogenicSignalFrequencyFilterType::Pointer monoFilter =
@@ -150,9 +149,9 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
 #ifdef ITK_VISUALIZE_TESTS
   // Visualize and compare modified wavelets coefficients (and approx image)
   bool visualizeCoefficients = false;
-  if(visualizeCoefficients)
+  if ( visualizeCoefficients )
     {
-    for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
+    for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
       {
       itk::NumberToString< unsigned int > n2s;
       typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
@@ -195,12 +194,14 @@ int runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   return EXIT_SUCCESS;
 }
 
-int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
+int
+itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
 {
-  if( argc < 7 || argc > 8 )
+  if ( argc < 7 || argc > 8 )
     {
     std::cerr << "Usage: " << argv[0]
-              << " inputImage outputImage inputLevels inputBands waveletFunction Apply|NoApply [dimension]" << std::endl;
+              << " inputImage outputImage inputLevels inputBands waveletFunction Apply|NoApply [dimension]"
+              << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -211,11 +212,11 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
   const std::string waveletFunction = argv[5];
   const std::string applySoftThresholdInput = argv[6];
   bool applySoftThreshold = false;
-  if (applySoftThresholdInput == "Apply")
+  if ( applySoftThresholdInput == "Apply" )
     {
     applySoftThreshold = true;
     }
-  else if (applySoftThresholdInput == "NoApply")
+  else if ( applySoftThresholdInput == "NoApply" )
     {
     applySoftThreshold = false;
     }
@@ -226,16 +227,16 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
     }
 
   unsigned int dimension = 3;
-  if( argc == 8 )
+  if ( argc == 8 )
     {
     dimension = atoi( argv[7] );
     }
 
   const unsigned int ImageDimension = 2;
-  typedef double                                          PixelType;
-  typedef std::complex< PixelType >                       ComplexPixelType;
-  typedef itk::Point< PixelType, ImageDimension >         PointType;
-  typedef itk::Image< ComplexPixelType, ImageDimension >  ComplexImageType;
+  typedef double                                         PixelType;
+  typedef std::complex< PixelType >                      ComplexPixelType;
+  typedef itk::Point< PixelType, ImageDimension >        PointType;
+  typedef itk::Image< ComplexPixelType, ImageDimension > ComplexImageType;
 
   // Exercise basic object methods
   // Done outside the helper function in the test because GCC is limited
@@ -268,11 +269,10 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
   EXERCISE_BASIC_OBJECT_METHODS( shannonIsotropicWavelet, ShannonIsotropicWavelet,
     IsotropicWaveletFrequencyFunction );
 
-
-  typedef itk::HeldIsotropicWavelet<>       HeldWavelet;
-  typedef itk::VowIsotropicWavelet<>        VowWavelet;
-  typedef itk::SimoncelliIsotropicWavelet<> SimoncelliWavelet;
-  typedef itk::ShannonIsotropicWavelet<>    ShannonWavelet;
+  typedef itk::HeldIsotropicWavelet< >       HeldWavelet;
+  typedef itk::VowIsotropicWavelet< >        VowWavelet;
+  typedef itk::SimoncelliIsotropicWavelet< > SimoncelliWavelet;
+  typedef itk::ShannonIsotropicWavelet< >    ShannonWavelet;
 
   typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, HeldWavelet >
     HeldWaveletFilterBankType;
@@ -331,24 +331,39 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
   EXERCISE_BASIC_OBJECT_METHODS( shannonInverseWavelet, WaveletFrequencyInverse,
     ImageToImageFilter );
 
-
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
-    if( waveletFunction == "Held" )
+    if ( waveletFunction == "Held" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 2, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
+      return runRieszWaveletPhaseAnalysisTest< 2, HeldWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        applySoftThreshold );
       }
-    else if(waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 2, VowWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
+      return runRieszWaveletPhaseAnalysisTest< 2, VowWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        applySoftThreshold );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 2, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
+      return runRieszWaveletPhaseAnalysisTest< 2, SimoncelliWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        applySoftThreshold );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 2, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
+      return runRieszWaveletPhaseAnalysisTest< 2, ShannonWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        applySoftThreshold );
       }
     else
       {
@@ -357,23 +372,39 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
       return EXIT_FAILURE;
       }
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
-    if( waveletFunction == "Held" )
+    if ( waveletFunction == "Held" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 3, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
+      return runRieszWaveletPhaseAnalysisTest< 3, HeldWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        applySoftThreshold );
       }
-    else if( waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 3, VowWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
+      return runRieszWaveletPhaseAnalysisTest< 3, VowWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        applySoftThreshold );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 3, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
+      return runRieszWaveletPhaseAnalysisTest< 3, SimoncelliWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        applySoftThreshold );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
-      return runRieszWaveletPhaseAnalysisTest< 3, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands, applySoftThreshold );
+      return runRieszWaveletPhaseAnalysisTest< 3, ShannonWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        applySoftThreshold );
       }
     else
       {
@@ -384,7 +415,7 @@ int itkRieszWaveletPhaseAnalysisTest( int argc, char *argv[] )
     }
   else
     {
-      std::cerr << "Test failed!" << std::endl;
+    std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error: only 2 or 3 dimensions allowed, " << dimension << " selected." << std::endl;
     return EXIT_FAILURE;
     }

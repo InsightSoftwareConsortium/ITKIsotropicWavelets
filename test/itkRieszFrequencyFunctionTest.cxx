@@ -33,15 +33,17 @@
 #include "itkViewImage.h"
 #endif
 
-template<unsigned int VDimension>
-int runRieszFrequencyFunctionTest(unsigned int inputOrder)
+template< unsigned int VDimension >
+int
+runRieszFrequencyFunctionTest(unsigned int inputOrder)
 {
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
-  typedef std::complex<double>                            OutputType;
-  typedef itk::Point< itk::SpacePrecisionType, Dimension> InputType;
 
-  typedef itk::RieszFrequencyFunction<OutputType, Dimension, InputType> RieszFrequencyFunctionType;
+  typedef std::complex< double >                           OutputType;
+  typedef itk::Point< itk::SpacePrecisionType, Dimension > InputType;
+
+  typedef itk::RieszFrequencyFunction< OutputType, Dimension, InputType > RieszFrequencyFunctionType;
   typename RieszFrequencyFunctionType::Pointer rieszFunction =
     RieszFrequencyFunctionType::New();
 
@@ -54,18 +56,18 @@ int runRieszFrequencyFunctionTest(unsigned int inputOrder)
   OutputType resultFirstOrderWithIndices = rieszFunction->EvaluateWithIndices(frequencyPoint, indices );
   // Calculate euclidean norm / magnitude of frequencyPoint.
   double accum(0);
-  for (size_t d = 0; d < Dimension; ++d)
-  {
+  for ( size_t d = 0; d < Dimension; ++d )
+    {
     accum += frequencyPoint[d] * frequencyPoint[d];
-  }
+    }
   itk::SpacePrecisionType frequencyMagnitude =
-    static_cast<itk::SpacePrecisionType>(sqrt(accum));
-  OutputType trueResult(0,- frequencyPoint[0] / frequencyMagnitude);
-  if( itk::Math::NotAlmostEquals(resultFirstOrderWithIndices, trueResult) )
+    static_cast< itk::SpacePrecisionType >(sqrt(accum));
+  OutputType trueResult(0, -frequencyPoint[0] / frequencyMagnitude);
+  if ( itk::Math::NotAlmostEquals(resultFirstOrderWithIndices, trueResult) )
     {
     std::cerr << "Error. EvaluateWithIndices with order 1, indice (1,...,0):\n actual: "
-      << resultFirstOrderWithIndices <<
-      " expected: " << trueResult << " are not equal!" << std::endl;
+              << resultFirstOrderWithIndices
+              << " expected: " << trueResult << " are not equal!" << std::endl;
     }
 
   // Test getting subIndices
@@ -77,43 +79,42 @@ int runRieszFrequencyFunctionTest(unsigned int inputOrder)
   SetType uniqueIndices;
   unsigned int positionToStartProcessing = 0;
   RieszFrequencyFunctionType::ComputeUniqueIndices(initIndice, uniqueIndices, positionToStartProcessing);
-  std::cout <<"UniqueIndices: " << uniqueIndices.size() << std::endl; 
-  for (typename SetType::const_iterator it = uniqueIndices.begin(); it != uniqueIndices.end(); ++it)
+  std::cout << "UniqueIndices: " << uniqueIndices.size() << std::endl;
+  for ( typename SetType::const_iterator it = uniqueIndices.begin(); it != uniqueIndices.end(); ++it )
     {
     std::cout << "(";
-    for (unsigned int i = 0; i<Dimension; ++i)
+    for ( unsigned int i = 0; i < Dimension; ++i )
       {
-      std::cout << (*it)[i]<< ", ";
+      std::cout << (*it)[i] << ", ";
       }
     std::cout << ")" << std::endl;
     }
 
   SetType allPermutations =
     RieszFrequencyFunctionType::ComputeAllPermutations(uniqueIndices);
-  std::cout <<"AllPermutations: " << allPermutations.size() << std::endl; 
-  for (typename SetType::const_iterator it = allPermutations.begin(); it != allPermutations.end(); ++it)
+  std::cout << "AllPermutations: " << allPermutations.size() << std::endl;
+  for ( typename SetType::const_iterator it = allPermutations.begin(); it != allPermutations.end(); ++it )
     {
     std::cout << "(";
-    for (unsigned int i = 0; i<Dimension; ++i)
+    for ( unsigned int i = 0; i < Dimension; ++i )
       {
-      std::cout << (*it)[i]<< ", ";
+      std::cout << (*it)[i] << ", ";
       }
     std::cout << ")" << std::endl;
     }
 
   unsigned int expectedNumberOfComponents = RieszFrequencyFunctionType::ComputeNumberOfComponents(inputOrder);
   unsigned int actualNumberOfComponents = allPermutations.size();
-  if (actualNumberOfComponents != expectedNumberOfComponents)
+  if ( actualNumberOfComponents != expectedNumberOfComponents )
     {
-    std::cerr << "Error. NumberOfComponents for inputOrder: " << inputOrder 
-      << " ; actual: " << actualNumberOfComponents 
-      << " expected: " << expectedNumberOfComponents 
-      << " are not equal!" << std::endl;
+    std::cerr << "Error. NumberOfComponents for inputOrder: " << inputOrder
+              << " ; actual: " << actualNumberOfComponents
+              << " expected: " << expectedNumberOfComponents
+              << " are not equal!" << std::endl;
     testPassed = false;
     }
-
   // Regression test for indice calculation.
-  for (unsigned int order = 1; order < 6; ++order )
+  for ( unsigned int order = 1; order < 6; ++order )
     {
     uniqueIndices.clear();
     allPermutations.clear();
@@ -122,27 +123,28 @@ int runRieszFrequencyFunctionTest(unsigned int inputOrder)
     allPermutations = RieszFrequencyFunctionType::ComputeAllPermutations(uniqueIndices);
     actualNumberOfComponents = allPermutations.size();
     expectedNumberOfComponents = RieszFrequencyFunctionType::ComputeNumberOfComponents(order);
-    if (actualNumberOfComponents != expectedNumberOfComponents)
+    if ( actualNumberOfComponents != expectedNumberOfComponents )
       {
-      std::cerr << "Error. NumberOfComponents for order: " << order << " ; actual: " << actualNumberOfComponents << " expected: " << expectedNumberOfComponents << " are not equal!" << std::endl;
+      std::cerr << "Error. NumberOfComponents for order: " << order << " ; actual: " << actualNumberOfComponents
+                << " expected: " << expectedNumberOfComponents << " are not equal!" << std::endl;
       testPassed = false;
       }
     }
 
-  //Evaluate All Components:
+  // Evaluate All Components:
   rieszFunction->SetOrder(inputOrder);
   rieszFunction->DebugOn();
-  typedef typename  RieszFrequencyFunctionType::OutputComponentsType OutputComponentType;
+  typedef typename RieszFrequencyFunctionType::OutputComponentsType OutputComponentType;
 
   OutputComponentType allComponents = rieszFunction->EvaluateAllComponents(frequencyPoint);
-    std::cout << "allComponents:" <<std::endl;
-  for (typename OutputComponentType::const_iterator it = allComponents.begin(); it != allComponents.end(); ++it)
-  {
+  std::cout << "allComponents:" << std::endl;
+  for ( typename OutputComponentType::const_iterator it = allComponents.begin(); it != allComponents.end(); ++it )
+    {
     std::cout << *it << ",";
-  }
+    }
   std::cout << std::endl;
 
-  if(testPassed)
+  if ( testPassed )
     {
     std::cout << "Test Passed!" << std::endl;
     return EXIT_SUCCESS;
@@ -169,9 +171,10 @@ int runRieszFrequencyFunctionTest(unsigned int inputOrder)
 // #endif
 }
 
-int itkRieszFrequencyFunctionTest( int argc, char* argv[] )
+int
+itkRieszFrequencyFunctionTest( int argc, char* argv[] )
 {
-  if( argc < 2 || argc > 3 )
+  if ( argc < 2 || argc > 3 )
     {
     std::cerr << "Usage: " << argv[0]
               << "dimension [order]" << std::endl;
@@ -180,18 +183,18 @@ int itkRieszFrequencyFunctionTest( int argc, char* argv[] )
 
   unsigned int dimension = atoi( argv[1] );
   unsigned int order = 5;
-  if(argc == 3)
+  if ( argc == 3 )
     {
     order = atoi( argv[2] );
     }
 
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
-      return runRieszFrequencyFunctionTest<2>(order);
+    return runRieszFrequencyFunctionTest< 2 >(order);
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
-      return runRieszFrequencyFunctionTest<3>(order);
+    return runRieszFrequencyFunctionTest< 3 >(order);
     }
   else
     {

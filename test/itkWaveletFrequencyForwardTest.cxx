@@ -40,25 +40,26 @@
 #include "itkViewImage.h"
 #endif
 
-
-std::string AppendToFilename(const std::string& filename, const std::string & appendix)
+std::string
+AppendToFilename(const std::string& filename, const std::string & appendix)
 {
   std::size_t foundDot = filename.find_last_of('.');
   return filename.substr( 0, foundDot ) + appendix + filename.substr( foundDot );
 }
 
 template< unsigned int VDimension, typename TWaveletFunction >
-int runWaveletFrequencyForwardTest( const std::string& inputImage,
-                                    const std::string& outputImage,
-                                    const unsigned int& inputLevels,
-                                    const unsigned int& inputBands)
+int
+runWaveletFrequencyForwardTest( const std::string& inputImage,
+  const std::string& outputImage,
+  const unsigned int& inputLevels,
+  const unsigned int& inputBands)
 {
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
 
-  typedef float                               PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+  typedef float                              PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
@@ -95,11 +96,11 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
     forwardWavelet->GetOutputs();
   unsigned int expectedNumberOfOutputs = forwardWavelet->GetTotalOutputs();
   unsigned int computedNumberOfOutputs = forwardWavelet->GetOutputs().size();
-  if( computedNumberOfOutputs != expectedNumberOfOutputs )
+  if ( computedNumberOfOutputs != expectedNumberOfOutputs )
     {
     std::cerr << "Error in GetTotalOutputs()" << std::endl;
     std::cerr << "Expected: " << expectedNumberOfOutputs << ", but got "
-      << computedNumberOfOutputs << std::endl;
+              << computedNumberOfOutputs << std::endl;
     testPassed = false;
     }
 
@@ -111,11 +112,11 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
     forwardWavelet->GetTotalOutputs() - 1;
   unsigned int computedNumberOfHighSubBands =
     forwardWavelet->GetOutputsHighPass().size();
-  if( computedNumberOfHighSubBands != expectedNumberOfHighSubBands )
+  if ( computedNumberOfHighSubBands != expectedNumberOfHighSubBands )
     {
     std::cerr << "Error in GetOutputsHighPass()" << std::endl;
     std::cerr << "Expected: " << expectedNumberOfHighSubBands << ", but got "
-      << computedNumberOfHighSubBands << std::endl;
+              << computedNumberOfHighSubBands << std::endl;
     testPassed = false;
     }
 
@@ -124,15 +125,14 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
     forwardWavelet->GetHighPassSubBands();
   unsigned int computedNumberOfHighSubBandsPerLevel =
     forwardWavelet->GetOutputsHighPassByLevel( 0 ).size();
-  if( computedNumberOfHighSubBandsPerLevel != expectedNumberOfHighSubBandsPerLevel )
+  if ( computedNumberOfHighSubBandsPerLevel != expectedNumberOfHighSubBandsPerLevel )
     {
     std::cerr << "Error in GetOutputsHighPassByLevel()" << std::endl;
     std::cerr << "Expected: " << expectedNumberOfHighSubBandsPerLevel << ", but got "
-      << computedNumberOfHighSubBandsPerLevel << std::endl;
+              << computedNumberOfHighSubBandsPerLevel << std::endl;
     testPassed = false;
     }
-
-  for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
+  for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
     {
     std::pair< unsigned int, unsigned int > pairLvBand =
       forwardWavelet->OutputIndexToLevelBand( i );
@@ -148,9 +148,10 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       forwardWavelet->OutputIndexToLevelBand( 0 );
     unsigned int lv = pairLvBand.first;
     unsigned int b  = pairLvBand.second;
-    if( lv != 0 || b != 0 )
+    if ( lv != 0 || b != 0 )
       {
-      std::cerr << "Error in first index: inputindex: " << 0 << " lv:" << lv << " b:" << b << " should be (0, 0)" << std::endl;
+      std::cerr << "Error in first index: inputindex: " << 0 << " lv:" << lv << " b:" << b << " should be (0, 0)"
+                << std::endl;
       testOutputIndexToLevelBandPassed = false;
       }
     }
@@ -159,9 +160,10 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       forwardWavelet->OutputIndexToLevelBand( highSubBands );
     unsigned int lv = pairLvBand.first;
     unsigned int b  = pairLvBand.second;
-    if( lv != 1 || b != 0 )
+    if ( lv != 1 || b != 0 )
       {
-      std::cerr << "Error in inputindex: " << highSubBands << " lv:" << lv << " b:" << b << " should be (1, 0)" << std::endl;
+      std::cerr << "Error in inputindex: " << highSubBands << " lv:" << lv << " b:" << b << " should be (1, 0)"
+                << std::endl;
       testOutputIndexToLevelBandPassed = false;
       }
     }
@@ -170,13 +172,14 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       forwardWavelet->OutputIndexToLevelBand( forwardWavelet->GetTotalOutputs() - 1 );
     unsigned int lv = pairLvBand.first;
     unsigned int b  = pairLvBand.second;
-    if( lv != levels || b != 0 )
+    if ( lv != levels || b != 0 )
       {
-      std::cerr << "Error in last inputindex: " << highSubBands << " lv:" << lv << " b:" << b << " should be (" << levels << ", 0)" << std::endl;
+      std::cerr << "Error in last inputindex: " << highSubBands << " lv:" << lv << " b:" << b << " should be ("
+                << levels << ", 0)" << std::endl;
       testOutputIndexToLevelBandPassed = false;
       }
     }
-  if(!testOutputIndexToLevelBandPassed)
+  if ( !testOutputIndexToLevelBandPassed )
     {
     std::cerr << "Error in OutputIndexToLevelBand" << std::endl;
     testPassed = false;
@@ -195,54 +198,55 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
   typename ComplexImageType::PointType inputOrigin;
   inputOrigin.Fill(0.0);
   typename ComplexImageType::PointType expectedOrigin = inputOrigin;
-  typename ComplexImageType::SizeType  inputSize = fftFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
-  typename ComplexImageType::SizeType  expectedSize = inputSize;
+  typename ComplexImageType::SizeType inputSize = fftFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
+  typename ComplexImageType::SizeType expectedSize = inputSize;
   itk::NumberToString< unsigned int > n2s;
-  for( unsigned int level = 0; level < levels + 1; ++level )
+  for ( unsigned int level = 0; level < levels + 1; ++level )
     {
-    double scaleFactorPerLevel = std::pow( static_cast<double>(forwardWavelet->GetScaleFactor()), static_cast<double>(level) );
-    for (unsigned int i = 0; i < Dimension; ++i)
-    {
+    double scaleFactorPerLevel = std::pow( static_cast< double >(forwardWavelet->GetScaleFactor()),
+        static_cast< double >(level) );
+    for ( unsigned int i = 0; i < Dimension; ++i )
+      {
       expectedSize[i] = inputSize[i] / scaleFactorPerLevel;
       expectedOrigin[i] = inputOrigin[i];
       expectedSpacing[i] = inputSpacing[i] * scaleFactorPerLevel;
-    }
-    for( unsigned int band = 0; band < highSubBands; ++band )
+      }
+    for ( unsigned int band = 0; band < highSubBands; ++band )
       {
       bool sizeIsCorrect = true;
       bool spacingIsCorrect = true;
       bool originIsCorrect = true;
 
-    unsigned int nOutput =
-      level * forwardWavelet->GetHighPassSubBands() + band;
+      unsigned int nOutput =
+        level * forwardWavelet->GetHighPassSubBands() + band;
 
       // Do not compute bands in low-pass level.
-      if( level == levels && band == 0 )
+      if ( level == levels && band == 0 )
         {
         nOutput = forwardWavelet->GetTotalOutputs() - 1;
         }
-      else if( level == levels && band != 0 )
+      else if ( level == levels && band != 0 )
         {
         break;
         }
 
-      if(expectedSize != forwardWavelet->GetOutput( nOutput )->GetLargestPossibleRegion().GetSize())
+      if ( expectedSize != forwardWavelet->GetOutput( nOutput )->GetLargestPossibleRegion().GetSize() )
         {
         std::cerr << "Size of the output is not as expected: " << expectedSize << std::endl;
         sizeIsCorrect = false;
         }
-      if(expectedOrigin != forwardWavelet->GetOutput( nOutput )->GetOrigin())
+      if ( expectedOrigin != forwardWavelet->GetOutput( nOutput )->GetOrigin() )
         {
         std::cerr << "Origin of the output is not as expected: " << expectedOrigin << std::endl;
         originIsCorrect = false;
         }
-      if(expectedSpacing != forwardWavelet->GetOutput( nOutput )->GetSpacing())
+      if ( expectedSpacing != forwardWavelet->GetOutput( nOutput )->GetSpacing() )
         {
         std::cerr << "Spacing of the output is not as expected: " << expectedSpacing << std::endl;
         spacingIsCorrect = false;
         }
 
-      if(!sizeIsCorrect || !originIsCorrect || !spacingIsCorrect) 
+      if ( !sizeIsCorrect || !originIsCorrect || !spacingIsCorrect )
         {
         testPassed = false;
         std::cerr << "OutputIndex : " << nOutput << std::endl;
@@ -251,7 +255,8 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
         // std::cerr << "Largest Region: " << forwardWavelet->GetOutput( nOutput )->GetLargestPossibleRegion() << std::endl;
         std::cerr << "Origin: " << forwardWavelet->GetOutput( nOutput )->GetOrigin() << std::endl;
         std::cerr << "Spacing: " << forwardWavelet->GetOutput( nOutput )->GetSpacing() << std::endl;
-        std::cerr << "RegionSize: " << forwardWavelet->GetOutput( nOutput )->GetLargestPossibleRegion().GetSize() << std::endl;
+        std::cerr << "RegionSize: " << forwardWavelet->GetOutput( nOutput )->GetLargestPossibleRegion().GetSize()
+                  << std::endl;
         }
 
       inverseFFT->SetInput(forwardWavelet->GetOutput( nOutput ) );
@@ -271,7 +276,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
       }
     }
 
-  if(testPassed)
+  if ( testPassed )
     {
     return EXIT_SUCCESS;
     }
@@ -281,9 +286,10 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
     }
 }
 
-int itkWaveletFrequencyForwardTest( int argc, char *argv[] )
+int
+itkWaveletFrequencyForwardTest( int argc, char *argv[] )
 {
-  if( argc < 6 || argc > 7 )
+  if ( argc < 6 || argc > 7 )
     {
     std::cerr << "Usage: " << argv[0]
               << " inputImage outputImage inputLevels inputBands waveletFunction [dimension]" << std::endl;
@@ -291,21 +297,21 @@ int itkWaveletFrequencyForwardTest( int argc, char *argv[] )
     }
   const std::string inputImage  = argv[1];
   const std::string outputImage = argv[2];
-  const unsigned int inputLevels = atoi (argv[3] );
+  const unsigned int inputLevels = atoi(argv[3] );
   const unsigned int inputBands  = atoi( argv[4] );
   const std::string waveletFunction = argv[5];
 
   unsigned int dimension = 3;
-  if( argc == 7 )
+  if ( argc == 7 )
     {
     dimension = atoi( argv[6] );
     }
 
   const unsigned int ImageDimension = 3;
-  typedef double                                          PixelType;
-  typedef std::complex< PixelType >                       ComplexPixelType;
-  typedef itk::Point< PixelType, ImageDimension >         PointType;
-  typedef itk::Image< ComplexPixelType, ImageDimension >  ComplexImageType;
+  typedef double                                         PixelType;
+  typedef std::complex< PixelType >                      ComplexPixelType;
+  typedef itk::Point< PixelType, ImageDimension >        PointType;
+  typedef itk::Image< ComplexPixelType, ImageDimension > ComplexImageType;
 
   // Exercise basic object methods
   // Done outside the helper function in the test because GCC is limited
@@ -338,11 +344,10 @@ int itkWaveletFrequencyForwardTest( int argc, char *argv[] )
   EXERCISE_BASIC_OBJECT_METHODS( shannonIsotropicWavelet, ShannonIsotropicWavelet,
     IsotropicWaveletFrequencyFunction );
 
-
-  typedef itk::HeldIsotropicWavelet<>       HeldWavelet;
-  typedef itk::VowIsotropicWavelet<>        VowWavelet;
-  typedef itk::SimoncelliIsotropicWavelet<> SimoncelliWavelet;
-  typedef itk::ShannonIsotropicWavelet<>    ShannonWavelet;
+  typedef itk::HeldIsotropicWavelet< >       HeldWavelet;
+  typedef itk::VowIsotropicWavelet< >        VowWavelet;
+  typedef itk::SimoncelliIsotropicWavelet< > SimoncelliWavelet;
+  typedef itk::ShannonIsotropicWavelet< >    ShannonWavelet;
 
   typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, HeldWavelet >
     HeldWaveletFilterBankType;
@@ -377,22 +382,21 @@ int itkWaveletFrequencyForwardTest( int argc, char *argv[] )
   EXERCISE_BASIC_OBJECT_METHODS( shannonForwardWavelet, WaveletFrequencyForward,
     ImageToImageFilter );
 
-
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
-    if( waveletFunction == "Held" )
+    if ( waveletFunction == "Held" )
       {
       return runWaveletFrequencyForwardTest< 2, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
       return runWaveletFrequencyForwardTest< 2, VowWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
       return runWaveletFrequencyForwardTest< 2, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
       return runWaveletFrequencyForwardTest< 2, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
@@ -403,21 +407,21 @@ int itkWaveletFrequencyForwardTest( int argc, char *argv[] )
       return EXIT_FAILURE;
       }
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
-    if( waveletFunction == "Held" )
+    if ( waveletFunction == "Held" )
       {
       return runWaveletFrequencyForwardTest< 3, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if(waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
       return runWaveletFrequencyForwardTest< 3, VowWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
       return runWaveletFrequencyForwardTest< 3, SimoncelliWavelet >(inputImage, outputImage, inputLevels, inputBands );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
       return runWaveletFrequencyForwardTest< 3, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands );
       }

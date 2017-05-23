@@ -33,22 +33,22 @@
 #include "itkViewImage.h"
 #endif
 
-
 template< unsigned int VDimension >
-int runStructureTensorTest()
+int
+runStructureTensorTest()
 {
   const unsigned int Dimension = VDimension;
 
-  typedef double                            PixelType;
-  typedef itk::Image< PixelType, Dimension> ImageType;
-  typedef itk::Index< Dimension>            IndexType;
-  typedef itk::Size< Dimension >            SizeType;
-  typedef itk::ImageRegion< Dimension >     RegionType;
+  typedef double                             PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::Index< Dimension >            IndexType;
+  typedef itk::Size< Dimension >             SizeType;
+  typedef itk::ImageRegion< Dimension >      RegionType;
 
   bool testFailed = false;
 
   unsigned int sizeValue = 12;
-  SizeType     size;
+  SizeType size;
   size.Fill( sizeValue );
   IndexType start;
   start.Fill( 0 );
@@ -84,7 +84,7 @@ int runStructureTensorTest()
   typedef itk::ImageRegionIterator< ImageType > InputIteratorType;
   InputIteratorType inputIt1( inputImage1, regionHalfLeft );
   inputIt1.GoToBegin();
-  while( !inputIt1.IsAtEnd() )
+  while ( !inputIt1.IsAtEnd() )
     {
     inputIt1.Set(1.0 );
     ++inputIt1;
@@ -92,7 +92,7 @@ int runStructureTensorTest()
 
   InputIteratorType inputIt2( inputImage2, regionHalfRight );
   inputIt2.GoToBegin();
-  while( !inputIt2.IsAtEnd() )
+  while ( !inputIt2.IsAtEnd() )
     {
     inputIt2.Set( 1.0 );
     ++inputIt2;
@@ -105,7 +105,7 @@ int runStructureTensorTest()
 
   // Structure Tensor
   typedef itk::StructureTensor< ImageType > StructureTensorType;
-  typename StructureTensorType::Pointer    tensor = StructureTensorType::New();
+  typename StructureTensorType::Pointer tensor = StructureTensorType::New();
   std::vector< typename ImageType::Pointer > inputs;
   inputs.push_back( inputImage1 );
   inputs.push_back( inputImage2 );
@@ -115,7 +115,7 @@ int runStructureTensorTest()
   typename StructureTensorType::OutputImageType::Pointer eigenImage = tensor->GetOutput();
   unsigned eigenMatrixRows = eigenImage->GetPixel(start).Rows();
   unsigned eigenMatrixCols = eigenImage->GetPixel(start).Cols();
-  if( eigenMatrixRows != nInputs || eigenMatrixCols != nInputs + 1 )
+  if ( eigenMatrixRows != nInputs || eigenMatrixCols != nInputs + 1 )
     {
     testFailed = true;
     std::cout << "The resulting eigenMatrix size is wrong. Rows: " << eigenMatrixRows << " . Columns: "
@@ -126,11 +126,11 @@ int runStructureTensorTest()
 #endif
 
   typename ImageType::Pointer largestEigenValueProjectionImage;
-  for( unsigned int eigenNumber = 0; eigenNumber < nInputs; ++eigenNumber )
+  for ( unsigned int eigenNumber = 0; eigenNumber < nInputs; ++eigenNumber )
     {
     typename StructureTensorType::InputImagePointer projectImage =
       tensor->ComputeProjectionImage( eigenNumber );
-    if( eigenNumber == nInputs - 1 )
+    if ( eigenNumber == nInputs - 1 )
       {
       largestEigenValueProjectionImage = projectImage;
       }
@@ -166,9 +166,9 @@ int runStructureTensorTest()
   const double averageIntensityDifference = diff->GetTotalDifference();
   const unsigned long numberOfPixelsWithDifferences =
     diff->GetNumberOfPixelsWithDifferences();
-  if( averageIntensityDifference > 0.0 )
+  if ( averageIntensityDifference > 0.0 )
     {
-    if( static_cast< int >( numberOfPixelsWithDifferences ) > 0 )
+    if ( static_cast< int >( numberOfPixelsWithDifferences ) > 0 )
       {
       differenceFailed = true;
       }
@@ -182,14 +182,14 @@ int runStructureTensorTest()
     differenceFailed = false;
     }
 
-  if( differenceFailed )
+  if ( differenceFailed )
     {
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "Expected 0 different pixels, but got " << numberOfPixelsWithDifferences
-      << std::endl;
+              << std::endl;
     return EXIT_FAILURE;
     }
-  if( testFailed )
+  if ( testFailed )
     {
     std::cerr << "Test failed!" << std::endl;
     return EXIT_FAILURE;
@@ -198,7 +198,8 @@ int runStructureTensorTest()
   return EXIT_SUCCESS;
 }
 
-int itkStructureTensorTest( int, char* [] )
+int
+itkStructureTensorTest( int, char * [] )
 {
   int result2D = runStructureTensorTest< 2 >();
   int result3D = runStructureTensorTest< 3 >();

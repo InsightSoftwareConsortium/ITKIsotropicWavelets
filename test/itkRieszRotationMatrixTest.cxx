@@ -21,12 +21,14 @@
 #include "itkMath.h"
 
 template< unsigned int VDimension >
-int runRieszRotationMatrixTest()
+int
+runRieszRotationMatrixTest()
 {
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
+
   typedef double                                              ValueType;
-  typedef itk::RieszRotationMatrix<ValueType, Dimension>      SteerableMatrix;
+  typedef itk::RieszRotationMatrix< ValueType, Dimension >    SteerableMatrix;
   typedef typename SteerableMatrix::SpatialRotationMatrixType SpatialRotationMatrix;
 
   // Define a spatial rotation matrix.
@@ -36,7 +38,7 @@ int runRieszRotationMatrixTest()
   double cosA = cos(angle);
   double sinA = sin(angle);
   double C = 1 - cosA;
-  if(Dimension == 2)
+  if ( Dimension == 2 )
     {
     R[0][0] =  cosA;
     R[0][1] =  -sinA;
@@ -44,24 +46,24 @@ int runRieszRotationMatrixTest()
     R[1][1] =  cosA;
     }
 
-  itk::FixedArray<double, Dimension> dir;
+  itk::FixedArray< double, Dimension > dir;
   dir.Fill(0);
-  if(Dimension == 3)
+  if ( Dimension == 3 )
     {
     double x = dir[0] = 0;
     double y = dir[1] = 0;
     double z = dir[2] = 1;
-    R[0][0] =  x*x*C + cosA;
-    R[0][1] =  x*y*C - z*sinA;
-    R[0][2] =  x*z*C + y*sinA;
+    R[0][0] =  x * x * C + cosA;
+    R[0][1] =  x * y * C - z * sinA;
+    R[0][2] =  x * z * C + y * sinA;
 
-    R[1][0] =  y*x*C + z*sinA;
-    R[1][1] =  y*y*C + cosA;
-    R[1][2] =  y*z*C - x*sinA;
+    R[1][0] =  y * x * C + z * sinA;
+    R[1][1] =  y * y * C + cosA;
+    R[1][2] =  y * z * C - x * sinA;
 
-    R[2][0] =  z*x*C - y*sinA;
-    R[2][1] =  z*y*C + x*sinA;
-    R[2][2] =  z*z*C + cosA;
+    R[2][0] =  z * x * C - y * sinA;
+    R[2][1] =  z * y * C + x * sinA;
+    R[2][2] =  z * z * C + cosA;
     }
   // Check constructors of SteerableMatrix.
   // default
@@ -88,8 +90,8 @@ int runRieszRotationMatrixTest()
   identityMatrix.set_identity();
   typename SteerableMatrix::InternalMatrixType SmultST =
     Scopy.GetVnlMatrix() * transposeMatrix;
-  
-  if( SmultST != identityMatrix )
+
+  if ( SmultST != identityMatrix )
     {
     testPassed = false;
     std::cout << "test failed!" << std::endl;
@@ -99,16 +101,16 @@ int runRieszRotationMatrixTest()
     }
 
   // For angle = pi/2
-  if(itk::Math::AlmostEquals(angle,itk::Math::pi_over_2) )
+  if ( itk::Math::AlmostEquals(angle, itk::Math::pi_over_2) )
     {
-    if(Dimension == 2)
+    if ( Dimension == 2 )
       {
       // f: order 2 dim 2:
-      typename SteerableMatrix::InternalMatrixType g(3,3);
-      g(0,0)=0; g(0,1)=0;  g(0,2)=1;
-      g(1,0)=0; g(1,1)=-1; g(1,2)=0;
-      g(2,0)=1; g(2,1)=0;  g(2,2)=0;
-      if( Scopy.GetVnlMatrix() != g )
+      typename SteerableMatrix::InternalMatrixType g(3, 3);
+      g(0, 0) = 0; g(0, 1) = 0;  g(0, 2) = 1;
+      g(1, 0) = 0; g(1, 1) = -1; g(1, 2) = 0;
+      g(2, 0) = 1; g(2, 1) = 0;  g(2, 2) = 0;
+      if ( Scopy.GetVnlMatrix() != g )
         {
         testPassed = false;
         std::cout << "test failed!" << std::endl;
@@ -118,17 +120,17 @@ int runRieszRotationMatrixTest()
         std::cerr << Scopy.GetVnlMatrix() << std::endl;
         }
       }
-    if(Dimension == 3)
+    if ( Dimension == 3 )
       {
       // f: order 2 dim 3:
-      typename SteerableMatrix::InternalMatrixType f(6,6);
-      f(0,0)=0; f(0,1)=0;  f(0,2)=0; f(0,3)=1; f(0,4)=0;  f(0,5)=0;
-      f(1,0)=0; f(1,1)=-1; f(1,2)=0; f(1,3)=0; f(1,4)=0;  f(1,5)=0;
-      f(2,0)=0; f(2,1)=0;  f(2,2)=0; f(2,3)=0; f(2,4)=-1; f(2,5)=0;
-      f(3,0)=1; f(3,1)=0;  f(3,2)=0; f(3,3)=0; f(3,4)=0;  f(3,5)=0;
-      f(4,0)=0; f(4,1)=0;  f(4,2)=1; f(4,3)=0; f(4,4)=0;  f(4,5)=0;
-      f(5,0)=0; f(5,1)=0;  f(5,2)=0; f(5,3)=0; f(5,4)=0;  f(5,5)=1;
-      if( Scopy.GetVnlMatrix() != f )
+      typename SteerableMatrix::InternalMatrixType f(6, 6);
+      f(0, 0) = 0; f(0, 1) = 0;  f(0, 2) = 0; f(0, 3) = 1; f(0, 4) = 0;  f(0, 5) = 0;
+      f(1, 0) = 0; f(1, 1) = -1; f(1, 2) = 0; f(1, 3) = 0; f(1, 4) = 0;  f(1, 5) = 0;
+      f(2, 0) = 0; f(2, 1) = 0;  f(2, 2) = 0; f(2, 3) = 0; f(2, 4) = -1; f(2, 5) = 0;
+      f(3, 0) = 1; f(3, 1) = 0;  f(3, 2) = 0; f(3, 3) = 0; f(3, 4) = 0;  f(3, 5) = 0;
+      f(4, 0) = 0; f(4, 1) = 0;  f(4, 2) = 1; f(4, 3) = 0; f(4, 4) = 0;  f(4, 5) = 0;
+      f(5, 0) = 0; f(5, 1) = 0;  f(5, 2) = 0; f(5, 3) = 0; f(5, 4) = 0;  f(5, 5) = 1;
+      if ( Scopy.GetVnlMatrix() != f )
         {
         testPassed = false;
         std::cout << "test failed!" << std::endl;
@@ -149,7 +151,7 @@ int runRieszRotationMatrixTest()
   // std::cout << "Matrix: size " << Sdefault.Rows() << std::endl;
   // std::cout << Sdefault << std::endl;
 
-  if(testPassed)
+  if ( testPassed )
     {
     return EXIT_SUCCESS;
     }
@@ -159,9 +161,10 @@ int runRieszRotationMatrixTest()
     }
 }
 
-int itkRieszRotationMatrixTest(int argc, char* argv[])
+int
+itkRieszRotationMatrixTest(int argc, char* argv[])
 {
-  if(argc != 2)
+  if ( argc != 2 )
     {
     std::cerr << "Usage: " << argv[0]
               << "dimension" << std::endl;
@@ -169,18 +172,18 @@ int itkRieszRotationMatrixTest(int argc, char* argv[])
     }
 
   const unsigned int dimension = atoi(argv[1]);
-  if(dimension == 2)
+  if ( dimension == 2 )
     {
-    return runRieszRotationMatrixTest<2>();
+    return runRieszRotationMatrixTest< 2 >();
     }
-  else if(dimension == 3)
+  else if ( dimension == 3 )
     {
-    return runRieszRotationMatrixTest<3>();
+    return runRieszRotationMatrixTest< 3 >();
     }
   else
     {
-    std::cerr << "dimension = " << dimension 
-      <<" . But test only work for 2 or 3 dimension."<< std::endl;
+    std::cerr << "dimension = " << dimension
+              << " . But test only work for 2 or 3 dimension." << std::endl;
     return EXIT_FAILURE;
     }
 }

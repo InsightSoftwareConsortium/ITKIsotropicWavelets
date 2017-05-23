@@ -24,16 +24,17 @@
 #include "itkTestingComparisonImageFilter.h"
 #include "itkTestingMacros.h"
 
-
 // Visualize for dev/debug purposes. Set in cmake file. Requires VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
 
-int itkFrequencyBandImageFilterTest( int argc, char* argv[] )
+int
+itkFrequencyBandImageFilterTest( int argc, char* argv[] )
 {
   const unsigned int Dimension = 3;
-  if(argc != 2) 
+
+  if ( argc != 2 )
     {
     std::cerr << "Usage: " << argv[0]
               << " Even|Odd" << std::endl;
@@ -42,11 +43,11 @@ int itkFrequencyBandImageFilterTest( int argc, char* argv[] )
 
   const std::string evenOrOddInput = argv[1];
   bool isOdd = false;
-  if (evenOrOddInput == "Even")
+  if ( evenOrOddInput == "Even" )
     {
     isOdd = false;
     }
-  else if (evenOrOddInput == "Odd")
+  else if ( evenOrOddInput == "Odd" )
     {
     isOdd = true;
     }
@@ -56,13 +57,13 @@ int itkFrequencyBandImageFilterTest( int argc, char* argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef float                               PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType3D;
+  typedef float                              PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType3D;
 
   ImageType3D::SizeType size = { { 10, 20, 40 } };
-  if (isOdd)
+  if ( isOdd )
     {
-    for (unsigned int i = 0; i < Dimension; ++i)
+    for ( unsigned int i = 0; i < Dimension; ++i )
       {
       size[i]++;
       }
@@ -90,7 +91,7 @@ int itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   BandFilterType::FrequencyValueType lowFreqThreshold = 0.0;
   passBandFilter->SetLowFrequencyThreshold( lowFreqThreshold );
   TEST_SET_GET_VALUE( lowFreqThreshold, passBandFilter->GetLowFrequencyThreshold() );
-  
+
   BandFilterType::FrequencyValueType highFreqThreshold = 0.5;
   passBandFilter->SetHighFrequencyThreshold( highFreqThreshold );
   TEST_SET_GET_VALUE( highFreqThreshold, passBandFilter->GetHighFrequencyThreshold() );
@@ -137,7 +138,7 @@ int itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   // Regression test
   // Sum of bandPass and stopBand images with these settings should be equal
   // to original image
-  typedef itk::AddImageFilter<ImageType3D, ImageType3D> AddFilterType;
+  typedef itk::AddImageFilter< ImageType3D, ImageType3D > AddFilterType;
   AddFilterType::Pointer addFilter = AddFilterType::New();
   addFilter->SetInput1( passBandFilter->GetOutput() );
   addFilter->SetInput2( stopBandFilter->GetOutput() );
@@ -155,14 +156,13 @@ int itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   differenceFilter->Update();
 
   unsigned int numberOfDiffPixels = differenceFilter->GetNumberOfPixelsWithDifferences();
-  if( numberOfDiffPixels > 0 )
+  if ( numberOfDiffPixels > 0 )
     {
     std::cerr << "Test failed! " << std::endl;
     std::cerr << "Expected images to be equal, but got " << numberOfDiffPixels
-      << "unequal pixels" << std::endl;
+              << "unequal pixels" << std::endl;
     return EXIT_FAILURE;
     }
-
 
   // Tests with radians
 
@@ -177,10 +177,10 @@ int itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   BandFilterType::FrequencyValueType knownHighFrequencyHertz =
     highFreqThresholdRadians / (2 * itk::Math::pi);
 
-  if( itk::Math::NotAlmostEquals( knownLowFrequencyHertz ,
-                                passBandFilter->GetLowFrequencyThreshold())
-    || itk::Math::NotAlmostEquals( knownHighFrequencyHertz ,
-      passBandFilter->GetHighFrequencyThreshold()) )
+  if ( itk::Math::NotAlmostEquals( knownLowFrequencyHertz,
+         passBandFilter->GetLowFrequencyThreshold())
+       || itk::Math::NotAlmostEquals( knownHighFrequencyHertz,
+         passBandFilter->GetHighFrequencyThreshold()) )
     {
     std::cerr << "Test failed! " << std::endl;
     std::cerr << "Setting frequency in radians failed." << std::endl;
@@ -209,8 +209,8 @@ int itkFrequencyBandImageFilterTest( int argc, char* argv[] )
 #endif
 
   // Test with ShiftedIterator.
-  typedef itk::FrequencyShiftedFFTLayoutImageRegionIteratorWithIndex < ImageType3D > FrequencyShiftedIterator;
-  typedef itk::FrequencyBandImageFilter< ImageType3D, FrequencyShiftedIterator>      BandShiftedFilterType;
+  typedef itk::FrequencyShiftedFFTLayoutImageRegionIteratorWithIndex< ImageType3D > FrequencyShiftedIterator;
+  typedef itk::FrequencyBandImageFilter< ImageType3D, FrequencyShiftedIterator >    BandShiftedFilterType;
   BandShiftedFilterType::Pointer passBandShiftedFilter = BandShiftedFilterType::New();
 
   passBandShiftedFilter->SetInput( image );

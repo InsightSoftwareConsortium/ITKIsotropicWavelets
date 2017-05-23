@@ -47,15 +47,15 @@
 #include "itkNumberToString.h"
 #endif
 
-
-template<unsigned int VDimension, typename TWaveletFunction >
-int runStructureTensorWithGeneralizedRieszTest(
-    const std::string& inputImage,
-    const std::string&, //outputImage
-    const unsigned int& inputLevels,
-    const unsigned int& inputBands,
-    const unsigned int& inputRieszOrder,
-    const bool inputApplyReconstructionFactors)
+template< unsigned int VDimension, typename TWaveletFunction >
+int
+runStructureTensorWithGeneralizedRieszTest(
+  const std::string& inputImage,
+  const std::string &, // outputImage
+  const unsigned int& inputLevels,
+  const unsigned int& inputBands,
+  const unsigned int& inputRieszOrder,
+  const bool inputApplyReconstructionFactors)
 {
   const unsigned int Dimension = VDimension;
 
@@ -66,7 +66,6 @@ int runStructureTensorWithGeneralizedRieszTest(
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
   reader->Update();
-
 
   typedef itk::ZeroDCImageFilter< ImageType > ZeroDCFilterType;
   typename ZeroDCFilterType::Pointer zeroDCFilter = ZeroDCFilterType::New();
@@ -107,15 +106,15 @@ int runStructureTensorWithGeneralizedRieszTest(
   // IndicesType indices = filterBank->GetModifiableEvaluator()->GetIndices();
   // IndicesType::const_iterator indicesIt = indices.begin();
 
-  typedef itk::MultiplyImageFilter<ComplexImageType> MultiplyFilterType;
+  typedef itk::MultiplyImageFilter< ComplexImageType > MultiplyFilterType;
 
   typename ForwardWaveletType::OutputsType modifiedWavelets;
   unsigned int numberOfOutputs = forwardWavelet->GetNumberOfOutputs();
   std::cout << "RieszOrder: " << inputRieszOrder << std::endl;
-  for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
+  for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
     {
     std::cout << "Output #: " << i << " / " << numberOfOutputs - 1 << std::endl;
-    if(i == numberOfOutputs - 1) // Don't apply riesz stuff to the low pass.
+    if ( i == numberOfOutputs - 1 ) // Don't apply riesz stuff to the low pass.
       {
       modifiedWavelets.push_back( analysisWavelets[i] );
       continue;
@@ -126,13 +125,12 @@ int runStructureTensorWithGeneralizedRieszTest(
     filterBank->SetOrder(inputRieszOrder);
     filterBank->Update();
     std::cout << "RieszOutputs: " << filterBank->GetNumberOfOutputs() << std::endl;
-    std::vector<typename ComplexImageType::Pointer> rieszOutputs = filterBank->GetOutputs();
-    std::vector<typename ComplexImageType::Pointer> rieszWavelets;
-    std::vector<typename ImageType::Pointer> rieszWaveletsSpatial;
-
-    for (unsigned int rieszComp = 0; rieszComp<filterBank->GetNumberOfOutputs(); ++rieszComp)
+    std::vector< typename ComplexImageType::Pointer > rieszOutputs = filterBank->GetOutputs();
+    std::vector< typename ComplexImageType::Pointer > rieszWavelets;
+    std::vector< typename ImageType::Pointer > rieszWaveletsSpatial;
+    for ( unsigned int rieszComp = 0; rieszComp < filterBank->GetNumberOfOutputs(); ++rieszComp )
       {
-      //Multiply wavelet with riesz.
+      // Multiply wavelet with riesz.
       typename MultiplyFilterType::Pointer multiplyWaveletRiesz = MultiplyFilterType::New();
       multiplyWaveletRiesz->SetInput1(analysisWavelets[i]);
       multiplyWaveletRiesz->SetInput2(rieszOutputs[rieszComp]);
@@ -144,25 +142,28 @@ int runStructureTensorWithGeneralizedRieszTest(
       rieszWaveletsSpatial.push_back(inverseFFT->GetOutput());
 #ifdef ITK_VISUALIZE_TESTS
       bool visualizeRieszWavelets = true;
-      if(visualizeRieszWavelets)
+      if ( visualizeRieszWavelets )
         {
         itk::NumberToString< unsigned int > n2s;
-        itk::Testing::ViewImage( inverseFFT->GetOutput(), "RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
+        itk::Testing::ViewImage( inverseFFT->GetOutput(),
+          "RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
         }
       bool visualizeRieszWaveletsInFrequency = false;
-      if(visualizeRieszWaveletsInFrequency)
+      if ( visualizeRieszWaveletsInFrequency )
         {
         itk::NumberToString< unsigned int > n2s;
-        typedef itk::ComplexToRealImageFilter<ComplexImageType, ImageType> ComplexToRealFilterType;
-        typedef itk::ComplexToImaginaryImageFilter<ComplexImageType, ImageType> ComplexToImaginaryFilterType;
+        typedef itk::ComplexToRealImageFilter< ComplexImageType, ImageType >      ComplexToRealFilterType;
+        typedef itk::ComplexToImaginaryImageFilter< ComplexImageType, ImageType > ComplexToImaginaryFilterType;
         typename ComplexToRealFilterType::Pointer complexToReal = ComplexToRealFilterType::New();
         typename ComplexToImaginaryFilterType::Pointer complexToImaginary = ComplexToImaginaryFilterType::New();
         complexToReal->SetInput(rieszWavelets[rieszComp]);
         complexToReal->Update();
-        itk::Testing::ViewImage( complexToReal->GetOutput(), "REAL:RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
+        itk::Testing::ViewImage( complexToReal->GetOutput(),
+          "REAL:RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
         complexToImaginary->SetInput(rieszWavelets[rieszComp]);
         complexToImaginary->Update();
-        itk::Testing::ViewImage( complexToImaginary->GetOutput(), "IMAGINARY:RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
+        itk::Testing::ViewImage( complexToImaginary->GetOutput(),
+          "IMAGINARY:RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
         }
 #endif
       }
@@ -184,9 +185,9 @@ int runStructureTensorWithGeneralizedRieszTest(
 #ifdef ITK_VISUALIZE_TESTS
   // Visualize and compare modified wavelets coefficients (and approx image)
   bool visualizeCoefficients = true;
-  if(visualizeCoefficients)
+  if ( visualizeCoefficients )
     {
-    for( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
+    for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
       {
       itk::NumberToString< unsigned int > n2s;
       typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
@@ -229,12 +230,15 @@ int runStructureTensorWithGeneralizedRieszTest(
   return EXIT_SUCCESS;
 }
 
-int itkStructureTensorWithGeneralizedRieszTest( int argc, char *argv[] )
+int
+itkStructureTensorWithGeneralizedRieszTest( int argc, char *argv[] )
 {
-  if( argc < 8 || argc > 9 )
+  if ( argc < 8 || argc > 9 )
     {
     std::cerr << "Usage: " << argv[0]
-              << " inputImage outputImage inputLevels inputBands waveletFunction inputRieszOrder applyReconstructionFactors(Apply|NoApply) [dimension]" << std::endl;
+              <<
+    " inputImage outputImage inputLevels inputBands waveletFunction inputRieszOrder applyReconstructionFactors(Apply|NoApply) [dimension]"
+              << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -246,11 +250,11 @@ int itkStructureTensorWithGeneralizedRieszTest( int argc, char *argv[] )
   const unsigned int inputRieszOrder  = atoi( argv[6] );
   const std::string applyReconstructionFactorsInput = argv[7];
   bool applyReconstructionFactors = false;
-  if (applyReconstructionFactorsInput == "Apply")
+  if ( applyReconstructionFactorsInput == "Apply" )
     {
     applyReconstructionFactors = true;
     }
-  else if (applyReconstructionFactorsInput == "NoApply")
+  else if ( applyReconstructionFactorsInput == "NoApply" )
     {
     applyReconstructionFactors = false;
     }
@@ -261,33 +265,52 @@ int itkStructureTensorWithGeneralizedRieszTest( int argc, char *argv[] )
     }
 
   unsigned int dimension = 3;
-  if( argc == 9 )
+  if ( argc == 9 )
     {
     dimension = atoi( argv[8] );
     }
 
-
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
-    typedef itk::HeldIsotropicWavelet<double, 2>       HeldWavelet;
-    typedef itk::VowIsotropicWavelet<double, 2>        VowWavelet;
-    typedef itk::SimoncelliIsotropicWavelet<double, 2> SimoncelliWavelet;
-    typedef itk::ShannonIsotropicWavelet<double, 2>    ShannonWavelet;
-    if( waveletFunction == "Held" )
+    typedef itk::HeldIsotropicWavelet< double, 2 >       HeldWavelet;
+    typedef itk::VowIsotropicWavelet< double, 2 >        VowWavelet;
+    typedef itk::SimoncelliIsotropicWavelet< double, 2 > SimoncelliWavelet;
+    typedef itk::ShannonIsotropicWavelet< double, 2 >    ShannonWavelet;
+    if ( waveletFunction == "Held" )
       {
-      return runStructureTensorWithGeneralizedRieszTest< 2, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands, inputRieszOrder, applyReconstructionFactors );
+      return runStructureTensorWithGeneralizedRieszTest< 2, HeldWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        inputRieszOrder,
+        applyReconstructionFactors );
       }
-    else if(waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
-      return runStructureTensorWithGeneralizedRieszTest< 2, VowWavelet >( inputImage, outputImage, inputLevels, inputBands, inputRieszOrder, applyReconstructionFactors );
+      return runStructureTensorWithGeneralizedRieszTest< 2, VowWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        inputRieszOrder,
+        applyReconstructionFactors );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
-      return runStructureTensorWithGeneralizedRieszTest< 2, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands, inputRieszOrder, applyReconstructionFactors );
+      return runStructureTensorWithGeneralizedRieszTest< 2, SimoncelliWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        inputRieszOrder,
+        applyReconstructionFactors );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
-      return runStructureTensorWithGeneralizedRieszTest< 2, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands, inputRieszOrder, applyReconstructionFactors );
+      return runStructureTensorWithGeneralizedRieszTest< 2, ShannonWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        inputRieszOrder,
+        applyReconstructionFactors );
       }
     else
       {
@@ -296,27 +319,47 @@ int itkStructureTensorWithGeneralizedRieszTest( int argc, char *argv[] )
       return EXIT_FAILURE;
       }
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
-    typedef itk::HeldIsotropicWavelet<>       HeldWavelet;
-    typedef itk::VowIsotropicWavelet<>        VowWavelet;
-    typedef itk::SimoncelliIsotropicWavelet<> SimoncelliWavelet;
-    typedef itk::ShannonIsotropicWavelet<>    ShannonWavelet;
-    if( waveletFunction == "Held" )
+    typedef itk::HeldIsotropicWavelet< >       HeldWavelet;
+    typedef itk::VowIsotropicWavelet< >        VowWavelet;
+    typedef itk::SimoncelliIsotropicWavelet< > SimoncelliWavelet;
+    typedef itk::ShannonIsotropicWavelet< >    ShannonWavelet;
+    if ( waveletFunction == "Held" )
       {
-      return runStructureTensorWithGeneralizedRieszTest< 3, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands, inputRieszOrder, applyReconstructionFactors );
+      return runStructureTensorWithGeneralizedRieszTest< 3, HeldWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        inputRieszOrder,
+        applyReconstructionFactors );
       }
-    else if( waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
-      return runStructureTensorWithGeneralizedRieszTest< 3, VowWavelet >( inputImage, outputImage, inputLevels, inputBands, inputRieszOrder, applyReconstructionFactors );
+      return runStructureTensorWithGeneralizedRieszTest< 3, VowWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        inputRieszOrder,
+        applyReconstructionFactors );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
-      return runStructureTensorWithGeneralizedRieszTest< 3, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands, inputRieszOrder, applyReconstructionFactors );
+      return runStructureTensorWithGeneralizedRieszTest< 3, SimoncelliWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        inputRieszOrder,
+        applyReconstructionFactors );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
-      return runStructureTensorWithGeneralizedRieszTest< 3, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands, inputRieszOrder, applyReconstructionFactors );
+      return runStructureTensorWithGeneralizedRieszTest< 3, ShannonWavelet >( inputImage,
+        outputImage,
+        inputLevels,
+        inputBands,
+        inputRieszOrder,
+        applyReconstructionFactors );
       }
     else
       {
@@ -327,7 +370,7 @@ int itkStructureTensorWithGeneralizedRieszTest( int argc, char *argv[] )
     }
   else
     {
-      std::cerr << "Test failed!" << std::endl;
+    std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error: only 2 or 3 dimensions allowed, " << dimension << " selected." << std::endl;
     return EXIT_FAILURE;
     }

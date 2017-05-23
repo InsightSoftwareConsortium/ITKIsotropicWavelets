@@ -35,10 +35,10 @@
 #include "itkViewImage.h"
 #endif
 
-
-int itkRieszFrequencyFilterBankGeneratorTest( int argc, char* argv[] )
+int
+itkRieszFrequencyFilterBankGeneratorTest( int argc, char* argv[] )
 {
-  if( argc != 4 )
+  if ( argc != 4 )
     {
     std::cerr << "Usage: " << argv[0] << " inputImage outputImage inputOrder" << std::endl;
     return EXIT_FAILURE;
@@ -48,9 +48,9 @@ int itkRieszFrequencyFilterBankGeneratorTest( int argc, char* argv[] )
   unsigned int inputOrder = atoi(argv[3]);
 
   const unsigned int Dimension = 3;
-  typedef double                              PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+  typedef double                             PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
 
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(inputImage);
@@ -87,15 +87,15 @@ int itkRieszFrequencyFilterBankGeneratorTest( int argc, char* argv[] )
   ComplexToImaginaryFilter::Pointer complexToImaginaryFilter = ComplexToImaginaryFilter::New();
   std::cout << "Order: " << inputOrder << std::endl;
   bool orderIsEven = (inputOrder % 2 == 0);
-  if(orderIsEven)
+  if ( orderIsEven )
     {
     std::cout << "Real part of complex image:" << std::endl;
-    for( unsigned int comp = 0; comp < filterBank->GetNumberOfOutputs(); comp++ )
+    for ( unsigned int comp = 0; comp < filterBank->GetNumberOfOutputs(); comp++ )
       {
       std::ostringstream oss;
       oss << "(";
       std::cout << "Component: " << comp << " / " << filterBank->GetNumberOfOutputs() - 1  << std::endl;
-      for (unsigned int i = 0; i<Dimension; ++i)
+      for ( unsigned int i = 0; i < Dimension; ++i )
         {
         oss << (*indicesIt)[i] << ", ";
         }
@@ -115,12 +115,12 @@ int itkRieszFrequencyFilterBankGeneratorTest( int argc, char* argv[] )
   else
     {
     std::cout << "Imaginary part of complex image:" << std::endl;
-    for( unsigned int comp = 0; comp < filterBank->GetNumberOfOutputs(); comp++ )
+    for ( unsigned int comp = 0; comp < filterBank->GetNumberOfOutputs(); comp++ )
       {
       std::ostringstream oss;
       oss << "(";
       std::cout << "Component: " << comp << " / " << filterBank->GetNumberOfOutputs() - 1  << std::endl;
-      for (unsigned int i = 0; i<Dimension; ++i)
+      for ( unsigned int i = 0; i < Dimension; ++i )
         {
         oss << (*indicesIt)[i] << ", ";
         }

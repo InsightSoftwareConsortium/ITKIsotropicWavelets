@@ -30,9 +30,10 @@
 using namespace std;
 using namespace itk;
 
-int itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
+int
+itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
 {
-  if( argc != 2 )
+  if ( argc != 2 )
     {
     std::cerr << "Usage: " << argv[0] << " inputImage " << std::endl;
     return EXIT_FAILURE;
@@ -40,23 +41,23 @@ int itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
   const string inputImage = argv[1];
 
   const unsigned int dimension = 3;
-  typedef float                            PixelType;
-  typedef itk::Image<PixelType, dimension> ImageType;
-  typedef itk::ImageFileReader<ImageType>  ReaderType;
+  typedef float                              PixelType;
+  typedef itk::Image< PixelType, dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(inputImage);
   reader->Update();
   reader->UpdateLargestPossibleRegion();
 
   // Perform FFT on input image.
-  typedef itk::ForwardFFTImageFilter<ImageType> FFTForwardFilterType;
+  typedef itk::ForwardFFTImageFilter< ImageType > FFTForwardFilterType;
   FFTForwardFilterType::Pointer fftForwardFilter = FFTForwardFilterType::New();
   fftForwardFilter->SetInput(reader->GetOutput());
   fftForwardFilter->Update();
   typedef FFTForwardFilterType::OutputImageType ComplexImageType;
 
   // Perform inverse FFT on forwardFFT image.
-  typedef itk::InverseFFTImageFilter<ComplexImageType> FFTInverseFilterType;
+  typedef itk::InverseFFTImageFilter< ComplexImageType > FFTInverseFilterType;
   FFTInverseFilterType::Pointer fftInverseFilter = FFTInverseFilterType::New();
   fftInverseFilter->SetInput(fftForwardFilter->GetOutput());
   fftInverseFilter->Update();
@@ -65,22 +66,22 @@ int itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
   //
   unsigned int numComponents = 2;
   // Create vector from forwardFFT.
-  typedef itk::ComposeImageFilter<ComplexImageType> ComposeComplexFilterType;
+  typedef itk::ComposeImageFilter< ComplexImageType > ComposeComplexFilterType;
   ComposeComplexFilterType::Pointer composeComplexFilter = ComposeComplexFilterType::New();
-  for( unsigned int c = 0; c < numComponents; c++ )
+  for ( unsigned int c = 0; c < numComponents; c++ )
     {
     composeComplexFilter->SetInput(c, fftForwardFilter->GetOutput());
     }
   composeComplexFilter->Update();
 
   // Do the inverse of the composeComplexFilter using the class to test.
-  typedef itk::VectorInverseFFTImageFilter<ComposeComplexFilterType::OutputImageType> VectorInverseFFTType;
+  typedef itk::VectorInverseFFTImageFilter< ComposeComplexFilterType::OutputImageType > VectorInverseFFTType;
   VectorInverseFFTType::Pointer vecInverseFFT = VectorInverseFFTType::New();
   vecInverseFFT->SetInput(composeComplexFilter->GetOutput());
   vecInverseFFT->Update();
 
-  typedef itk::VectorIndexSelectionCastImageFilter<VectorInverseFFTType::OutputImageType,
-    FFTInverseFilterType::OutputImageType> VectorCastFilterType;
+  typedef itk::VectorIndexSelectionCastImageFilter< VectorInverseFFTType::OutputImageType,
+    FFTInverseFilterType::OutputImageType > VectorCastFilterType;
   VectorCastFilterType::Pointer vectorCastFilter = VectorCastFilterType::New();
   vectorCastFilter->SetInput(vecInverseFFT->GetOutput());
 
@@ -89,7 +90,7 @@ int itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
   DifferenceFilterType::Pointer differenceFilter = DifferenceFilterType::New();
   differenceFilter->SetToleranceRadius( 0 );
   differenceFilter->SetDifferenceThreshold( 0 );
-  for( unsigned int c = 0; c < numComponents; c++ )
+  for ( unsigned int c = 0; c < numComponents; c++ )
     {
     vectorCastFilter->SetIndex(c);
     vectorCastFilter->Update();
@@ -97,11 +98,11 @@ int itkVectorInverseFFTImageFilterTest(int argc, char* argv[])
     differenceFilter->SetTestInput( vectorCastFilter->GetOutput() );
     differenceFilter->Update();
     unsigned int numberOfDiffPixels = differenceFilter->GetNumberOfPixelsWithDifferences();
-    if( numberOfDiffPixels > 0 )
+    if ( numberOfDiffPixels > 0 )
       {
       std::cerr << "Test failed! " << std::endl;
       std::cerr << "Expected images to be equal, but got " << numberOfDiffPixels
-        << "unequal pixels" << std::endl;
+                << "unequal pixels" << std::endl;
       return EXIT_FAILURE;
       }
     }

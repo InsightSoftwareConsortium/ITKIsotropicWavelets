@@ -23,9 +23,10 @@
 using namespace std;
 using namespace itk;
 
-int runViewImage(int argc, char* argv[])
+int
+runViewImage(int argc, char* argv[])
 {
-  if( argc < 2 || argc == 4 || argc > 5 )
+  if ( argc < 2 || argc == 4 || argc > 5 )
     {
     std::cerr << "Usage: " << argv[0] << " inputImage [title] [win_size_x win_size_y] " << std::endl;
     return EXIT_FAILURE;
@@ -34,9 +35,11 @@ int runViewImage(int argc, char* argv[])
   std::string win_title = "itkViewImage";
   size_t win_x = 600;
   size_t win_y = 600;
-  if( argc >= 3 )
+  if ( argc >= 3 )
+    {
     win_title = argv[2];
-  if( argc == 5 )
+    }
+  if ( argc == 5 )
     {
     win_x = atoi(argv[3]);
     win_y = atoi(argv[4]);
@@ -44,9 +47,9 @@ int runViewImage(int argc, char* argv[])
   const string inputImage  = argv[1];
 
   const unsigned int dimension = 3;
-  typedef float                            PixelType;
-  typedef itk::Image<PixelType, dimension> ImageType;
-  typedef itk::ImageFileReader<ImageType>  ReaderType;
+  typedef float                              PixelType;
+  typedef itk::Image< PixelType, dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(inputImage);
   reader->Update();

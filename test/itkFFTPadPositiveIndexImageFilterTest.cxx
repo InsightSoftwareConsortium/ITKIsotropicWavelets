@@ -24,9 +24,10 @@
 #include "itkConstantBoundaryCondition.h"
 #include "itkTestingMacros.h"
 
-int itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
+int
+itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
 {
-  if( argc < 3 )
+  if ( argc < 3 )
     {
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0] << " inputImageFile outputImageFile" << std::endl;
@@ -51,11 +52,9 @@ int itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
   EXERCISE_BASIC_OBJECT_METHODS( fftpad, FFTPadPositiveIndexImageFilter,
     ImageToImageFilter );
 
-
   /*itk::SizeValueType sizeGreatestPrimeFactor;
   fftpad->SetSizeGreatestPrimeFactor( sizeGreatestPrimeFactor );
   TEST_SET_GET_VALUE( sizeGreatestPrimeFactor, fftpad->GetSizeGreatestPrimeFactor() );*/
-
 
   /*FFTPadType::BoundaryConditionPointerType boundaryCondition;
   fftpad->SetBoundaryCondition( boundaryCondition );
@@ -66,11 +65,11 @@ int itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
   TRY_EXPECT_NO_EXCEPTION( fftpad->Update() );
 
   ImageType::IndexType outIndex = fftpad->GetOutput()->GetLargestPossibleRegion().GetIndex();
-  ImageType::SizeType  outSize  = fftpad->GetOutput()->GetLargestPossibleRegion().GetSize();
+  ImageType::SizeType outSize  = fftpad->GetOutput()->GetLargestPossibleRegion().GetSize();
   std::cout << "Index: " << outIndex << " Size: " << outSize << std::endl;
-  for( unsigned int i = 0; i < Dimension; ++i )
+  for ( unsigned int i = 0; i < Dimension; ++i )
     {
-    if( outIndex[i] < 0 )
+    if ( outIndex[i] < 0 )
       {
       std::cerr << "Test failed!" << std::endl;
       std::cerr << "Negative index found." << std::endl;

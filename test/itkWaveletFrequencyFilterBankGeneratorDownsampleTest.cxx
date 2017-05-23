@@ -42,16 +42,17 @@
 #include "itkViewImage.h"
 #endif
 
-
 template< unsigned int VDimension, typename TWaveletFunction >
-int runWaveletFrequencyFilterBankGeneratorDownsampleTest( const std::string& inputImage,
-                                                const std::string&,
-                                                const unsigned int& inputBands)
+int
+runWaveletFrequencyFilterBankGeneratorDownsampleTest( const std::string& inputImage,
+  const std::string &,
+  const unsigned int& inputBands)
 {
   const unsigned int Dimension = VDimension;
-  typedef float                               PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+
+  typedef float                              PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
@@ -59,7 +60,7 @@ int runWaveletFrequencyFilterBankGeneratorDownsampleTest( const std::string& inp
   reader->UpdateLargestPossibleRegion();
 
   // Perform FFT on input image.
-  typedef itk::ForwardFFTImageFilter<ImageType> FFTFilterType;
+  typedef itk::ForwardFFTImageFilter< ImageType > FFTFilterType;
   typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput(reader->GetOutput());
   fftFilter->Update();
@@ -80,7 +81,7 @@ int runWaveletFrequencyFilterBankGeneratorDownsampleTest( const std::string& inp
   // Test difference between downsample the filterbank output, or downsample the input and re-apply the filter bank.
   unsigned int shrinkFactor = 2;
   // typedef itk::FrequencyShrinkViaInverseFFTImageFilter<ComplexImageType> ShrinkFilterType;
-  typedef itk::FrequencyShrinkImageFilter<ComplexImageType> ShrinkFilterType;
+  typedef itk::FrequencyShrinkImageFilter< ComplexImageType > ShrinkFilterType;
   typename ShrinkFilterType::Pointer shrinkFilter = ShrinkFilterType::New();
   // shrinkFilter->SetInput(forwardFilterBank->GetOutputHighPass());
   shrinkFilter->SetInput(forwardFilterBank->GetOutputLowPass());
@@ -90,14 +91,14 @@ int runWaveletFrequencyFilterBankGeneratorDownsampleTest( const std::string& inp
   typename WaveletFilterBankType::Pointer forwardFilterBankDown = WaveletFilterBankType::New();
   forwardFilterBankDown->SetHighPassSubBands( highSubBands );
   typename ComplexImageType::SizeType halfSize;
-  for (unsigned int i = 0; i < Dimension; ++i)
+  for ( unsigned int i = 0; i < Dimension; ++i )
     {
-    halfSize[i] = itk::Math::Floor<itk::SizeValueType>(inputSize[i]/static_cast<double>(shrinkFactor));
+    halfSize[i] = itk::Math::Floor< itk::SizeValueType >(inputSize[i] / static_cast< double >(shrinkFactor));
     }
   forwardFilterBankDown->SetSize(halfSize);
   forwardFilterBankDown->Update();
 
-  //Compare Images
+  // Compare Images
 #ifdef ITK_VISUALIZE_TESTS
   typedef itk::ComplexToRealImageFilter< ComplexImageType, ImageType > ComplexToRealFilter;
   typename ComplexToRealFilter::Pointer complexToRealFilter = ComplexToRealFilter::New();
@@ -115,9 +116,10 @@ int runWaveletFrequencyFilterBankGeneratorDownsampleTest( const std::string& inp
   return EXIT_SUCCESS;
 }
 
-int itkWaveletFrequencyFilterBankGeneratorDownsampleTest( int argc, char *argv[] )
+int
+itkWaveletFrequencyFilterBankGeneratorDownsampleTest( int argc, char *argv[] )
 {
-  if( argc < 5 || argc > 6 )
+  if ( argc < 5 || argc > 6 )
     {
     std::cerr << "Usage: " << argv[0]
               << " inputImage outputImage inputBands waveletFunction [dimension]" << std::endl;
@@ -129,16 +131,16 @@ int itkWaveletFrequencyFilterBankGeneratorDownsampleTest( int argc, char *argv[]
   const std::string waveletFunction  = argv[4];
 
   unsigned int dimension = 3;
-  if( argc == 6 )
+  if ( argc == 6 )
     {
     dimension = atoi( argv[5] );
     }
 
   const unsigned int ImageDimension = 2;
-  typedef double                                          PixelType;
-  typedef std::complex< PixelType >                       ComplexPixelType;
-  typedef itk::Point< PixelType, ImageDimension >         PointType;
-  typedef itk::Image< ComplexPixelType, ImageDimension >  ComplexImageType;
+  typedef double                                         PixelType;
+  typedef std::complex< PixelType >                      ComplexPixelType;
+  typedef itk::Point< PixelType, ImageDimension >        PointType;
+  typedef itk::Image< ComplexPixelType, ImageDimension > ComplexImageType;
 
   // Exercise basic object methods
   // Done outside the helper function in the test because GCC is limited
@@ -171,11 +173,10 @@ int itkWaveletFrequencyFilterBankGeneratorDownsampleTest( int argc, char *argv[]
   EXERCISE_BASIC_OBJECT_METHODS( shannonIsotropicWavelet, ShannonIsotropicWavelet,
     IsotropicWaveletFrequencyFunction );
 
-
-  typedef itk::HeldIsotropicWavelet<>       HeldWavelet;
-  typedef itk::VowIsotropicWavelet<>        VowWavelet;
-  typedef itk::SimoncelliIsotropicWavelet<> SimoncelliWavelet;
-  typedef itk::ShannonIsotropicWavelet<>    ShannonWavelet;
+  typedef itk::HeldIsotropicWavelet< >       HeldWavelet;
+  typedef itk::VowIsotropicWavelet< >        VowWavelet;
+  typedef itk::SimoncelliIsotropicWavelet< > SimoncelliWavelet;
+  typedef itk::ShannonIsotropicWavelet< >    ShannonWavelet;
 
   typedef itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, HeldWavelet >
     HeldWaveletFilterBankType;
@@ -206,24 +207,29 @@ int itkWaveletFrequencyFilterBankGeneratorDownsampleTest( int argc, char *argv[]
   EXERCISE_BASIC_OBJECT_METHODS( shannonWaveletFilterBankGenerator,
     WaveletFrequencyFilterBankGenerator, GenerateImageSource );
 
-
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
-    if( waveletFunction == "Held" )
+    if ( waveletFunction == "Held" )
       {
-      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 2, HeldWavelet >( inputImage, outputImage, inputBands );
+      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 2, HeldWavelet >( inputImage, outputImage,
+        inputBands );
       }
-    else if( waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
-      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 2, VowWavelet >( inputImage, outputImage, inputBands );
+      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 2, VowWavelet >( inputImage, outputImage,
+        inputBands );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
-      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 2, SimoncelliWavelet >(inputImage, outputImage, inputBands );
+      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 2, SimoncelliWavelet >(inputImage,
+        outputImage,
+        inputBands );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
-      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 2, ShannonWavelet >( inputImage, outputImage, inputBands );
+      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 2, ShannonWavelet >( inputImage,
+        outputImage,
+        inputBands );
       }
     else
       {
@@ -232,23 +238,29 @@ int itkWaveletFrequencyFilterBankGeneratorDownsampleTest( int argc, char *argv[]
       return EXIT_FAILURE;
       }
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
-    if( waveletFunction == "Held" )
+    if ( waveletFunction == "Held" )
       {
-      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 3, HeldWavelet >( inputImage, outputImage, inputBands );
+      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 3, HeldWavelet >( inputImage, outputImage,
+        inputBands );
       }
-    else if( waveletFunction == "Vow" )
+    else if ( waveletFunction == "Vow" )
       {
-      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 3, VowWavelet >( inputImage, outputImage, inputBands );
+      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 3, VowWavelet >( inputImage, outputImage,
+        inputBands );
       }
-    else if( waveletFunction == "Simoncelli" )
+    else if ( waveletFunction == "Simoncelli" )
       {
-      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 3, SimoncelliWavelet >( inputImage, outputImage, inputBands );
+      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 3, SimoncelliWavelet >( inputImage,
+        outputImage,
+        inputBands );
       }
-    else if( waveletFunction == "Shannon" )
+    else if ( waveletFunction == "Shannon" )
       {
-      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 3, ShannonWavelet >( inputImage, outputImage, inputBands );
+      return runWaveletFrequencyFilterBankGeneratorDownsampleTest< 3, ShannonWavelet >( inputImage,
+        outputImage,
+        inputBands );
       }
     else
       {

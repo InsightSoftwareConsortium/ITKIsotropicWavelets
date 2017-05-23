@@ -28,9 +28,9 @@
 #include "itkViewImage.h"
 #endif
 
-
 template< unsigned int VDimension >
-int runShrinkDecimateImageFilterTest()
+int
+runShrinkDecimateImageFilterTest()
 {
   typedef float                               PixelType;
   typedef itk::Image< PixelType, VDimension > ImageType;
@@ -38,7 +38,7 @@ int runShrinkDecimateImageFilterTest()
 
   // Create the input image
   typename ImageType::RegionType region;
-  typename ImageType::SizeType   size;
+  typename ImageType::SizeType size;
   size.Fill( 32 );
   typename ImageType::IndexType index;
   index.Fill(9);
@@ -51,8 +51,8 @@ int runShrinkDecimateImageFilterTest()
   input->Allocate();
 
     {
-    itk::ImageRegionIteratorWithIndex<ImageType> inIt( input, region );
-    for( inIt.GoToBegin(); !inIt.IsAtEnd(); ++inIt )
+    itk::ImageRegionIteratorWithIndex< ImageType > inIt( input, region );
+    for ( inIt.GoToBegin(); !inIt.IsAtEnd(); ++inIt )
       {
       // Multiply by ten for more precision
       inIt.Set( inIt.GetIndex()[0] * 10 );
@@ -67,7 +67,7 @@ int runShrinkDecimateImageFilterTest()
     unsigned int shrinkFactor = 1;
     typename DecimatorType::ShrinkFactorsType shrinkFactors;
     shrinkFactors.Fill( shrinkFactor );
-    for( unsigned int i = 0; i < shrinkFactors.Size(); ++i )
+    for ( unsigned int i = 0; i < shrinkFactors.Size(); ++i )
       {
       decimator->SetShrinkFactor( i, shrinkFactors[i] );
       }
@@ -84,27 +84,27 @@ int runShrinkDecimateImageFilterTest()
     TRY_EXPECT_NO_EXCEPTION( decimator->Update() );
 
     // Check values
-    itk::ImageRegionConstIteratorWithIndex<ImageType> outIt(
+    itk::ImageRegionConstIteratorWithIndex< ImageType > outIt(
       decimator->GetOutput(),
       decimator->GetOutput()->GetLargestPossibleRegion() );
-    for( outIt.GoToBegin(); !outIt.IsAtEnd(); ++outIt )
+    for ( outIt.GoToBegin(); !outIt.IsAtEnd(); ++outIt )
       {
       int trueValue = outIt.GetIndex()[0] * shrinkFactors[0] * 10;
-      if( outIt.Get() != static_cast< int >( trueValue ) )
+      if ( outIt.Get() != static_cast< int >( trueValue ) )
         {
         std::cerr << "Wrong pixel value at " << outIt.GetIndex() << " of "
-          << outIt.Get() << " . Should be " << trueValue << std::endl;
+                  << outIt.Get() << " . Should be " << trueValue << std::endl;
         testPassed = false;
         }
       }
     }
-  catch( itk::ExceptionObject & e )
+  catch ( itk::ExceptionObject & e )
     {
     std::cerr << "Exception: " << e << std::endl;
     testPassed = false;
     }
 
-  if( !testPassed )
+  if ( !testPassed )
     {
     std::cout << "Test failed!" << std::endl;
     return EXIT_FAILURE;
@@ -118,9 +118,10 @@ int runShrinkDecimateImageFilterTest()
   return EXIT_SUCCESS;
 }
 
-int itkShrinkDecimateImageFilterTest( int argc, char *argv[] )
+int
+itkShrinkDecimateImageFilterTest( int argc, char *argv[] )
 {
-  if( argc > 2 )
+  if ( argc > 2 )
     {
     std::cerr << "Usage: " << argv[0]
               << "[dimension]" << std::endl;
@@ -141,18 +142,17 @@ int itkShrinkDecimateImageFilterTest( int argc, char *argv[] )
   EXERCISE_BASIC_OBJECT_METHODS( decimator, ShrinkDecimateImageFilter,
     ImageToImageFilter );
 
-
   unsigned int dimension = 3;
-  if( argc == 2 )
+  if ( argc == 2 )
     {
     dimension = atoi( argv[1] );
     }
 
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
     return runShrinkDecimateImageFilterTest< 2 >();
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
     return runShrinkDecimateImageFilterTest< 3 >();
     }

@@ -30,7 +30,8 @@
 #endif
 
 template< unsigned int VDimension >
-int runExpandWithZerosImageFilterTest()
+int
+runExpandWithZerosImageFilterTest()
 {
   typedef float                               PixelType;
   typedef itk::Image< PixelType, VDimension > ImageType;
@@ -38,7 +39,7 @@ int runExpandWithZerosImageFilterTest()
 
   // Create the input image
   typename ImageType::RegionType region;
-  typename ImageType::SizeType   size;
+  typename ImageType::SizeType size;
   size.Fill( 32 );
   typename ImageType::IndexType inputIndex;
   inputIndex.Fill( 9 );
@@ -51,7 +52,7 @@ int runExpandWithZerosImageFilterTest()
   input->SetBufferedRegion( region );
   input->Allocate();
   input->FillBuffer( 1 );
-  
+
   typedef itk::ExpandWithZerosImageFilter< ImageType, ImageType > ExpanderType;
   typename ExpanderType::Pointer expander = ExpanderType::New();
 
@@ -67,25 +68,25 @@ int runExpandWithZerosImageFilterTest()
   // Check the output against expected value
   typedef itk::ImageRegionIteratorWithIndex< ImageType > Iterator;
   Iterator outIter( expander->GetOutput(),
-                    expander->GetOutput()->GetBufferedRegion() );
+    expander->GetOutput()->GetBufferedRegion() );
   typename ImageType::IndexType outStartIndex =
     expander->GetOutput()->GetLargestPossibleRegion().GetIndex();
 
-  while( !outIter.IsAtEnd() )
+  while ( !outIter.IsAtEnd() )
     {
     typename ImageType::IndexType index = outIter.GetIndex();
     double value = outIter.Get();
     bool indexIsMultipleOfFactor = true;
-    for( unsigned int i = 0; i < VDimension; ++i )
+    for ( unsigned int i = 0; i < VDimension; ++i )
       {
-      if( (index[i] - outStartIndex[i]) % expander->GetExpandFactors()[i] != 0 )
+      if ( (index[i] - outStartIndex[i]) % expander->GetExpandFactors()[i] != 0 )
         {
         indexIsMultipleOfFactor = false;
         break;
         }
       }
     double trueValue = -1;
-    if( indexIsMultipleOfFactor )
+    if ( indexIsMultipleOfFactor )
       {
       trueValue = 1;
       }
@@ -95,7 +96,7 @@ int runExpandWithZerosImageFilterTest()
       }
 
     double tolerance = 1e-4;
-    if( !itk::Math::FloatAlmostEqual( trueValue, value, 10, tolerance) )
+    if ( !itk::Math::FloatAlmostEqual( trueValue, value, 10, tolerance) )
       {
       testPassed = false;
       std::cerr << "Test failed!" << std::endl;
@@ -110,7 +111,7 @@ int runExpandWithZerosImageFilterTest()
   itk::Testing::ViewImage( expander->GetOutput(), "ExpandWithZeros Output" );
 #endif
 
-   // Test than expand with zeros + shrinkage (decimate) results on input image.
+  // Test than expand with zeros + shrinkage (decimate) results on input image.
   typedef itk::ShrinkDecimateImageFilter< ImageType, ImageType > DecimatorType;
   typename DecimatorType::Pointer decimator = DecimatorType::New();
   decimator->SetShrinkFactors(expandFactors);
@@ -128,15 +129,15 @@ int runExpandWithZerosImageFilterTest()
   differenceFilter->Update();
 
   unsigned int numberOfDiffPixels = differenceFilter->GetNumberOfPixelsWithDifferences();
-  if( numberOfDiffPixels > 0 )
+  if ( numberOfDiffPixels > 0 )
     {
     std::cerr << "Test failed! " << std::endl;
     std::cerr << "ExpandWithZeros + ShrinkDecimate should be equal to input image, but got " << numberOfDiffPixels
-      << " unequal pixels" << std::endl;
+              << " unequal pixels" << std::endl;
     testPassed = false;
     }
 
-  if( !testPassed )
+  if ( !testPassed )
     {
     std::cerr << "Test failed!" << std::endl;
     return EXIT_FAILURE;
@@ -148,9 +149,10 @@ int runExpandWithZerosImageFilterTest()
     }
 }
 
-int itkExpandWithZerosImageFilterTest( int argc, char *argv[] )
+int
+itkExpandWithZerosImageFilterTest( int argc, char *argv[] )
 {
-  if( argc > 2 )
+  if ( argc > 2 )
     {
     std::cerr << "Usage: " << argv[0]
               << "[dimension]" << std::endl;
@@ -169,18 +171,17 @@ int itkExpandWithZerosImageFilterTest( int argc, char *argv[] )
   EXERCISE_BASIC_OBJECT_METHODS( expander, ExpandWithZerosImageFilter,
     ImageToImageFilter );
 
-
   unsigned int dimension = 3;
-  if( argc == 2 )
+  if ( argc == 2 )
     {
     dimension = atoi( argv[1] );
     }
 
-  if( dimension == 2 )
+  if ( dimension == 2 )
     {
     return runExpandWithZerosImageFilterTest< 2 >();
     }
-  else if( dimension == 3 )
+  else if ( dimension == 3 )
     {
     return runExpandWithZerosImageFilterTest< 3 >();
     }

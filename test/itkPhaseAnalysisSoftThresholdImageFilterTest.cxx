@@ -32,16 +32,15 @@
 #include <string>
 #include <cmath>
 
-
 // Visualize for dev/debug purposes. Set in cmake file. Requires VTK
 #ifdef ITK_VISUALIZE_TESTS
 #include "itkViewImage.h"
 #endif
 
-
-int itkPhaseAnalysisSoftThresholdImageFilterTest( int argc, char* argv[] )
+int
+itkPhaseAnalysisSoftThresholdImageFilterTest( int argc, char* argv[] )
 {
-  if( argc != 3 )
+  if ( argc != 3 )
     {
     std::cerr << "Usage: " << argv[0] << " inputImage outputImage" << std::endl;
     return EXIT_FAILURE;
@@ -51,9 +50,9 @@ int itkPhaseAnalysisSoftThresholdImageFilterTest( int argc, char* argv[] )
   const std::string outputImage = argv[2];
 
   const unsigned int Dimension = 3;
-  typedef float                               PixelType;
-  typedef itk::Image< PixelType, Dimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+  typedef float                              PixelType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType >  ReaderType;
 
   ReaderType::Pointer reader = ReaderType::New();
 

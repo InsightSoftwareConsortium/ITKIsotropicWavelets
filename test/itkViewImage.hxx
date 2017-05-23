@@ -33,36 +33,40 @@ namespace itk
 {
 namespace Testing
 {
-template<typename T >
-void ViewImage(const T* img, const std::string& win_title, size_t win_x, size_t win_y )
+template< typename T >
+void
+ViewImage( const T* img,
+           const std::string& win_title,
+           size_t win_x,
+           size_t win_y )
 {
-  typedef itk::ImageToVTKImageFilter<T> ConnectorType;
+  typedef itk::ImageToVTKImageFilter< T > ConnectorType;
   typename ConnectorType::Pointer connector = ConnectorType::New();
   connector->SetInput(img);
   connector->Update();
   connector->UpdateLargestPossibleRegion();
 
   // Setup renderers
-  vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
 
   // Setup render window
-  vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+  vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
   renderWindow->SetWindowName(win_title.c_str());
   renderWindow->SetSize(win_x, win_y);
   renderWindow->AddRenderer(renderer);
 
   // Setup render window interactor
-  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
-    vtkSmartPointer<vtkRenderWindowInteractor>::New();
-  vtkSmartPointer<vtkInteractorStyleRubberBand3D> style =
-    vtkSmartPointer<vtkInteractorStyleRubberBand3D>::New();
+  vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
+    vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  vtkSmartPointer< vtkInteractorStyleRubberBand3D > style =
+    vtkSmartPointer< vtkInteractorStyleRubberBand3D >::New();
   renderWindowInteractor->SetInteractorStyle(style);
 
   // Render and start interaction
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
   // Prepare for slices.
-  typedef itk::StatisticsImageFilter<T> FilterType;
+  typedef itk::StatisticsImageFilter< T > FilterType;
   typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput(img);
   filter->Update();
@@ -72,10 +76,10 @@ void ViewImage(const T* img, const std::string& win_title, size_t win_x, size_t 
   double window = max_intensity - min_intensity;
   double level  = min_intensity + window / 2;
   /** SLICES */
-  FixedArray<vtkSmartPointer<vtkImagePlaneWidget>, 3> slice_planes;
-  for (unsigned i = 0; i < 3; ++i)
+  FixedArray< vtkSmartPointer< vtkImagePlaneWidget >, 3 > slice_planes;
+  for ( unsigned i = 0; i < 3; ++i )
     {
-    slice_planes[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
+    slice_planes[i] = vtkSmartPointer< vtkImagePlaneWidget >::New();
     slice_planes[i]->SetResliceInterpolateToCubic();
     slice_planes[i]->DisplayTextOn();
     slice_planes[i]->SetInteractor(renderWindowInteractor);
@@ -101,7 +105,7 @@ void ViewImage(const T* img, const std::string& win_title, size_t win_x, size_t 
   vtkCamera *cam = renderer->GetActiveCamera();
   cam->GetPosition(pos);
   cam->GetViewUp(vup);
-  for(unsigned int i = 0; i < 3; ++i)
+  for ( unsigned int i = 0; i < 3; ++i )
     {
     pos[i] = -pos[i];
     vup[i] = -vup[i];
@@ -114,42 +118,46 @@ void ViewImage(const T* img, const std::string& win_title, size_t win_x, size_t 
   renderWindowInteractor->Start();
 }
 
-template<typename TLeft, typename TRight >
-void ViewImages(const TLeft* leftImg, const TRight* rightImg,
-                const std::string& win_title, size_t win_x, size_t win_y )
+template< typename TLeft, typename TRight >
+void
+ViewImages( const TLeft* leftImg,
+            const TRight* rightImg,
+            const std::string& win_title,
+            size_t win_x,
+            size_t win_y )
 {
-  typedef itk::ImageToVTKImageFilter<TLeft> LeftConnectorType;
+  typedef itk::ImageToVTKImageFilter< TLeft > LeftConnectorType;
   typename LeftConnectorType::Pointer leftConnector = LeftConnectorType::New();
   leftConnector->SetInput(leftImg);
   leftConnector->Update();
   leftConnector->UpdateLargestPossibleRegion();
 
-  typedef itk::ImageToVTKImageFilter<TRight> RightConnectorType;
+  typedef itk::ImageToVTKImageFilter< TRight > RightConnectorType;
   typename RightConnectorType::Pointer rightConnector = RightConnectorType::New();
   rightConnector->SetInput(rightImg);
   rightConnector->Update();
   rightConnector->UpdateLargestPossibleRegion();
 
   // Setup renderer (UNIQUE)
-  vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
 
   // Setup render window (UNIQUE)
-  vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+  vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
   renderWindow->SetWindowName(win_title.c_str());
   renderWindow->SetSize(win_x, win_y);
   renderWindow->AddRenderer(renderer);
 
   // Setup render window interactor (UNIQUE)
-  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
-    vtkSmartPointer<vtkRenderWindowInteractor>::New();
-  vtkSmartPointer<vtkInteractorStyleRubberBand3D> style =
-    vtkSmartPointer<vtkInteractorStyleRubberBand3D>::New();
+  vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
+    vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  vtkSmartPointer< vtkInteractorStyleRubberBand3D > style =
+    vtkSmartPointer< vtkInteractorStyleRubberBand3D >::New();
   renderWindowInteractor->SetInteractorStyle(style);
 
   // Render and start interaction
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
-  typedef itk::StatisticsImageFilter<TLeft> LeftFilterType;
+  typedef itk::StatisticsImageFilter< TLeft > LeftFilterType;
   // Prepare for slices (BOTH)
   typename LeftFilterType::Pointer leftFilter = LeftFilterType::New();
   leftFilter->SetInput(leftImg);
@@ -160,7 +168,7 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
   double leftWindow = leftMax_intensity - leftMin_intensity;
   double leftLevel  = leftMin_intensity + leftWindow / 2;
 
-  typedef itk::StatisticsImageFilter<TRight> RightFilterType;
+  typedef itk::StatisticsImageFilter< TRight > RightFilterType;
   typename RightFilterType::Pointer rightFilter = RightFilterType::New();
   rightFilter->SetInput(rightImg);
   rightFilter->Update();
@@ -170,10 +178,10 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
   double rightWindow = rightMax_intensity - rightMin_intensity;
   double rightLevel  = rightMin_intensity + rightWindow / 2;
   /** SLICES (BOTH) */
-  FixedArray<vtkSmartPointer<vtkImagePlaneWidget>, 3> leftSlice_planes;
-  for (unsigned i = 0; i < 3; ++i)
+  FixedArray< vtkSmartPointer< vtkImagePlaneWidget >, 3 > leftSlice_planes;
+  for ( unsigned i = 0; i < 3; ++i )
     {
-    leftSlice_planes[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
+    leftSlice_planes[i] = vtkSmartPointer< vtkImagePlaneWidget >::New();
     leftSlice_planes[i]->SetResliceInterpolateToCubic();
     leftSlice_planes[i]->DisplayTextOn();
     leftSlice_planes[i]->SetInteractor(renderWindowInteractor);
@@ -193,10 +201,10 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
     leftSlice_planes[i]->SetWindowLevel(leftWindow, leftLevel);
     leftSlice_planes[i]->On();
     }
-  FixedArray<vtkSmartPointer<vtkImagePlaneWidget>, 3> rightSlice_planes;
-  for (unsigned i = 0; i < 3; ++i)
+  FixedArray< vtkSmartPointer< vtkImagePlaneWidget >, 3 > rightSlice_planes;
+  for ( unsigned i = 0; i < 3; ++i )
     {
-    rightSlice_planes[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
+    rightSlice_planes[i] = vtkSmartPointer< vtkImagePlaneWidget >::New();
     rightSlice_planes[i]->SetResliceInterpolateToCubic();
     rightSlice_planes[i]->DisplayTextOn();
     rightSlice_planes[i]->SetInteractor(renderWindowInteractor);
@@ -222,7 +230,7 @@ void ViewImages(const TLeft* leftImg, const TRight* rightImg,
   vtkCamera *cam = renderer->GetActiveCamera();
   cam->GetPosition(pos);
   cam->GetViewUp(vup);
-  for(unsigned int i = 0; i < 3; ++i)
+  for ( unsigned int i = 0; i < 3; ++i )
     {
     pos[i] = -pos[i];
     vup[i] = -vup[i];
