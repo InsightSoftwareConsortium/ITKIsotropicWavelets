@@ -75,8 +75,8 @@ typename HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >::Functi
 HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 ::ComputePolynom(const FunctionValueType& x, const unsigned int & order) const
 {
-  FunctionValueType y  = 0.0;
-  FunctionValueType x8 = 8 * x;
+  double y  = 0.0;
+  double x8 = 8 * static_cast<double>(x);
 
   switch ( order )
     {
@@ -136,7 +136,7 @@ HeldIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
     default:
       itkExceptionMacro( << "Order of polynom must be less than 6." );
     }
-  return y;
+  return static_cast<FunctionValueType>(y);
 }
 } // end namespace itk
 
