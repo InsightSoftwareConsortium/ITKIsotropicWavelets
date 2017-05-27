@@ -66,11 +66,12 @@ endif()
 
 CreateTestDriver(IsotropicWavelets "${Libraries}" "${IsotropicWaveletsTests}")
 
-set(COVERAGE_FLAGS "-coverage -fprofile-arcs -ftest-coverage")
-set_target_properties(IsotropicWaveletsTestDriver
-  PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${COVERAGE_FLAGS}"
-             LINK_FLAGS "-fprofile-arcs"
-  )
+# Coverage flags.
+# set(COVERAGE_FLAGS "-coverage -fprofile-arcs -ftest-coverage")
+# set_target_properties(IsotropicWaveletsTestDriver
+#   PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${COVERAGE_FLAGS}"
+#              LINK_FLAGS "-fprofile-arcs"
+#   )
 
 # use #ifdef ITK_VISUALIZE_TESTS, instead of checking value with #ifdef ITK_VISUALIZE_TESTS
 if(ITK_VISUALIZE_TESTS)
