@@ -114,7 +114,7 @@ protected:
   virtual ~IsotropicWaveletFrequencyFunction();
   virtual void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
-  unsigned int m_HighPassSubBands;
+  unsigned int      m_HighPassSubBands;
   FunctionValueType m_FreqCutOff;
 
 private:

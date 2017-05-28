@@ -124,6 +124,11 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
     {
     std::cout << "Output #: " << i << " / " << numberOfOutputs - 1 << std::endl;
+    // if( i == numberOfOutputs - 1 ) // TODO Held does not modify approx image, but it does not generate better results.
+    //   {
+    //   modifiedWavelets.push_back( analysisWavelets[i] );
+    //   continue;
+    //   }
     typename MonogenicSignalFrequencyFilterType::Pointer monoFilter =
       MonogenicSignalFrequencyFilterType::New();
     typename VectorInverseFFTType::Pointer vecInverseFFT =
@@ -142,10 +147,6 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
 
     phaseAnalyzer->SetInput( vecInverseFFT->GetOutput() );
     phaseAnalyzer->SetApplySoftThreshold( applySoftThreshold );
-    // if( i == numberOfOutputs - 1 ) // TODO Held does not modify approx image, but it does not generate better results.
-    //   {
-    //   phaseAnalyzer->SetApplySoftThreshold( false );
-    //   }
     phaseAnalyzer->Update();
 
     fftForwardPhaseFilter->SetInput( phaseAnalyzer->GetOutputCosPhase() );
@@ -193,7 +194,7 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
 #endif
 
   // Cast To Float for save as tiff.
-  typedef itk::Image< float, Dimension > ImageFloatType;
+  typedef itk::Image< float, Dimension >                   ImageFloatType;
   typedef itk::CastImageFilter< ImageType, ImageFloatType> CastFloatType;
   typename CastFloatType::Pointer caster = CastFloatType::New();
   caster->SetInput(inverseFFT->GetOutput());
