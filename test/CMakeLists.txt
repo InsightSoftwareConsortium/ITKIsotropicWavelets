@@ -282,9 +282,9 @@ itk_add_test(NAME itkFrequencyBandImageFilterOddTest
   COMMAND IsotropicWaveletsTestDriver itkFrequencyBandImageFilterTest "Odd")
 ## ExpandWithZeros (in spatial domain)
 itk_add_test(NAME itkExpandWithZerosImageFilterTest2D
-  COMMAND IsotropicWaveletsTestDriver itkExpandWithZerosImageFilterTest 2)
+  COMMAND IsotropicWaveletsTestDriver itkExpandWithZerosImageFilterTest 2 3)
 itk_add_test(NAME itkExpandWithZerosImageFilterTest3D
-  COMMAND IsotropicWaveletsTestDriver itkExpandWithZerosImageFilterTest 3)
+  COMMAND IsotropicWaveletsTestDriver itkExpandWithZerosImageFilterTest 3 3)
 ## ShrinkDecimate (in spatial domain)
 itk_add_test(NAME itkShrinkDecimateImageFilterTest2D
   COMMAND IsotropicWaveletsTestDriver itkShrinkDecimateImageFilterTest 2)
