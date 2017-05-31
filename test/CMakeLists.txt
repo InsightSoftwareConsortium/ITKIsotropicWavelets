@@ -148,7 +148,7 @@ itk_add_test(NAME itkMonogenicSignalFrequencyImageFilterTest
 itk_add_test(NAME itkPhaseAnalysisSoftThresholdImageFilterTest
   COMMAND IsotropicWaveletsTestDriver
   itkPhaseAnalysisSoftThresholdImageFilterTest DATA{Input/collagen_32x32x16.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkPhaseAnalysisSoftThresholdImageFilterTest.tiff
+  ${ITK_TEST_OUTPUT_DIR}/itkPhaseAnalysisSoftThresholdImageFilterTest.tiff 1 2.0 10044.513 5020.3013 20085.115
   )
 # StructureTensor
 itk_add_test(NAME itkStructureTensorTest
