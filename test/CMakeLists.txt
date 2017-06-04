@@ -253,14 +253,19 @@ itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand.tiff
   5 2 ${DefaultWavelet} Apply 2 )
 #IsotropicWaveletFrequencyFunctionTest
-itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionTest
+itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionHeldTest
   COMMAND IsotropicWaveletsTestDriver itkIsotropicWaveletFrequencyFunctionTest
-  ${ITK_TEST_OUTPUT_DIR}/profileMotherWavelet
-  "unused"
-  1
-  "Held"
-  2
-  )
+  ${ITK_TEST_OUTPUT_DIR}/profileMotherWavelet "unused" 1 "Held" 2 )
+itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionShannonTest
+  COMMAND IsotropicWaveletsTestDriver itkIsotropicWaveletFrequencyFunctionTest
+  ${ITK_TEST_OUTPUT_DIR}/profileMotherWavelet "unused" 1 "Shannon" 2 )
+itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionSimoncelliTest
+  COMMAND IsotropicWaveletsTestDriver itkIsotropicWaveletFrequencyFunctionTest
+  ${ITK_TEST_OUTPUT_DIR}/profileMotherWavelet "unused" 1 "Simonecelli" 2 )
+itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionVowTest
+  COMMAND IsotropicWaveletsTestDriver itkIsotropicWaveletFrequencyFunctionTest
+  ${ITK_TEST_OUTPUT_DIR}/profileMotherWavelet "unused" 1 "Vow" 2 )
+
 itk_add_test(NAME itkHeldIsotropicWaveletTest
   COMMAND IsotropicWaveletsTestDriver itkHeldIsotropicWaveletTest)
 itk_add_test(NAME itkSimoncelliIsotropicWaveletTest
