@@ -345,6 +345,28 @@ itk_add_test(NAME itkFrequencyShrinkEvenTest
     ${ITK_TEST_OUTPUT_DIR}/itkFrequencyShrinkEvenTest2D.tiff
     2
     )
+##FFTPad
+itk_add_test(NAME itkFFTPadPositiveIndexImageFilterTestZeroFluxNeumann
+  COMMAND IsotropicWaveletsTestDriver
+--compare-MD5 ${ITK_TEST_OUTPUT_DIR}/itkFFTPadPositiveIndexImageFilterTestZeroFluxNeumann.tiff
+  "ea48bce3f29ba0a4846e005deef2145d"
+  itkFFTPadPositiveIndexImageFilterTest
+    DATA{Input/checkershadow_Lch_512x512.tiff}
+    ${ITK_TEST_OUTPUT_DIR}/itkFFTPadPositiveIndexImageFilterTestZeroFluxNeumann.tiff 2 ZEROFLUXNEUMANN )
+itk_add_test(NAME itkFFTPadPositiveIndexImageFilterTestConstant
+  COMMAND IsotropicWaveletsTestDriver
+--compare-MD5 ${ITK_TEST_OUTPUT_DIR}/itkFFTPadPositiveIndexImageFilterTestConstant.tiff
+  "ea48bce3f29ba0a4846e005deef2145d"
+  itkFFTPadPositiveIndexImageFilterTest
+    DATA{Input/checkershadow_Lch_512x512.tiff}
+    ${ITK_TEST_OUTPUT_DIR}/itkFFTPadPositiveIndexImageFilterTestConstant.tiff 2 CONSTANT )
+ itk_add_test(NAME itkFFTPadPositiveIndexImageFilterTestPeriodic
+  COMMAND IsotropicWaveletsTestDriver
+--compare-MD5 ${ITK_TEST_OUTPUT_DIR}/itkFFTPadPositiveIndexImageFilterTestPeriodic.tiff
+  "ea48bce3f29ba0a4846e005deef2145d"
+  itkFFTPadPositiveIndexImageFilterTest
+    DATA{Input/checkershadow_Lch_512x512.tiff}
+    ${ITK_TEST_OUTPUT_DIR}/itkFFTPadPositiveIndexImageFilterTestPeriodic.tiff 2 PERIODIC )
 ## ZeroDC
 itk_add_test(NAME itkZeroDCImageFilterTest
   COMMAND IsotropicWaveletsTestDriver
