@@ -161,10 +161,8 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
   InputImagePointer inputPtr = const_cast< TInputImage * >( this->GetInput() );
   OutputImagePointer outputPtr = this->GetOutput();
 
-  if ( !inputPtr || !outputPtr )
-    {
-    return;
-    }
+  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != ITK_NULLPTR );
+  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != ITK_NULLPTR );
 
   // Compute the input requested region (size and start index)
   // Use the image transformations to insure an input requested region
@@ -239,10 +237,8 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
   InputImageConstPointer inputPtr  = this->GetInput();
   OutputImagePointer outputPtr = this->GetOutput();
 
-  if ( !inputPtr || !outputPtr )
-    {
-    return;
-    }
+  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != ITK_NULLPTR );
+  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != ITK_NULLPTR );
 
   // Compute the output spacing, the output image size, and the
   // output image start index
