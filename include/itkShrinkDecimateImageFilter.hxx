@@ -163,7 +163,7 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
 
   if ( !inputPtr || !outputPtr )
     {
-    return;
+    itkExceptionMacro(<< "Input and/or output not set");
     }
 
   // Compute the input requested region (size and start index)
@@ -241,7 +241,7 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
 
   if ( !inputPtr || !outputPtr )
     {
-    return;
+    itkExceptionMacro(<< "Input and/or output not set");
     }
 
   // Compute the output spacing, the output image size, and the

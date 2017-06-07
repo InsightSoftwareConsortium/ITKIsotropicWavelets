@@ -347,7 +347,7 @@ FrequencyShrinkImageFilter< TImageType >
 
   if ( !inputPtr || !outputPtr )
     {
-    return;
+    itkExceptionMacro(<< "Input and/or output not set");
     }
 
   // Compute the output spacing, the output image size, and the

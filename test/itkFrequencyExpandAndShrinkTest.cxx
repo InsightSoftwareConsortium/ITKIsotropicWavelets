@@ -80,15 +80,29 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
   /*********** EXPAND ***************/
   typedef itk::FrequencyExpandImageFilter< ComplexImageType > ExpandType;
   typename ExpandType::Pointer expandFilter = ExpandType::New();
-  expandFilter->SetInput(fftFilter->GetOutput());
+
   expandFilter->SetExpandFactors(resizeFactor);
-  expandFilter->Update();
+
+  // Test input or output not set exception
+  TRY_EXPECT_EXCEPTION( expandFilter->Update() );
+
+
+  expandFilter->SetInput(fftFilter->GetOutput());
+
+  TRY_EXPECT_NO_EXCEPTION( expandFilter->Update() );
 
   typedef itk::FrequencyExpandViaInverseFFTImageFilter< ComplexImageType > ExpandViaInverseFFTType;
   typename ExpandViaInverseFFTType::Pointer expandViaInverseFFTFilter = ExpandViaInverseFFTType::New();
-  expandViaInverseFFTFilter->SetInput(fftFilter->GetOutput());
+
   expandViaInverseFFTFilter->SetExpandFactors(resizeFactor);
-  expandViaInverseFFTFilter->Update();
+
+  // Test input or output not set exception
+  TRY_EXPECT_EXCEPTION( expandViaInverseFFTFilter->Update() );
+
+
+  expandViaInverseFFTFilter->SetInput(fftFilter->GetOutput());
+
+  TRY_EXPECT_NO_EXCEPTION( expandViaInverseFFTFilter->Update() );
 
 // #ifdef ITK_VISUALIZE_TESTS
 //   typename InverseFFTFilterType::Pointer inverseFFTExpand1 = InverseFFTFilterType::New();
@@ -104,13 +118,24 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
   /*********** SHRINK ***************/
   typedef itk::FrequencyShrinkImageFilter< ComplexImageType > ShrinkType;
   typename ShrinkType::Pointer shrinkFilter = ShrinkType::New();
-  shrinkFilter->SetInput(expandFilter->GetOutput());
+
   shrinkFilter->SetShrinkFactors(resizeFactor);
+
+  // Test input or output not set exception
+  TRY_EXPECT_EXCEPTION( expandFilter->Update() );
+
+
+  shrinkFilter->SetInput(expandFilter->GetOutput());
 
   TRY_EXPECT_NO_EXCEPTION( shrinkFilter->Update() );
 
   typedef itk::FrequencyShrinkViaInverseFFTImageFilter< ComplexImageType > ShrinkViaInverseFFTType;
   typename ShrinkViaInverseFFTType::Pointer shrinkViaInverseFFTFilter = ShrinkViaInverseFFTType::New();
+
+  // Test input or output not set exception
+  TRY_EXPECT_NO_EXCEPTION( shrinkViaInverseFFTFilter->Update() );
+
+
   shrinkViaInverseFFTFilter->SetInput(expandViaInverseFFTFilter->GetOutput());
 
   typename ShrinkViaInverseFFTType::ShrinkFactorsType shrinkFactors;

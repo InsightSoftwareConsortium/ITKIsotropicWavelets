@@ -79,6 +79,11 @@ runShrinkDecimateImageFilterTest()
     decimator->SetShrinkFactors( shrinkFactors );
     TEST_SET_GET_VALUE( shrinkFactors, decimator->GetShrinkFactors() );
 
+
+    // Test input or output not set exception
+    TRY_EXPECT_EXCEPTION( decimator->Update() );
+
+
     decimator->SetInput( input );
 
     TRY_EXPECT_NO_EXCEPTION( decimator->Update() );

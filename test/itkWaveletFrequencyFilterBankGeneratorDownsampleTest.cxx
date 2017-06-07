@@ -83,10 +83,16 @@ runWaveletFrequencyFilterBankGeneratorDownsampleTest( const std::string& inputIm
   // typedef itk::FrequencyShrinkViaInverseFFTImageFilter<ComplexImageType> ShrinkFilterType;
   typedef itk::FrequencyShrinkImageFilter< ComplexImageType > ShrinkFilterType;
   typename ShrinkFilterType::Pointer shrinkFilter = ShrinkFilterType::New();
+
+  // Test input or output not set exception
+  TRY_EXPECT_EXCEPTION( shrinkFilter->Update() );
+
+
   // shrinkFilter->SetInput(forwardFilterBank->GetOutputHighPass());
   shrinkFilter->SetInput(forwardFilterBank->GetOutputLowPass());
   shrinkFilter->SetShrinkFactors(shrinkFactor);
-  shrinkFilter->Update();
+
+  TRY_EXPECT_NO_EXCEPTION( shrinkFilter->Update() );
 
   typename WaveletFilterBankType::Pointer forwardFilterBankDown = WaveletFilterBankType::New();
   forwardFilterBankDown->SetHighPassSubBands( highSubBands );

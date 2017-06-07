@@ -204,7 +204,7 @@ FrequencyExpandImageFilter< TImageType >
 
   if ( !inputPtr || !outputPtr )
     {
-    return;
+    itkExceptionMacro(<< "Input and/or output not set");
     }
 
   // We need to compute the input requested region (size and start index)
@@ -260,7 +260,7 @@ FrequencyExpandImageFilter< TImageType >
 
   if ( !inputPtr || !outputPtr )
     {
-    return;
+    itkExceptionMacro(<< "Input and/or output not set");
     }
 
   // We need to compute the output spacing, the output image size, and the

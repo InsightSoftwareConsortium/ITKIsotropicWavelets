@@ -72,6 +72,11 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
   // ExpandFrequency
   typedef itk::FrequencyExpandImageFilter< ComplexImageType > ExpandType;
   typename ExpandType::Pointer expandFilter = ExpandType::New();
+
+  // Test input or output not set exception
+  TRY_EXPECT_EXCEPTION( expandFilter->Update() );
+
+
   expandFilter->SetInput( fftFilter->GetOutput() );
 
   unsigned int expandFactor = 2;
@@ -79,7 +84,8 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
   expandFactors.Fill( expandFactor );
   expandFilter->SetExpandFactors( expandFactors );
   TEST_SET_GET_VALUE( expandFactors, expandFilter->GetExpandFactors() );
-  expandFilter->Update();
+
+  TRY_EXPECT_NO_EXCEPTION( expandFilter->Update() );
 
   // Test size and metadata
   typename ComplexImageType::PointType fftOrigin     = fftFilter->GetOutput()->GetOrigin();
