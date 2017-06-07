@@ -53,6 +53,12 @@ FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
   const typename OutputImageType::RegionType & outputRequestedRegion =
     outputPtr->GetRequestedRegion();
 
+  typename OutputImageType::RegionType shiftedOutputRequestedRegion;
+  typename OutputImageType::RegionType::IndexType shiftedRequestedIndex =
+    outputRequestedRegion.GetIndex() - this->m_ChangeInfoFilter->GetOutputOffset();
+  shiftedOutputRequestedRegion.SetIndex(shiftedRequestedIndex);
+  shiftedOutputRequestedRegion.SetSize(outputRequestedRegion.GetSize());
+
   // Ask the boundary condition for the input requested region.
   if ( !m_BoundaryCondition )
     {
@@ -60,7 +66,7 @@ FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
     }
   typename InputImageType::RegionType inputRequestedRegion =
     m_BoundaryCondition->GetInputRequestedRegion( inputLargestPossibleRegion,
-      outputRequestedRegion );
+      shiftedOutputRequestedRegion );
 
   inputPtr->SetRequestedRegion( inputRequestedRegion );
 }
