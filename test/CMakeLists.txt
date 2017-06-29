@@ -35,6 +35,7 @@ set(IsotropicWaveletsTests
     itkWaveletFrequencyForwardTest.cxx
     itkWaveletFrequencyInverseTest.cxx
     itkWaveletFrequencyForwardUndecimatedTest.cxx
+    itkWaveletFrequencyInverseUndecimatedTest.cxx
     # Phase Analysis
     itkPhaseAnalysisSoftThresholdImageFilterTest.cxx
     # Riesz / Monogenic
@@ -200,6 +201,19 @@ itk_add_test(NAME itkWaveletFrequencyInverseTestMultiLevelMultiBand
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTestMultiLevelMultiBand.tiff
   2 5
   "Held"
+  )
+# Wavelet Inverse Undecimated
+itk_add_test(NAME itkWaveletFrequencyInverseUndecimatedTest
+  COMMAND IsotropicWaveletsTestDriver
+    --compare DATA{Input/collagen_64x64x16.tiff}
+              ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseUndecimatedTest.tiff
+  itkWaveletFrequencyInverseUndecimatedTest
+  DATA{Input/collagen_64x64x16.tiff}
+  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseUndecimatedTest.tiff
+  2 1
+  "Held"
+  "noFilterBankPyramid"
+  3
   )
 #2D
 itk_add_test(NAME itkWaveletFrequencyInverseTest2D
