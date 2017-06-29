@@ -115,7 +115,7 @@ public:
    * Return J: $ J = \text{min_element}\{J_0,\ldots, J_d\} $;
    * where each $J_i$ is the  number of integer divisions that can be done with the $i$ size and the scale factor.
    */
-  static unsigned int ComputeMaxNumberOfLevels(typename InputImageType::SizeType& input_size, unsigned int scaleFactor = 2);
+  static unsigned int ComputeMaxNumberOfLevels(const typename InputImageType::SizeType & input_size, const unsigned int scaleFactor = 2);
 
   /** (Level, band) pair.
    * Level from: [0, m_Levels), and equal to m_Levels only for the low_pass image.
@@ -153,14 +153,14 @@ protected:
    * below.
    * \sa ProcessObject::GenerateOutputInformaton()
    */
-  // virtual void GenerateOutputInformation() ITK_OVERRIDE;
+  virtual void GenerateOutputInformation() ITK_OVERRIDE;
 
   /** Given one output whose requested region has been set, this method sets
    * the requested region for the remaining output images.  The original
    * documentation of this method is below.
    * \sa ProcessObject::GenerateOutputRequestedRegion()
    */
-  // virtual void GenerateOutputRequestedRegion(DataObject *output) ITK_OVERRIDE;
+  virtual void GenerateOutputRequestedRegion(DataObject *output) ITK_OVERRIDE;
 
   /** WaveletFrequencyForwardUndecimated requires a larger input requested
    * region than the output requested regions to accommodate the shrinkage and
@@ -169,7 +169,7 @@ protected:
    * original documentation of this method is below.
    * \sa ProcessObject::GenerateInputRequestedRegion()
    */
-  // virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
+  virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyForwardUndecimated);
