@@ -49,7 +49,7 @@ class WaveletFrequencyForwardUndecimated:
 {
 public:
   /** Standard typenames typedefs. */
-  typedef WaveletFrequencyForwardUndecimated                         Self;
+  typedef WaveletFrequencyForwardUndecimated              Self;
   typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
