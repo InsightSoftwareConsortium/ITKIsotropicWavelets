@@ -54,7 +54,7 @@ WaveletFrequencyInverseUndecimated< TInputImage, TOutputImage,
 ::InputIndexToLevelBand(unsigned int linear_index)
 {
   return itk::utils::IndexToLevelBandSteerablePyramid(linear_index,
-      this->m_TotalOutputs, this->m_Levels, this->m_HighPassSubBands);
+      this->m_Levels, this->m_HighPassSubBands);
 }
 
 template< typename TInputImage,

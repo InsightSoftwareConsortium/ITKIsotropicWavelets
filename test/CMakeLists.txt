@@ -36,6 +36,7 @@ set(IsotropicWaveletsTests
     itkWaveletFrequencyInverseTest.cxx
     itkWaveletFrequencyForwardUndecimatedTest.cxx
     itkWaveletFrequencyInverseUndecimatedTest.cxx
+    itkWaveletUtilitiesTest.cxx
     # Phase Analysis
     itkPhaseAnalysisSoftThresholdImageFilterTest.cxx
     # Riesz / Monogenic
@@ -237,6 +238,10 @@ itk_add_test(NAME itkWaveletFrequencyInverseTest2DMultiLevelMultiBand
   5 5
   "Held"
   2)
+# WaveletUtilities
+itk_add_test(NAME itkWaveletUtilitiesTest
+  COMMAND IsotropicWaveletsTestDriver
+  itkWaveletUtilitiesTest)
 #### TODO move StructureTensorGeneralizedRiesz and RieszWavelet to examples/applications.
 set(DefaultWavelet Held)
 # StructureTensor and Generalized Riesz.
