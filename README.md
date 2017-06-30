@@ -12,6 +12,8 @@ Module (external) that adds Isotropic Wavelet analysis.
 
 ##TODO:
 
+- [x] Add Steerable Pyramid in the frequency domain.
+- [x] Add Undecimated Steerable Pyramid.
 - [x] Add Generalized Riesz Filter Bank of order N (smoothed derivatives)
 - [x] Add Steering framework (RieszRotationMatrix).
   - [NA] General case, U matrix from Chenouard, Unser.
@@ -22,10 +24,8 @@ Module (external) that adds Isotropic Wavelet analysis.
 - [x] Add Simoncelli, Shannon, Held and Vow Isotropoic Wavelets.
 - [x] Add Shrinker and Expander in spatial domain with no interpolation.
 - [x] Add StructureTensor.
-- [ ] Publish in InsightJournal about implementation and update handle.
-- [ ] Add simple test to every wavelet (Vow,Held, Simoncelli, Shannon), instead of relying on the implicit testing with the WaveletBankGenerator.
-- [ ] Report bug related to VNL with image size being multiple of 3 [21,21,9],
-but generating exception about invalid size. More info in the cmake file for tests.
+- [x] Publish in InsightJournal about implementation: http://www.insight-journal.org/browse/publication/986
+- [x] Add simple test to every wavelet (Vow,Held, Simoncelli, Shannon), instead of relying on the implicit testing with the WaveletBankGenerator.
 
 The work is inspired by the Monogenic Signal from literature, that uses
 wavelets and riesz filter to provide a multiscale denoise and segmentation
