@@ -26,7 +26,10 @@ template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyR
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator >
 ::WaveletFrequencyFilterBankGenerator()
   : m_HighPassSubBands(0),
-  m_InverseBank(false)
+  m_InverseBank(false),
+  m_Level(0),
+  m_ScaleFactor(2),
+  m_LevelFactor(1)
 {
   this->SetHighPassSubBands(1);
   m_WaveletFunction = TWaveletFunction::New();
@@ -60,6 +63,8 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
 
   os << indent << "HighPassSubBands: " << this->m_HighPassSubBands
      << indent << "InverseBank: " << (this->m_InverseBank ? "true" : "false")
+     << indent << "Level: " << this->m_Level
+     << indent << "LevelFactor: " << this->m_LevelFactor
      << std::endl;
 }
 
@@ -168,8 +173,8 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
     for ( unsigned int l = 0; l < m_HighPassSubBands + 1; ++l )
       {
       evaluatedSubBand = this->m_InverseBank ?
-        this->m_WaveletFunction->EvaluateInverseSubBand(w, l) :
-        this->m_WaveletFunction->EvaluateForwardSubBand(w, l);
+        this->m_WaveletFunction->EvaluateInverseSubBand(this->m_LevelFactor * w, l) :
+        this->m_WaveletFunction->EvaluateForwardSubBand(this->m_LevelFactor * w, l);
 
       outputItList[l].Set( outputItList[l].Get()
         + static_cast< typename OutputImageType::PixelType::value_type >(evaluatedSubBand));

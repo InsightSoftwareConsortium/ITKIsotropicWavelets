@@ -34,6 +34,9 @@ set(IsotropicWaveletsTests
     itkWaveletFrequencyFilterBankGeneratorDownsampleTest.cxx
     itkWaveletFrequencyForwardTest.cxx
     itkWaveletFrequencyInverseTest.cxx
+    itkWaveletFrequencyForwardUndecimatedTest.cxx
+    itkWaveletFrequencyInverseUndecimatedTest.cxx
+    itkWaveletUtilitiesTest.cxx
     # Phase Analysis
     itkPhaseAnalysisSoftThresholdImageFilterTest.cxx
     # Riesz / Monogenic
@@ -45,9 +48,8 @@ set(IsotropicWaveletsTests
     # TODO Wavelet + Riesz + PhaseAnalysis. This is not an unit test. Convert to example or application.
     itkRieszWaveletPhaseAnalysisTest.cxx
     itkStructureTensorWithGeneralizedRieszTest.cxx
-    # TODO add Steerable framework?
+    # Steerable Riesz Matrix
     itkRieszRotationMatrixTest.cxx
-
   )
 
 if(ITKVtkGlue_ENABLED)
@@ -172,6 +174,12 @@ itk_add_test(NAME itkWaveletFrequencyForwardTest2D
   itkWaveletFrequencyForwardTest DATA{Input/checkershadow_Lch_512x512.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyForwardTest2D.tiff
   1 1 "Held" 2)
+# Wavelet Forward Undecimated
+itk_add_test(NAME itkWaveletFrequencyForwardUndecimatedTest
+  COMMAND IsotropicWaveletsTestDriver
+  itkWaveletFrequencyForwardUndecimatedTest DATA{Input/collagen_64x64x16.tiff}
+  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyForwardUndecimatedTest.tiff
+  2 1 "Simoncelli" )
 
 #Wavelet Inverse
 itk_add_test(NAME itkWaveletFrequencyInverseTest
@@ -195,6 +203,19 @@ itk_add_test(NAME itkWaveletFrequencyInverseTestMultiLevelMultiBand
   2 5
   "Held"
   )
+# Wavelet Inverse Undecimated
+itk_add_test(NAME itkWaveletFrequencyInverseUndecimatedTest
+  COMMAND IsotropicWaveletsTestDriver
+    --compare DATA{Input/collagen_64x64x16.tiff}
+              ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseUndecimatedTest.tiff
+  itkWaveletFrequencyInverseUndecimatedTest
+  DATA{Input/collagen_64x64x16.tiff}
+  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseUndecimatedTest.tiff
+  2 1
+  "Held"
+  "noFilterBankPyramid"
+  3
+  )
 #2D
 itk_add_test(NAME itkWaveletFrequencyInverseTest2D
   COMMAND IsotropicWaveletsTestDriver
@@ -217,6 +238,10 @@ itk_add_test(NAME itkWaveletFrequencyInverseTest2DMultiLevelMultiBand
   5 5
   "Held"
   2)
+# WaveletUtilities
+itk_add_test(NAME itkWaveletUtilitiesTest
+  COMMAND IsotropicWaveletsTestDriver
+  itkWaveletUtilitiesTest)
 #### TODO move StructureTensorGeneralizedRiesz and RieszWavelet to examples/applications.
 set(DefaultWavelet Held)
 # StructureTensor and Generalized Riesz.
