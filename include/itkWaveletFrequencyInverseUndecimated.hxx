@@ -290,7 +290,6 @@ WaveletFrequencyInverseUndecimated< TInputImage, TOutputImage,
   InputImagePointer low_pass_per_level = duplicator->GetModifiableOutput();
 
   typedef itk::MultiplyImageFilter< InputImageType > MultiplyFilterType;
-
   double scaleFactor = static_cast< double >(this->m_ScaleFactor);
   for ( int level = this->m_Levels - 1; level > -1; --level )
     {
@@ -323,7 +322,16 @@ WaveletFrequencyInverseUndecimated< TInputImage, TOutputImage,
     multiplyLowPass->SetInput1(waveletLow);
     multiplyLowPass->SetInput2(low_pass_per_level);
     multiplyLowPass->Update();
-    low_pass_per_level = multiplyLowPass->GetOutput();
+
+    // Dilation factor for the approx image by one level.
+    typename MultiplyFilterType::Pointer multiplyByLevelFactor = MultiplyFilterType::New();
+    multiplyByLevelFactor->SetInput1(multiplyLowPass->GetOutput());
+    double expLevelFactor = static_cast< double >(ImageDimension ) / 2.0;
+    multiplyByLevelFactor->SetConstant(std::pow(scaleFactor, expLevelFactor));
+    multiplyByLevelFactor->InPlaceOn();
+    multiplyByLevelFactor->Update();
+
+    low_pass_per_level = multiplyByLevelFactor->GetOutput();
 
     /******* HighPass sub-bands *****/
     std::vector< InputImagePointer > highPassMasks;
@@ -376,7 +384,7 @@ WaveletFrequencyInverseUndecimated< TInputImage, TOutputImage,
       double expBandFactor = 0;
       if ( this->GetApplyReconstructionFactors() )
         {
-        expBandFactor = ( static_cast< double >(level) - band / static_cast< double >(this->m_HighPassSubBands) )
+        expBandFactor = ( static_cast< double >(level + 1) - band / static_cast< double >(this->m_HighPassSubBands) )
           * ImageDimension / 2.0;
         }
       multiplyByReconstructionBandFactor->SetConstant(std::pow(scaleFactor, expBandFactor));
