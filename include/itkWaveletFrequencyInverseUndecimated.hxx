@@ -290,7 +290,6 @@ WaveletFrequencyInverseUndecimated< TInputImage, TOutputImage,
   InputImagePointer low_pass_per_level = duplicator->GetModifiableOutput();
 
   typedef itk::MultiplyImageFilter< InputImageType > MultiplyFilterType;
-
   double scaleFactor = static_cast< double >(this->m_ScaleFactor);
   for ( int level = this->m_Levels - 1; level > -1; --level )
     {
@@ -323,6 +322,7 @@ WaveletFrequencyInverseUndecimated< TInputImage, TOutputImage,
     multiplyLowPass->SetInput1(waveletLow);
     multiplyLowPass->SetInput2(low_pass_per_level);
     multiplyLowPass->Update();
+
     low_pass_per_level = multiplyLowPass->GetOutput();
 
     /******* HighPass sub-bands *****/
@@ -376,7 +376,7 @@ WaveletFrequencyInverseUndecimated< TInputImage, TOutputImage,
       double expBandFactor = 0;
       if ( this->GetApplyReconstructionFactors() )
         {
-        expBandFactor = ( static_cast< double >(level) - band / static_cast< double >(this->m_HighPassSubBands) )
+        expBandFactor = - ( band / static_cast< double >(this->m_HighPassSubBands) )
           * ImageDimension / 2.0;
         }
       multiplyByReconstructionBandFactor->SetConstant(std::pow(scaleFactor, expBandFactor));
@@ -404,18 +404,30 @@ WaveletFrequencyInverseUndecimated< TInputImage, TOutputImage,
     addHighAndLow->InPlaceOn();
     addHighAndLow->Update();
 
+    // Dilation factor for reconstructed by one level.
+    typename MultiplyFilterType::Pointer multiplyByLevelFactor = MultiplyFilterType::New();
+    multiplyByLevelFactor->SetInput1(addHighAndLow->GetOutput());
+    double expLevelFactor = 0;
+    if ( this->GetApplyReconstructionFactors() )
+      {
+          expLevelFactor = static_cast< double >(ImageDimension ) / 2.0;
+      }
+    multiplyByLevelFactor->SetConstant(std::pow(scaleFactor, expLevelFactor));
+    multiplyByLevelFactor->InPlaceOn();
+    multiplyByLevelFactor->Update();
+
     if ( level == 0 /* Last level to compute */ ) // Graft Output
       {
       typedef itk::CastImageFilter< InputImageType, OutputImageType > CastFilterType;
       typename CastFilterType::Pointer castFilter = CastFilterType::New();
-      castFilter->SetInput(addHighAndLow->GetOutput());
+      castFilter->SetInput(multiplyByLevelFactor->GetOutput());
       castFilter->GraftOutput(this->GetOutput());
       castFilter->Update();
       this->GraftOutput(castFilter->GetOutput());
       }
     else // Update low_pass
       {
-      low_pass_per_level = addHighAndLow->GetOutput();
+      low_pass_per_level = multiplyByLevelFactor->GetOutput();
       }
     }
 }
