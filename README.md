@@ -1,12 +1,53 @@
 [![DOI](https://zenodo.org/badge/67762635.svg)](https://zenodo.org/badge/latestdoi/67762635)
 
-# ITKIsotropicWavelets
+# [IsotropicWavelets](https://github.com/phcerdan/ITKIsotropicWavelets)
 External Module for ITK, implementing Isotropic Wavelets and Riesz Filter for multiscale phase analysis.
 
+### Insight Journal: http://hdl.handle.net/10380/3558
+**Isotropic and Steerable Wavelets in N Dimensions. A multiresolution analysis framework.**
+
+This document describes the implementation of the external module ITKIsotropicWavelets, a multiresolution (MRA) analysis framework using isotropic and steerable wavelets in the frequency domain. This framework provides the backbone for state of the art filters for denoising, feature detection or phase analysis in N-dimensions. It focus on reusability, and highly decoupled modules for easy extension and implementation of new filters, and it contains a filter for multiresolution phase analysis,
+
+The backbone of the multi-scale analysis is provided by an isotropic band-limited wavelet pyramid, and the detection of directional features is provided by coupling the pyramid with a generalized Riesz transform.
+The generalized Riesz transform of order N behaves like a smoothed version of the Nth order derivatives of the signal. Also, it is steerable: its components impulse responses can be rotated to any spatial orientation, reducing computation time when detecting directional features.
+
+
+Cite with:
+```
+P. Hernandez-Cerdan, “Isotropic and Steerable Wavelets in N Dimensions. A multiresolution analysis framework”, Insight Journal, http://hdl.handle.net/10380/3558, 2017.
+```
+
+# Installation
+You need to [build ITK from source](https://itk.org/ITKSoftwareGuide/html/Book1/ITKSoftwareGuide-Book1ch2.html) to use this module.
+
+Since ITK version **4.13**, this module is available as a *Remote* module in the ITK source code. 
+Build it with the `cmake` option: `Module_IsotropicWavelet`, this can be switched on with a `cmake` graphical interface `ccmake` or directly from the command line with: `-DModule_IsotropicWavelet:BOOL=ON`
+
+For **older** ITK versions (>4.10 required if `BUILD_TEST=ON`), add it manually as an *External* or *Remote* module to the ITK source code.
+
+External:
+
+```
+cd ${ITK_SOURCE_CODE}/Modules/External
+git clone https://github.com/phcerdan/ITKIsotropicWavelets
+```
+
+Remote:
+
+Or create a file in `${ITK_SOURCE_CODE}/Modules/Remote` called `IsotropicWavelets.remote.cmake` (already there in ITK-4.13) with the content:
+```
+itk_fetch_module(IsotropicWavelets
+  "IsotropicWavelets Extenal Module."
+  GIT_REPOSITORY https://github.com/phcerdan/ITKIsotropicWavelets
+  GIT_TAG master
+  )
+```
+
+# Review process:
 Review in itk: http://review.source.kitware.com/#/c/21512/
 
-# Commit message:
-WIP: Add External Module IsotropicWavelets.
+## Commit message:
+ENH: Add External Module IsotropicWavelets.
 
 Module (external) that adds Isotropic Wavelet analysis.
 
