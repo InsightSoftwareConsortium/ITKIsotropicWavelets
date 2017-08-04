@@ -95,7 +95,7 @@ public:
   virtual void SetLevel(const unsigned int & level)
   {
     this->m_Level = level;
-    this->m_LevelFactor = std::pow(static_cast<double>(this->m_ScaleFactor),level);
+    this->m_LevelFactor = std::pow(static_cast<double>(this->m_ScaleFactor), static_cast<int>(level));
     this->Modified();
   }
 
