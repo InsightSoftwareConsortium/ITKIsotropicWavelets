@@ -1,3 +1,6 @@
+#python compiled
+*.pyc
+
 #KWSTYLE
 *.kws
 # Vim stuff
