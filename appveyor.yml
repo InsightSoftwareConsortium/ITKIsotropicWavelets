@@ -21,6 +21,6 @@ artifacts:
 
 deploy: off
 
-on_failure:
-  - appveyor PushArtifact _skbuild/cmake-build/CMakeFiles/CMakeOutput.log
+# on_finish:
+#   - appveyor PushArtifact _skbuild/cmake-build/CMakeFiles/CMakeOutput.log
 
