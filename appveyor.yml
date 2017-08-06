@@ -7,11 +7,12 @@ version: "0.0.1.{build}"
 install:
 
   - curl -L https://rawgit.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
-  - ps: .\windows-download-cache-and-build-module-wheels.ps1 
+  - ps: .\windows-download-cache-and-build-module-wheels.ps1
 
 build: off
 
 test: off
+
 
 artifacts:
 
@@ -19,3 +20,7 @@ artifacts:
   - path: dist\*
 
 deploy: off
+
+on_failure:
+  - appveyor PushArtifact _skbuild/cmake-build/CMakeFiles/CMakeOutput.log
+
