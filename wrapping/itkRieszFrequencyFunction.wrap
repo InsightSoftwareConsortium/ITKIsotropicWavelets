@@ -1,0 +1,13 @@
+itk_wrap_class("itk::RieszFrequencyFunction" POINTER)
+  foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    foreach(t ${WRAP_ITK_REAL})
+      if(ITK_WRAP_complex_float AND ITK_WRAP_float)
+        itk_wrap_template("${ITKM_C${t}}${d}${ITKM_PF${d}}" "${ITKT_C${t}}, ${d}, ${ITKT_PF${d}}")
+      endif(ITK_WRAP_complex_float AND ITK_WRAP_float)
+
+      if(ITK_WRAP_complex_double AND ITK_WRAP_double)
+        itk_wrap_template("${ITKM_C${t}}${d}${ITKM_PD${d}}" "${ITKT_C${t}}, ${d}, ${ITKT_PD${d}}")
+      endif(ITK_WRAP_complex_double AND ITK_WRAP_double)
+    endforeach()
+  endforeach()
+itk_end_wrap_class()
