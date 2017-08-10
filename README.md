@@ -18,6 +18,13 @@ P. Hernandez-Cerdan, “Isotropic and Steerable Wavelets in N Dimensions. A mult
 ```
 
 # Installation
+In `python`:
+
+```
+pip install itk-isotropicwavelets
+```
+In `c++`:
+
 You need to [build ITK from source](https://itk.org/ITKSoftwareGuide/html/Book1/ITKSoftwareGuide-Book1ch2.html) to use this module.
 
 Since ITK version **4.13**, this module is available as a *Remote* module in the ITK source code. 
@@ -194,6 +201,7 @@ itkFrequencyBandImageFilter.hxx
 ```
 
 ## Forward/Inverse Wavelet (ImageFilter, apply wavelet pyramid using generators)
+### Decimated
 
 ```
 itkWaveletFrequencyForward.h
@@ -201,6 +209,16 @@ itkWaveletFrequencyForward.hxx
 
 itkWaveletFrequencyInverse.h
 itkWaveletFrequencyInverse.hxx
+```
+
+### Undecimated
+
+```
+itkWaveletFrequencyForwardUndecimated.h
+itkWaveletFrequencyForwardUndecimated.hxx
+
+itkWaveletFrequencyInverseUndecimated.h
+itkWaveletFrequencyInverseUndecimated.hxx
 ```
 
 ## Wavelet independent:
