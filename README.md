@@ -1,5 +1,14 @@
 [![DOI](https://zenodo.org/badge/67762635.svg)](https://zenodo.org/badge/latestdoi/67762635)
 
+.. image:: https://circleci.com/gh/phcerdan/ITKIsotropicWavelets.svg?style=shield
+   :target: https://circleci.com/gh/phcerdan/ITKIsotropicWavelets
+
+.. image:: https://travis-ci.org/phcerdan/ITKIsotropicWavelets.svg?branch=master
+   :target: https://travis-ci.org/phcerdan/ITKIsotropicWavelets
+
+.. image:: https://img.shields.io/appveyor/ci/phcerdan/itksotropicwavelets.svg
+   :target: https://ci.appveyor.com/project/phcerdan/ITKIsotropicWavelets
+
 # [IsotropicWavelets](https://github.com/phcerdan/ITKIsotropicWavelets)
 External Module for ITK, implementing Isotropic Wavelets and Riesz Filter for multiscale phase analysis.
 
