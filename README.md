@@ -1,9 +1,6 @@
 [![DOI](https://zenodo.org/badge/67762635.svg)](https://zenodo.org/badge/latestdoi/67762635)
-
 [![CircleCI](https://circleci.com/gh/phcerdan/ITKIsotropicWavelets.svg?style=shield)](https://circleci.com/gh/phcerdan/ITKIsotropicWavelets)
-
 [![Travis CI](https://travis-ci.org/phcerdan/ITKIsotropicWavelets.svg?branch=master)](https://travis-ci.org/phcerdan/ITKIsotropicWavelets)
-
 [![AppVeyor](https://img.shields.io/appveyor/ci/phcerdan/itksotropicwavelets.svg)](https://ci.appveyor.com/project/phcerdan/ITKIsotropicWavelets)
 
 # [IsotropicWavelets](https://github.com/phcerdan/ITKIsotropicWavelets)
