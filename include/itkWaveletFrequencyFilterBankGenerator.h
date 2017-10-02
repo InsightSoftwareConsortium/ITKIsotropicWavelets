@@ -76,6 +76,9 @@ public:
   typedef typename WaveletFunctionType::Pointer           WaveletFunctionPointer;
   typedef typename WaveletFunctionType::FunctionValueType FunctionValueType;
 
+  typedef typename std::vector<OutputImagePointer> OutputsType;
+  // typedef typename itk::VectorContainer<int, OutputImagePointer> OutputsType;
+
   itkStaticConstMacro(ImageDimension, unsigned int, TOutputImage::ImageDimension);
 
   /** Number of M-Bands decomposition of the high pass filters */
@@ -110,10 +113,10 @@ public:
   OutputImagePointer GetOutputSubBand(unsigned int k);
 
   /** Returns all the outputs, starting at low-pass to highest subband*/
-  std::vector<OutputImagePointer> GetOutputsAll();
+  OutputsType GetOutputsAll();
 
   /** Returns all the high pass subbands in ascending order, but not the low pass*/
-  std::vector<OutputImagePointer> GetOutputsHighPassBands();
+  OutputsType GetOutputsHighPassBands();
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /// This ensure that OutputPixelType is complex<float||double>

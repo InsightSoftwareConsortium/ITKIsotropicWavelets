@@ -132,7 +132,10 @@ public:
   typedef itk::SymmetricEigenAnalysis<EigenMatrixType, EigenValuesType> SymmetricEigenAnalysisType;
   typedef GaussianImageSource< FloatImageType >                         GaussianSourceType;
 
-  void SetInputs(const std::vector<InputImagePointer> & inputs);
+  typedef typename std::vector<InputImagePointer> InputsType;
+  // typedef typename itk::VectorContainer<int, InputImagePointer> InputsType;
+  //
+  void SetInputs(const InputsType & inputs);
 
   /**
   * Set/Get Radius of the gaussian window.
@@ -202,7 +205,7 @@ private:
   unsigned int                         m_GaussianWindowRadius;
   FloatType                            m_GaussianWindowSigma;
   typename GaussianSourceType::Pointer m_GaussianSource;
-  std::vector<InputImagePointer>       m_SquareSmoothedImages;
+  InputsType                           m_SquareSmoothedImages;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION

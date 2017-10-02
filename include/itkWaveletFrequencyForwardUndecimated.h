@@ -62,6 +62,7 @@ public:
   typedef typename Superclass::InputImageConstPointer InputImageConstPointer;
 
   typedef typename std::vector<OutputImagePointer> OutputsType;
+  // typedef typename itk::VectorContainer<int, OutputImagePointer> OutputsType;
 
   typedef typename itk::ImageRegionIterator<OutputImageType>     OutputRegionIterator;
   typedef typename itk::ImageRegionConstIterator<InputImageType> InputRegionConstIterator;
@@ -109,7 +110,7 @@ public:
   itkGetMacro(StoreWaveletFilterBankPyramid, bool)
   itkBooleanMacro(StoreWaveletFilterBankPyramid);
 
-  itkGetMacro(WaveletFilterBankPyramid, std::vector<OutputImagePointer>);
+  itkGetMacro(WaveletFilterBankPyramid, OutputsType);
 
   /** Compute max number of levels depending on the size of the image.
    * Return J: $ J = \text{min_element}\{J_0,\ldots, J_d\} $;
@@ -174,13 +175,13 @@ protected:
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyForwardUndecimated);
 
-  unsigned int                    m_Levels;
-  unsigned int                    m_HighPassSubBands;
-  unsigned int                    m_TotalOutputs;
-  unsigned int                    m_ScaleFactor;
-  WaveletFilterBankPointer        m_WaveletFilterBank;
-  bool                            m_StoreWaveletFilterBankPyramid;
-  std::vector<OutputImagePointer> m_WaveletFilterBankPyramid;
+  unsigned int             m_Levels;
+  unsigned int             m_HighPassSubBands;
+  unsigned int             m_TotalOutputs;
+  unsigned int             m_ScaleFactor;
+  WaveletFilterBankPointer m_WaveletFilterBank;
+  bool                     m_StoreWaveletFilterBankPyramid;
+  OutputsType              m_WaveletFilterBankPyramid;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION

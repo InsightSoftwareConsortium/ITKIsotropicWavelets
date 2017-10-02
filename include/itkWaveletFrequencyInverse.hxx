@@ -110,7 +110,7 @@ template< typename TInputImage,
 void
 WaveletFrequencyInverse< TInputImage, TOutputImage,
   TWaveletFilterBank, TFrequencyExpandFilterType >
-::SetInputs(const std::vector< InputImagePointer > & inputs)
+::SetInputs(const InputsType & inputs)
 {
   if ( inputs.size() != this->m_TotalInputs )
     {
@@ -145,7 +145,7 @@ template< typename TInputImage,
 void
 WaveletFrequencyInverse< TInputImage, TOutputImage,
   TWaveletFilterBank, TFrequencyExpandFilterType >
-::SetInputsHighPass(const std::vector< InputImagePointer > & inputs)
+::SetInputsHighPass(const InputsType & inputs)
 {
   if ( inputs.size() != this->m_TotalInputs - 1 )
     {
@@ -405,7 +405,7 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
     low_pass_per_level = multiplyLowPass->GetOutput();
 
     /******* HighPass sub-bands *****/
-    std::vector< InputImagePointer > highPassMasks;
+    InputsType highPassMasks;
     if ( !this->m_UseWaveletFilterBankPyramid )
       {
       highPassMasks = this->m_WaveletFilterBank->GetOutputsHighPassBands();
