@@ -166,6 +166,11 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
   inverseFFT2->SetInput(shrinkViaInverseFFTFilter->GetOutput());
   inverseFFT2->Update();
 
+#ifdef ITK_VISUALIZE_TESTS
+  itk::Testing::ViewImage( zeroDCFilter->GetOutput(), "Original" );
+  itk::Testing::ViewImage( inverseFFT1->GetOutput(), "ExpandAndShrink via frequency manipulation" );
+#endif
+
   // Comparison
   // Via direct frequency manipulation.
   typedef itk::Testing::ComparisonImageFilter< ImageType, ImageType >
@@ -189,6 +194,9 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
     }
 
   // Via inverseFFT and spatial domain manipulation.
+#ifdef ITK_VISUALIZE_TESTS
+  itk::Testing::ViewImage( inverseFFT2->GetOutput(), "ExpandAndShrink ViaInverseFFT" );
+#endif
   differenceFilter->SetTestInput( inverseFFT2->GetOutput() );
   differenceFilter->Update();
   numberOfDiffPixels = differenceFilter->GetNumberOfPixelsWithDifferences();
@@ -201,11 +209,6 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
     testPassed = false;
     }
 
-#ifdef ITK_VISUALIZE_TESTS
-  itk::Testing::ViewImage( zeroDCFilter->GetOutput(), "Original" );
-  itk::Testing::ViewImage( inverseFFT1->GetOutput(), "ExpandAndShrink via frequency manipulation" );
-  itk::Testing::ViewImage( inverseFFT2->GetOutput(), "ExpandAndShrink ViaInverseFFT" );
-#endif
 
   // Write output
   typedef itk::Image< float, Dimension >                    FloatImageType;
