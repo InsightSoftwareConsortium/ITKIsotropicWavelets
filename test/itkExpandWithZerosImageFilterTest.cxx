@@ -162,7 +162,7 @@ itkExpandWithZerosImageFilterTest( int argc, char *argv[] )
     return EXIT_FAILURE;
     }
 
-  const unsigned int ImageDimension = 2;
+  constexpr unsigned int ImageDimension = 2;
   typedef double                                  PixelType;
   typedef itk::Image< PixelType, ImageDimension > ImageType;
 
