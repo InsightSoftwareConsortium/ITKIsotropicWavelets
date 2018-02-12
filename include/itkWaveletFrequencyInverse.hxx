@@ -345,7 +345,7 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
 
   typedef itk::MultiplyImageFilter< InputImageType > MultiplyFilterType;
 
-  double scaleFactor = static_cast< double >(this->m_ScaleFactor);
+  auto scaleFactor = static_cast< double >(this->m_ScaleFactor);
   for ( int level = this->m_Levels - 1; level > -1; --level )
     {
     itkDebugMacro( << "LEVEL: " << level );
@@ -358,7 +358,7 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
 
     typename MultiplyFilterType::Pointer multiplyUpsampleCorrection = MultiplyFilterType::New();
     multiplyUpsampleCorrection->SetInput1(expandFilter->GetOutput());
-    double expUpsampleCorrection = static_cast< double >(ImageDimension);
+    auto expUpsampleCorrection = static_cast< double >(ImageDimension);
     multiplyUpsampleCorrection->SetConstant(std::pow(scaleFactor, expUpsampleCorrection));
     multiplyUpsampleCorrection->InPlaceOn();
     multiplyUpsampleCorrection->Update();

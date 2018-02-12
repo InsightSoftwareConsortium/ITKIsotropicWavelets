@@ -107,10 +107,10 @@ int itkPhaseAnalysisSoftThresholdImageFilterTest( int argc, char* argv[] )
   EXERCISE_BASIC_OBJECT_METHODS( phaseAnalyzer, PhaseAnalysisSoftThresholdImageFilter,
     PhaseAnalysisImageFilter );
 
-  bool applySoftThreshold = static_cast< bool >( atoi( argv[3] ) );
+  auto applySoftThreshold = static_cast< bool >( atoi( argv[3] ) );
   TEST_SET_GET_BOOLEAN( phaseAnalyzer, ApplySoftThreshold, applySoftThreshold );
 
-  PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType numOfSigmas =
+  auto numOfSigmas =
     static_cast< PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType >( atof( argv[4] ) );
   phaseAnalyzer->SetNumOfSigmas( numOfSigmas );
   TEST_SET_GET_VALUE( numOfSigmas, phaseAnalyzer->GetNumOfSigmas() );
@@ -121,7 +121,7 @@ int itkPhaseAnalysisSoftThresholdImageFilterTest( int argc, char* argv[] )
 
 
   // Regression tests
-  PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType expectedMeanAmp =
+  auto expectedMeanAmp =
     static_cast< PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType >( atof( argv[5] ) );
   PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType computedMeanAmp =
     phaseAnalyzer->GetMeanAmp();
@@ -136,7 +136,7 @@ int itkPhaseAnalysisSoftThresholdImageFilterTest( int argc, char* argv[] )
     // testStatus = EXIT_FAILURE;
     }
 
-  PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType expectedSigmaAmp =
+  auto expectedSigmaAmp =
     static_cast< PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType >( atof( argv[6] ) );
   PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType computedSigmaAmp =
     phaseAnalyzer->GetSigmaAmp();
@@ -150,7 +150,7 @@ int itkPhaseAnalysisSoftThresholdImageFilterTest( int argc, char* argv[] )
     // testStatus = EXIT_FAILURE;
     }
 
-  PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType expectedThreshold =
+  auto expectedThreshold =
     static_cast< PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType >( atof( argv[7] ) );
   PhaseAnalysisSoftThresholdFilterType::OutputImagePixelType computedThreshold =
     phaseAnalyzer->GetThreshold();

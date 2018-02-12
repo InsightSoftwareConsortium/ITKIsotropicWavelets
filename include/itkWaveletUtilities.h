@@ -72,7 +72,7 @@ unsigned int ComputeMaxNumberOfLevels(const Size< VImageDimension >& inputSize, 
     else
       {
       // increase valid levels until the division size/scale_factor gives a non-integer.
-      double sizeAtLevel = static_cast<double>(sizeAxis);
+      auto sizeAtLevel = static_cast<double>(sizeAxis);
       for (;;)
         {
         double division = sizeAtLevel / static_cast<double>(scaleFactor);
