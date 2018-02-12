@@ -287,9 +287,9 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
     }
 
   // compute baseIndex and baseSize
-  typedef typename OutputImageType::SizeType   SizeType;
-  typedef typename OutputImageType::IndexType  IndexType;
-  typedef typename OutputImageType::RegionType RegionType;
+  using SizeType = typename OutputImageType::SizeType;
+  using IndexType = typename OutputImageType::IndexType;
+  using RegionType = typename OutputImageType::RegionType;
 
   // All the levels and subbands have the same size.
   // At least one band is ensured to exist, so use it.
@@ -321,12 +321,12 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
   // note: clear reduces size to zero, but doesn't change capacity.
   m_WaveletFilterBankPyramid.clear();
 
-  typedef itk::CastImageFilter< InputImageType, OutputImageType > CastFilterType;
+  using CastFilterType = itk::CastImageFilter< InputImageType, OutputImageType >;
   typename CastFilterType::Pointer castFilter = CastFilterType::New();
   castFilter->SetInput(input);
   castFilter->Update();
   OutputImagePointer inputPerLevel = castFilter->GetOutput();
-  typedef itk::ChangeInformationImageFilter< OutputImageType > ChangeInformationFilterType;
+  using ChangeInformationFilterType = itk::ChangeInformationImageFilter< OutputImageType >;
   typename ChangeInformationFilterType::Pointer changeInputInfoFilter = ChangeInformationFilterType::New();
   typename InputImageType::PointType origin_old  = inputPerLevel->GetOrigin();
   typename InputImageType::SpacingType spacing_old = inputPerLevel->GetSpacing();
@@ -359,7 +359,7 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
       }
     }
 
-  typedef itk::MultiplyImageFilter< OutputImageType > MultiplyFilterType;
+  using MultiplyFilterType = itk::MultiplyImageFilter< OutputImageType >;
   inputPerLevel = changeInputInfoFilter->GetOutput();
   auto scaleFactor = static_cast< double >(this->m_ScaleFactor);
   for ( unsigned int level = 0; level < this->m_Levels; ++level )

@@ -279,7 +279,7 @@ WaveletFrequencyForward< TInputImage, TOutputImage,
       // Spacing
       inputSpacingPerLevel[idim] = inputSpacingPerLevel[idim] * this->m_ScaleFactor;
       // Origin, the same.
-      // inputOriginPerLevel[idim] = inputOriginPerLevel[idim] ;
+      // inputOriginPerLevel[idim] = inputOriginPerLevel[idim];
       // inputOriginPerLevel[idim] = inputOriginPerLevel[idim] / this->m_ScaleFactor;
       }
 
@@ -322,9 +322,9 @@ WaveletFrequencyForward< TInputImage, TOutputImage,
   // unsigned int refBand  = pairRef.second;
 
   // compute baseIndex and baseSize
-  typedef typename OutputImageType::SizeType   SizeType;
-  typedef typename OutputImageType::IndexType  IndexType;
-  typedef typename OutputImageType::RegionType RegionType;
+  using SizeType = typename OutputImageType::SizeType;
+  using IndexType = typename OutputImageType::IndexType;
+  using RegionType = typename OutputImageType::RegionType;
 
   auto *ptr = itkDynamicCastInDebugMode< TOutputImage * >(refOutput);
   if ( !ptr )
@@ -435,9 +435,9 @@ WaveletFrequencyForward< TInputImage, TOutputImage,
     }
 
   // compute baseIndex and baseSize
-  typedef typename OutputImageType::SizeType   SizeType;
-  typedef typename OutputImageType::IndexType  IndexType;
-  typedef typename OutputImageType::RegionType RegionType;
+  using SizeType = typename OutputImageType::SizeType;
+  using IndexType = typename OutputImageType::IndexType;
+  using RegionType = typename OutputImageType::RegionType;
 
   // The first level has the same size than input.
   // At least one band is ensured to exist, so use it.
@@ -473,12 +473,12 @@ WaveletFrequencyForward< TInputImage, TOutputImage,
   // note: clear reduces size to zero, but doesn't change capacity.
   m_WaveletFilterBankPyramid.clear();
 
-  typedef itk::CastImageFilter< InputImageType, OutputImageType > CastFilterType;
+  using CastFilterType = itk::CastImageFilter< InputImageType, OutputImageType >;
   typename CastFilterType::Pointer castFilter = CastFilterType::New();
   castFilter->SetInput(input);
   castFilter->Update();
   OutputImagePointer inputPerLevel = castFilter->GetOutput();
-  typedef itk::ChangeInformationImageFilter< OutputImageType > ChangeInformationFilterType;
+  using ChangeInformationFilterType = itk::ChangeInformationImageFilter< OutputImageType >;
   typename ChangeInformationFilterType::Pointer changeInputInfoFilter = ChangeInformationFilterType::New();
   typename InputImageType::PointType origin_old  = inputPerLevel->GetOrigin();
   typename InputImageType::SpacingType spacing_old = inputPerLevel->GetSpacing();
@@ -513,10 +513,10 @@ WaveletFrequencyForward< TInputImage, TOutputImage,
 
   // TODO think about passing the FrequencyShrinker as template parameter to work with different FFT layout, or
   // regular images directly in frequency domain.
-  // typedef itk::FrequencyShrinkViaInverseFFTImageFilter<OutputImageType> LocalFrequencyShrinkFilterType;
-  typedef itk::FrequencyShrinkImageFilter< OutputImageType >                 LocalFrequencyShrinkFilterType;
-  typedef itk::ShrinkDecimateImageFilter< OutputImageType, OutputImageType > ShrinkDecimateFilterType;
-  typedef itk::MultiplyImageFilter< OutputImageType >                        MultiplyFilterType;
+  // using LocalFrequencyShrinkFilterType = itk::FrequencyShrinkViaInverseFFTImageFilter<OutputImageType>;
+  using LocalFrequencyShrinkFilterType = itk::FrequencyShrinkImageFilter< OutputImageType >;
+  using ShrinkDecimateFilterType = itk::ShrinkDecimateImageFilter< OutputImageType, OutputImageType >;
+  using MultiplyFilterType = itk::MultiplyImageFilter< OutputImageType >;
   inputPerLevel = changeInputInfoFilter->GetOutput();
   auto scaleFactor = static_cast< double >(this->m_ScaleFactor);
   for ( unsigned int level = 0; level < this->m_Levels; ++level )

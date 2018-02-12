@@ -47,30 +47,30 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
 
-  typedef double                             PixelType;
-  typedef itk::Image< PixelType, Dimension > ImageType;
-  typedef itk::ImageFileReader< ImageType >  ReaderType;
+  using PixelType = double;
+  using ImageType = itk::Image< PixelType, Dimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
   reader->Update();
 
   // Calculate mean value and subtract
-  typedef itk::ZeroDCImageFilter< ImageType > ZeroDCFilterType;
+  using ZeroDCFilterType = itk::ZeroDCImageFilter< ImageType >;
   typename ZeroDCFilterType::Pointer zeroDCFilter = ZeroDCFilterType::New();
   zeroDCFilter->SetInput( reader->GetOutput() );
   zeroDCFilter->Update();
 
   // Perform FFT on input image.
-  typedef itk::ForwardFFTImageFilter< ImageType > FFTFilterType;
+  using FFTFilterType = itk::ForwardFFTImageFilter< ImageType >;
   typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   // fftFilter->SetInput(subtractFilter->GetOutput());
   fftFilter->SetInput( zeroDCFilter->GetOutput() );
 
-  typedef typename FFTFilterType::OutputImageType ComplexImageType;
+  using ComplexImageType = typename FFTFilterType::OutputImageType;
 
   // ExpandFrequency
-  typedef itk::FrequencyExpandImageFilter< ComplexImageType > ExpandType;
+  using ExpandType = itk::FrequencyExpandImageFilter< ComplexImageType >;
   typename ExpandType::Pointer expandFilter = ExpandType::New();
   expandFilter->SetInput( fftFilter->GetOutput() );
 
@@ -106,7 +106,7 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
     }
 
   // InverseFFT
-  typedef itk::InverseFFTImageFilter< ComplexImageType, ImageType > InverseFFTFilterType;
+  using InverseFFTFilterType = itk::InverseFFTImageFilter< ComplexImageType, ImageType >;
   typename InverseFFTFilterType::Pointer inverseFFT = InverseFFTFilterType::New();
   inverseFFT->SetInput( expandFilter->GetOutput() );
   inverseFFT->Update();
@@ -143,7 +143,7 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
     // Check that complex part is almost 0 after FFT and complex inverse FFT.
       {
       std::cout << "Even Image?: " << imageIsEven << std::endl;
-      typedef itk::ComplexToComplexFFTImageFilter< ComplexImageType > ComplexFFTType;
+      using ComplexFFTType = itk::ComplexToComplexFFTImageFilter< ComplexImageType >;
       typename ComplexFFTType::Pointer complexInverseFFT = ComplexFFTType::New();
       complexInverseFFT->SetTransformDirection(ComplexFFTType::INVERSE);
       complexInverseFFT->SetInput(fftFilter->GetOutput());
@@ -179,7 +179,7 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
       }
     // Check that complex part is almost 0 filter is correct after expand
       {
-      typedef itk::ComplexToComplexFFTImageFilter< ComplexImageType > ComplexFFTType;
+      using ComplexFFTType = itk::ComplexToComplexFFTImageFilter< ComplexImageType >;
       typename ComplexFFTType::Pointer complexInverseFFT = ComplexFFTType::New();
       complexInverseFFT->SetTransformDirection(ComplexFFTType::INVERSE);
       complexInverseFFT->SetInput(expandFilter->GetOutput());
@@ -215,13 +215,13 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
     }
 
   // Write output
-  typedef itk::Image< float, Dimension >                    FloatImageType;
-  typedef itk::CastImageFilter< ImageType, FloatImageType > CastType;
+  using FloatImageType = itk::Image< float, Dimension >;
+  using CastType = itk::CastImageFilter< ImageType, FloatImageType >;
   typename CastType::Pointer castFilter = CastType::New();
 
   castFilter->SetInput( inverseFFT->GetOutput() );
 
-  typedef itk::ImageFileWriter< FloatImageType > WriterType;
+  using WriterType = itk::ImageFileWriter< FloatImageType >;
   typename WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputImage );
 
@@ -233,7 +233,7 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
   itk::Testing::ViewImage( zeroDCFilter->GetOutput(), "Original" );
   itk::Testing::ViewImage( inverseFFT->GetOutput(), "FrequencyExpander" );
   // Compare with regular expand filter.
-  typedef itk::ExpandWithZerosImageFilter< ImageType, ImageType > RegularExpandType;
+  using RegularExpandType = itk::ExpandWithZerosImageFilter< ImageType, ImageType >;
   typename RegularExpandType::Pointer regularExpandFilter = RegularExpandType::New();
   regularExpandFilter->SetInput( reader->GetOutput() );
   regularExpandFilter->SetExpandFactors( 2 );
@@ -241,7 +241,7 @@ runFrequencyExpandTest(const std::string & inputImage, const std::string & outpu
   itk::Testing::ViewImage( regularExpandFilter->GetOutput(), "Regular expander (adding zeros)" );
 
   // Complex to real
-  // typedef itk::ComplexToRealImageFilter<ComplexImageType, ImageType> ComplexToRealFilter;
+  // using ComplexToRealFilter = itk::ComplexToRealImageFilter<ComplexImageType, ImageType>;
   // ComplexToRealFilter::Pointer complexToRealFilter = ComplexToRealFilter::New();
   // complexToRealFilter->SetInput(fftFilter->GetOutput() );
   // complexToRealFilter->Update();
@@ -275,16 +275,15 @@ itkFrequencyExpandTest( int argc, char* argv[] )
   const std::string outputImage = argv[2];
 
   constexpr unsigned int ImageDimension = 3;
-  typedef double                                  PixelType;
-  typedef itk::Image< PixelType, ImageDimension > ImageType;
-  typedef itk::ForwardFFTImageFilter< ImageType > FFTFilterType;
-  typedef FFTFilterType::OutputImageType          ComplexImageType;
+  using PixelType = double;
+  using ImageType = itk::Image< PixelType, ImageDimension >;
+  using FFTFilterType = itk::ForwardFFTImageFilter< ImageType >;
+  using ComplexImageType = FFTFilterType::OutputImageType;
 
   // Exercise basic object methods
   // Done outside the helper function in the test because GCC is limited
   // when calling overloaded base class functions.
-  typedef itk::FrequencyExpandImageFilter< ComplexImageType >
-    FrequencyExpandImageFilterType;
+  using FrequencyExpandImageFilterType = itk::FrequencyExpandImageFilter< ComplexImageType >;
   FrequencyExpandImageFilterType::Pointer expandFilter =
     FrequencyExpandImageFilterType::New();
 

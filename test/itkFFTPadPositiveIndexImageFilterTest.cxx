@@ -37,13 +37,13 @@ int itkFFTPadPositiveIndexImageFilterTest( int argc, char * argv[] )
     }
 
   constexpr unsigned int Dimension = 2;
-  typedef unsigned char                       PixelType;
-  typedef itk::Image< PixelType,  Dimension > ImageType;
+  using PixelType = unsigned char;
+  using ImageType = itk::Image< PixelType,  Dimension >;
 
   // Readers, writers and filter typdefs
-  typedef itk::ImageFileReader< ImageType  >               ReaderType;
-  typedef itk::ImageFileWriter< ImageType >                WriterType;
-  typedef itk::FFTPadPositiveIndexImageFilter< ImageType > FFTPadType;
+  using ReaderType = itk::ImageFileReader< ImageType  >;
+  using WriterType = itk::ImageFileWriter< ImageType >;
+  using FFTPadType = itk::FFTPadPositiveIndexImageFilter< ImageType >;
 
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );

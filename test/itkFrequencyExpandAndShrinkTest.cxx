@@ -54,38 +54,38 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
 
-  typedef double                             PixelType;
-  typedef itk::Image< PixelType, Dimension > ImageType;
-  typedef itk::ImageFileReader< ImageType >  ReaderType;
+  using PixelType = double;
+  using ImageType = itk::Image< PixelType, Dimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
   reader->Update();
 
   // Calculate mean value and subtract
-  typedef itk::ZeroDCImageFilter< ImageType > ZeroDCFilterType;
+  using ZeroDCFilterType = itk::ZeroDCImageFilter< ImageType >;
   typename ZeroDCFilterType::Pointer zeroDCFilter = ZeroDCFilterType::New();
   zeroDCFilter->SetInput( reader->GetOutput() );
   zeroDCFilter->Update();
 
   // Perform FFT on input image.
-  typedef itk::ForwardFFTImageFilter< ImageType > FFTFilterType;
+  using FFTFilterType = itk::ForwardFFTImageFilter< ImageType >;
   typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput(zeroDCFilter->GetOutput());
   fftFilter->Update();
 
-  typedef typename FFTFilterType::OutputImageType                   ComplexImageType;
-  typedef itk::InverseFFTImageFilter< ComplexImageType, ImageType > InverseFFTFilterType;
+  using ComplexImageType = typename FFTFilterType::OutputImageType;
+  using InverseFFTFilterType = itk::InverseFFTImageFilter< ComplexImageType, ImageType >;
   size_t resizeFactor = 2;
 
   /*********** EXPAND ***************/
-  typedef itk::FrequencyExpandImageFilter< ComplexImageType > ExpandType;
+  using ExpandType = itk::FrequencyExpandImageFilter< ComplexImageType >;
   typename ExpandType::Pointer expandFilter = ExpandType::New();
   expandFilter->SetInput(fftFilter->GetOutput());
   expandFilter->SetExpandFactors(resizeFactor);
   expandFilter->Update();
 
-  typedef itk::FrequencyExpandViaInverseFFTImageFilter< ComplexImageType > ExpandViaInverseFFTType;
+  using ExpandViaInverseFFTType = itk::FrequencyExpandViaInverseFFTImageFilter< ComplexImageType >;
   typename ExpandViaInverseFFTType::Pointer expandViaInverseFFTFilter = ExpandViaInverseFFTType::New();
   expandViaInverseFFTFilter->SetInput(fftFilter->GetOutput());
 
@@ -111,14 +111,14 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
 // #endif
 
   /*********** SHRINK ***************/
-  typedef itk::FrequencyShrinkImageFilter< ComplexImageType > ShrinkType;
+  using ShrinkType = itk::FrequencyShrinkImageFilter< ComplexImageType >;
   typename ShrinkType::Pointer shrinkFilter = ShrinkType::New();
   shrinkFilter->SetInput(expandFilter->GetOutput());
   shrinkFilter->SetShrinkFactors(resizeFactor);
 
   TRY_EXPECT_NO_EXCEPTION( shrinkFilter->Update() );
 
-  typedef itk::FrequencyShrinkViaInverseFFTImageFilter< ComplexImageType > ShrinkViaInverseFFTType;
+  using ShrinkViaInverseFFTType = itk::FrequencyShrinkViaInverseFFTImageFilter< ComplexImageType >;
   typename ShrinkViaInverseFFTType::Pointer shrinkViaInverseFFTFilter = ShrinkViaInverseFFTType::New();
   shrinkViaInverseFFTFilter->SetInput(expandViaInverseFFTFilter->GetOutput());
 
@@ -168,8 +168,7 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
 
   // Comparison
   // Via direct frequency manipulation.
-  typedef itk::Testing::ComparisonImageFilter< ImageType, ImageType >
-    DifferenceFilterType;
+  using DifferenceFilterType = itk::Testing::ComparisonImageFilter< ImageType, ImageType >;
   typename DifferenceFilterType::Pointer differenceFilter =
     DifferenceFilterType::New();
   differenceFilter->SetToleranceRadius( 0 );
@@ -208,12 +207,12 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
 #endif
 
   // Write output
-  typedef itk::Image< float, Dimension >                    FloatImageType;
-  typedef itk::CastImageFilter< ImageType, FloatImageType > CastType;
+  using FloatImageType = itk::Image< float, Dimension >;
+  using CastType = itk::CastImageFilter< ImageType, FloatImageType >;
   typename CastType::Pointer castFilter = CastType::New();
   castFilter->SetInput( inverseFFT2->GetOutput() );
 
-  typedef itk::ImageFileWriter< FloatImageType > WriterType;
+  using WriterType = itk::ImageFileWriter< FloatImageType >;
   typename WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputImage );
   writer->SetInput( castFilter->GetOutput() );
@@ -242,24 +241,22 @@ itkFrequencyExpandAndShrinkTest( int argc, char* argv[] )
   const std::string outputImage = argv[2];
 
   constexpr unsigned int ImageDimension = 3;
-  typedef double                                  PixelType;
-  typedef itk::Image< PixelType, ImageDimension > ImageType;
-  typedef itk::ForwardFFTImageFilter< ImageType > FFTFilterType;
-  typedef FFTFilterType::OutputImageType          ComplexImageType;
+  using PixelType = double;
+  using ImageType = itk::Image< PixelType, ImageDimension >;
+  using FFTFilterType = itk::ForwardFFTImageFilter< ImageType >;
+  using ComplexImageType = FFTFilterType::OutputImageType;
 
   // Exercise basic object methods
   // Done outside the helper function in the test because GCC is limited
   // when calling overloaded base class functions.
-  typedef itk::FrequencyExpandViaInverseFFTImageFilter< ComplexImageType >
-    ExpandViaInverseFFTType;
+  using ExpandViaInverseFFTType = itk::FrequencyExpandViaInverseFFTImageFilter< ComplexImageType >;
   ExpandViaInverseFFTType::Pointer expandViaInverseFFTFilter =
     ExpandViaInverseFFTType::New();
 
   EXERCISE_BASIC_OBJECT_METHODS( expandViaInverseFFTFilter,
     FrequencyExpandViaInverseFFTImageFilter, ImageToImageFilter );
 
-  typedef itk::FrequencyShrinkViaInverseFFTImageFilter< ComplexImageType >
-    ShrinkViaInverseFFTType;
+  using ShrinkViaInverseFFTType = itk::FrequencyShrinkViaInverseFFTImageFilter< ComplexImageType >;
   ShrinkViaInverseFFTType::Pointer shrinkViaInverseFFTFilter =
     ShrinkViaInverseFFTType::New();
 

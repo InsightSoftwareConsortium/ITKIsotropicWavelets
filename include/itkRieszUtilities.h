@@ -103,7 +103,7 @@ std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >
 ComputeAllPermutations(
   const std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > & uniqueIndices)
 {
-  typedef std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > SetType;
+  using SetType = std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >;
   SetType out;
   for ( auto it = uniqueIndices.begin(); it != uniqueIndices.end(); ++it )
     {
@@ -127,7 +127,7 @@ template< typename TIndicesArrayType, unsigned int VImageDimension >
 std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >
 ComputeAllPossibleIndices(const unsigned int & order)
 {
-  typedef std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > SetType;
+  using SetType = std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >;
   SetType uniqueIndices;
   TIndicesArrayType index(VImageDimension);
   index[0] = order;

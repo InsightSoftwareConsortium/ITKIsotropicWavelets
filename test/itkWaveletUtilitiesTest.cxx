@@ -60,7 +60,7 @@ bool testComputeMaxNumberOfLevels()
   constexpr unsigned int Dimension = 3;
 
   unsigned int scaleFactor = 2;
-  typedef itk::Size<Dimension> SizeType;
+  using SizeType = itk::Size<Dimension>;
   SizeType inputSize;
   inputSize.Fill(12);
   unsigned int expected = 3;

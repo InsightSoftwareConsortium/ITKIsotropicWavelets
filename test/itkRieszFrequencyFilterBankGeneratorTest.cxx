@@ -47,9 +47,9 @@ itkRieszFrequencyFilterBankGeneratorTest( int argc, char* argv[] )
   const std::string outputImage = argv[2];
 
   constexpr unsigned int Dimension = 3;
-  typedef double                             PixelType;
-  typedef itk::Image< PixelType, Dimension > ImageType;
-  typedef itk::ImageFileReader< ImageType >  ReaderType;
+  using PixelType = double;
+  using ImageType = itk::Image< PixelType, Dimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
 
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(inputImage);
@@ -57,15 +57,15 @@ itkRieszFrequencyFilterBankGeneratorTest( int argc, char* argv[] )
   reader->UpdateLargestPossibleRegion();
 
   // Perform FFT on input image
-  typedef itk::ForwardFFTImageFilter< ImageType > FFTFilterType;
+  using FFTFilterType = itk::ForwardFFTImageFilter< ImageType >;
   FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput( reader->GetOutput() );
   fftFilter->Update();
 
-  typedef FFTFilterType::OutputImageType ComplexImageType;
+  using ComplexImageType = FFTFilterType::OutputImageType;
 
-  // typedef itk::RieszFrequencyFunction<> FunctionType;
-  typedef itk::RieszFrequencyFilterBankGenerator< ComplexImageType > RieszFilterBankType;
+  // using FunctionType = itk::RieszFrequencyFunction<>;
+  using RieszFilterBankType = itk::RieszFrequencyFilterBankGenerator< ComplexImageType >;
   RieszFilterBankType::Pointer filterBank = RieszFilterBankType::New();
 
   EXERCISE_BASIC_OBJECT_METHODS( filterBank, RieszFrequencyFilterBankGenerator, GenerateImageSource );
@@ -83,14 +83,14 @@ itkRieszFrequencyFilterBankGeneratorTest( int argc, char* argv[] )
   TRY_EXPECT_NO_EXCEPTION( filterBank->Update() );
 
   // Get iterator to Indices of RieszFunction.
-  typedef RieszFilterBankType::RieszFunctionType::SetType IndicesType;
+  using IndicesType = RieszFilterBankType::RieszFunctionType::SetType;
   IndicesType indices = filterBank->GetModifiableEvaluator()->GetIndices();
   auto indicesIt = indices.begin();
 
   // Get real part of complex image for visualization
-  typedef itk::ComplexToRealImageFilter< ComplexImageType, ImageType > ComplexToRealFilter;
+  using ComplexToRealFilter = itk::ComplexToRealImageFilter< ComplexImageType, ImageType >;
   ComplexToRealFilter::Pointer complexToRealFilter = ComplexToRealFilter::New();
-  typedef itk::ComplexToImaginaryImageFilter< ComplexImageType, ImageType > ComplexToImaginaryFilter;
+  using ComplexToImaginaryFilter = itk::ComplexToImaginaryImageFilter< ComplexImageType, ImageType >;
   ComplexToImaginaryFilter::Pointer complexToImaginaryFilter = ComplexToImaginaryFilter::New();
   std::cout << "Order: " << inputOrder << std::endl;
   bool orderIsEven = (inputOrder % 2 == 0);

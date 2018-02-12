@@ -40,10 +40,10 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
   bool testPassed = true;
   const unsigned int Dimension = VDimension;
 
-  typedef std::complex< double >                           OutputType;
-  typedef itk::Point< itk::SpacePrecisionType, Dimension > InputType;
+  using OutputType = std::complex< double >;
+  using InputType = itk::Point< itk::SpacePrecisionType, Dimension >;
 
-  typedef itk::RieszFrequencyFunction< OutputType, Dimension, InputType > RieszFrequencyFunctionType;
+  using RieszFrequencyFunctionType = itk::RieszFrequencyFunction< OutputType, Dimension, InputType >;
   typename RieszFrequencyFunctionType::Pointer rieszFunction =
     RieszFrequencyFunctionType::New();
 
@@ -74,7 +74,7 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
   typename RieszFrequencyFunctionType::IndicesArrayType initIndex;
   initIndex.resize(Dimension);
   initIndex[0] = inputOrder;
-  typedef typename RieszFrequencyFunctionType::SetType SetType;
+  using SetType = typename RieszFrequencyFunctionType::SetType;
   SetType uniqueIndices;
   unsigned int positionToStartProcessing = 0;
   RieszFrequencyFunctionType::ComputeUniqueIndices(initIndex, uniqueIndices, positionToStartProcessing);
@@ -107,7 +107,7 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
   if ( actualNumberOfComponents != expectedNumberOfComponents )
     {
     std::cerr << "Error. NumberOfComponents for inputOrder: " << inputOrder
-              << " ; actual: " << actualNumberOfComponents
+              << "; actual: " << actualNumberOfComponents
               << " expected: " << expectedNumberOfComponents
               << " are not equal!" << std::endl;
     testPassed = false;
@@ -124,7 +124,7 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
     expectedNumberOfComponents = RieszFrequencyFunctionType::ComputeNumberOfComponents(order);
     if ( actualNumberOfComponents != expectedNumberOfComponents )
       {
-      std::cerr << "Error. NumberOfComponents for order: " << order << " ; actual: " << actualNumberOfComponents
+      std::cerr << "Error. NumberOfComponents for order: " << order << "; actual: " << actualNumberOfComponents
                 << " expected: " << expectedNumberOfComponents << " are not equal!" << std::endl;
       testPassed = false;
       }
@@ -133,7 +133,7 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
   // Evaluate All Components:
   rieszFunction->SetOrder(inputOrder);
   rieszFunction->DebugOn();
-  typedef typename RieszFrequencyFunctionType::OutputComponentsType OutputComponentType;
+  using OutputComponentType = typename RieszFrequencyFunctionType::OutputComponentsType;
 
   OutputComponentType allComponents = rieszFunction->EvaluateAllComponents(frequencyPoint);
   std::cout << "allComponents:" << std::endl;
@@ -154,7 +154,7 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
     }
 
 //   // Get real part of complex image for visualization
-//   typedef itk::ComplexToRealImageFilter< ComplexImageType, ImageType > ComplexToRealFilter;
+//   using ComplexToRealFilter = itk::ComplexToRealImageFilter< ComplexImageType, ImageType >;
 //   ComplexToRealFilter::Pointer complexToRealFilter = ComplexToRealFilter::New();
 //   std::cout << "Real part of complex image:" << std::endl;
 //   for( unsigned int dir = 0; dir < ImageType::ImageDimension; dir++ )

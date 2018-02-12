@@ -110,13 +110,13 @@ StructureTensor< TInputImage, TOutputImage >
     this->m_GaussianSource->SetMean(mean);
     this->m_GaussianSource->Update();
     }
-  typedef itk::MultiplyImageFilter< InputImageType > MultiplyFilterType;
+  using MultiplyFilterType = itk::MultiplyImageFilter< InputImageType >;
   typename MultiplyFilterType::Pointer multiply = MultiplyFilterType::New();
-  typedef itk::ConvolutionImageFilter< InputImageType, FloatImageType, InputImageType > ConvolutionFilterType;
+  using ConvolutionFilterType = itk::ConvolutionImageFilter< InputImageType, FloatImageType, InputImageType >;
   typename ConvolutionFilterType::Pointer convolve = ConvolutionFilterType::New();
   convolve->SetKernelImage(this->m_GaussianSource->GetOutput());
   convolve->NormalizeOn();
-  // typedef itk::ConstantBoundaryCondition<InputImageType> BoundaryConditionType;
+  // using BoundaryConditionType = itk::ConstantBoundaryCondition<InputImageType>;
   // BoundaryConditionType bounds;
   // bounds.SetConstant(itk::NumericTraits<InputImagePixelType>::ZeroValue());
   // convolve->SetBoundaryCondition(&bounds);
@@ -161,8 +161,8 @@ StructureTensor< TInputImage, TOutputImage >
   typename OutputImageType::Pointer outputPtr = this->GetOutput();
 
   /******* Iterators ********/
-  typedef typename itk::ImageScanlineIterator< OutputImageType >     OutputImageIterator;
-  typedef typename itk::ImageScanlineConstIterator< InputImageType > InputImageConstIterator;
+  using OutputImageIterator = typename itk::ImageScanlineIterator< OutputImageType >;
+  using InputImageConstIterator = typename itk::ImageScanlineConstIterator< InputImageType >;
 
   OutputImageIterator outIt( outputPtr, outputRegionForThread);
   outIt.GoToBegin();
@@ -248,7 +248,7 @@ StructureTensor< TInputImage, TOutputImage >
   const OutputImageType* outputPtr = this->GetOutput();
   // Allocate output of this method:
   // Use duplicator to copy metadata as well.
-  typedef itk::ImageDuplicator< InputImageType > DuplicatorType;
+  using DuplicatorType = itk::ImageDuplicator< InputImageType >;
   typename DuplicatorType::Pointer duplicator = DuplicatorType::New();
   duplicator->SetInputImage(this->GetInput(0));
   duplicator->Update();

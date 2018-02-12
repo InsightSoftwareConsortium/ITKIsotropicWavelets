@@ -63,7 +63,7 @@ runIsotropicWaveletFrequencyFunctionTest(
   const std::string & waveletTypeName)
 {
   itk::NumberToString< float > n2s;
-  typedef TWaveletFunction WaveletFunctionType;
+  using WaveletFunctionType = TWaveletFunction;
   typename WaveletFunctionType::Pointer motherWavelet =
     WaveletFunctionType::New();
   motherWavelet->SetHighPassSubBands( inputBands );
@@ -149,10 +149,10 @@ itkIsotropicWaveletFrequencyFunctionTest( int argc, char *argv[] )
     dimension = atoi( argv[5] );
     }
 
-  typedef itk::HeldIsotropicWavelet< >       HeldWavelet;
-  typedef itk::VowIsotropicWavelet< >        VowWavelet;
-  typedef itk::SimoncelliIsotropicWavelet< > SimoncelliWavelet;
-  typedef itk::ShannonIsotropicWavelet< >    ShannonWavelet;
+  using HeldWavelet = itk::HeldIsotropicWavelet< >;
+  using VowWavelet = itk::VowIsotropicWavelet< >;
+  using SimoncelliWavelet = itk::SimoncelliIsotropicWavelet< >;
+  using ShannonWavelet = itk::ShannonIsotropicWavelet< >;
   if ( dimension == 2 )
     {
     if ( waveletFunction == "Held" )

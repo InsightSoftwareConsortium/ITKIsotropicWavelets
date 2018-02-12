@@ -47,9 +47,9 @@ runViewImage(int argc, char* argv[])
   const string inputImage  = argv[1];
 
   constexpr unsigned int dimension = 3;
-  typedef float                              PixelType;
-  typedef itk::Image< PixelType, dimension > ImageType;
-  typedef itk::ImageFileReader< ImageType >  ReaderType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, dimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(inputImage);
   reader->Update();
