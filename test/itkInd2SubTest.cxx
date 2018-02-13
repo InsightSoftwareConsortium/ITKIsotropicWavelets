@@ -26,9 +26,9 @@ int
 itkInd2SubTest( int, char * [] )
 {
   // Used for  initializing FixedArray.
-  const unsigned int D3 = 3;
+  constexpr unsigned int D3 = 3;
 
-  typedef itk::FixedArray< unsigned int, D3 > Array3DType;
+  using Array3DType = itk::FixedArray< unsigned int, D3 >;
   Array3DType ass3D; // from assigner3D c++98
   ass3D[0] = 2; ass3D[1] = 2; ass3D[2] = 2;
   itk::FixedArray< unsigned int, D3 > sizes3(ass3D);
@@ -70,8 +70,8 @@ itkInd2SubTest( int, char * [] )
     return EXIT_FAILURE;
     }
 
-  const unsigned int D2 = 2;
-  typedef itk::FixedArray< unsigned int, D2 > Array2DType;
+  constexpr unsigned int D2 = 2;
+  using Array2DType = itk::FixedArray< unsigned int, D2 >;
   Array2DType ass2D;
   ass2D[0] = 3; ass2D[1] = 4;
   itk::FixedArray< unsigned int, D2 > sizes2(ass2D);
@@ -128,7 +128,7 @@ itkInd2SubTest( int, char * [] )
     }
 
   // ITK index/size interface
-  typedef itk::Index< D2 > Index2DType;
+  using Index2DType = itk::Index< D2 >;
   itk::Size< D2 > sizesItk2;
   sizesItk2[0] = 3;
   sizesItk2[1] = 4;

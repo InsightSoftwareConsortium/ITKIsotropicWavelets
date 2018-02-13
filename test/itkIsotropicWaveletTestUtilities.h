@@ -37,7 +37,7 @@ ComplexImageIsHermitian(
 {
   bool isHermitian = true;
 
-  typedef Image< std::complex< TValueType >, N > ComplexImageType;
+  using ComplexImageType = Image< std::complex< TValueType >, N >;
   itk::ImageRegionConstIteratorWithIndex< ComplexImageType > complexIt(
     cImg,
     cImg->GetLargestPossibleRegion() );
@@ -50,7 +50,7 @@ ComplexImageIsHermitian(
     typename ComplexImageType::IndexType indexOpp = originIndex + (upperIndex - index);
     bool isInNyquistBand(false);
     bool isInZeroBand(false);
-    // DC: 0 ---> 0 ; Nyq: N/2 -> N/2 ;  x ---> N - x
+    // DC: 0 ---> 0; Nyq: N/2 -> N/2;  x ---> N - x
     for ( unsigned int i = 0; i < N; ++i )
       {
       if ( indexOpp[i] == upperIndex[i] ) // 0 case

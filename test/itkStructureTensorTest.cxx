@@ -39,11 +39,11 @@ runStructureTensorTest()
 {
   const unsigned int Dimension = VDimension;
 
-  typedef double                             PixelType;
-  typedef itk::Image< PixelType, Dimension > ImageType;
-  typedef itk::Index< Dimension >            IndexType;
-  typedef itk::Size< Dimension >             SizeType;
-  typedef itk::ImageRegion< Dimension >      RegionType;
+  using PixelType = double;
+  using ImageType = itk::Image< PixelType, Dimension >;
+  using IndexType = itk::Index< Dimension >;
+  using SizeType = itk::Size< Dimension >;
+  using RegionType = itk::ImageRegion< Dimension >;
 
   bool testFailed = false;
 
@@ -80,8 +80,8 @@ runStructureTensorTest()
   regionHalfRight.SetIndex( startHalf );
   regionHalfRight.SetSize( sizeHalf );
 
-  const unsigned int nInputs = 2;
-  typedef itk::ImageRegionIterator< ImageType > InputIteratorType;
+  constexpr unsigned int nInputs = 2;
+  using InputIteratorType = itk::ImageRegionIterator< ImageType >;
   InputIteratorType inputIt1( inputImage1, regionHalfLeft );
   inputIt1.GoToBegin();
   while ( !inputIt1.IsAtEnd() )
@@ -104,7 +104,7 @@ runStructureTensorTest()
 #endif
 
   // Structure Tensor
-  typedef itk::StructureTensor< ImageType > StructureTensorType;
+  using StructureTensorType = itk::StructureTensor< ImageType >;
   typename StructureTensorType::Pointer tensor = StructureTensorType::New();
   // Test Set/Get
   // WindowRadius
@@ -170,7 +170,7 @@ runStructureTensorTest()
   validImage->Allocate();
   validImage->FillBuffer( 1 );
 
-  typedef itk::Testing::ComparisonImageFilter< ImageType, ImageType > ComparisonType;
+  using ComparisonType = itk::Testing::ComparisonImageFilter< ImageType, ImageType >;
   typename ComparisonType::Pointer diff = ComparisonType::New();
 
   diff->SetValidInput( validImage );

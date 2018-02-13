@@ -28,7 +28,7 @@ namespace itk
 {
 namespace utils
 {
-  typedef std::pair<unsigned int, unsigned int> IndexPairType;
+  using IndexPairType = std::pair<unsigned int, unsigned int>;
 
   /** Get the (Level,Band) from a linear index output.
    * The index corresponding to the low-pass image is the last one, corresponding to the IndexPairType(this->GetLevels(), 0).
@@ -72,7 +72,7 @@ unsigned int ComputeMaxNumberOfLevels(const Size< VImageDimension >& inputSize, 
     else
       {
       // increase valid levels until the division size/scale_factor gives a non-integer.
-      double sizeAtLevel = static_cast<double>(sizeAxis);
+      auto sizeAtLevel = static_cast<double>(sizeAxis);
       for (;;)
         {
         double division = sizeAtLevel / static_cast<double>(scaleFactor);

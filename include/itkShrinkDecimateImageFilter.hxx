@@ -107,7 +107,7 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
   const InputImageType * inputPtr = this->GetInput();
 
   // Iterator for walking the output
-  typedef ImageScanlineIterator< TOutputImage > OutputIterator;
+  using OutputIterator = ImageScanlineIterator< TOutputImage >;
 
   OutputIterator outIt(outputPtr, outputRegionForThread);
 
@@ -136,7 +136,7 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
       typename InputImageType::IndexType inputIndex;
       for ( unsigned int j = 0; j < ImageDimension; j++ )
         {
-        // inputIndex[j] = (outputIndex[j] -  outputOriginIndex[j]) * m_ShrinkFactors[j] + inputOriginIndex[j] ;
+        // inputIndex[j] = (outputIndex[j] -  outputOriginIndex[j]) * m_ShrinkFactors[j] + inputOriginIndex[j];
         inputIndex[j] = outputIndex[j] * m_ShrinkFactors[j];
         }
       outIt.Set( static_cast< typename TOutputImage::PixelType >(
@@ -158,7 +158,7 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
   Superclass::GenerateInputRequestedRegion();
 
   // Get pointers to the input and output
-  TInputImage * inputPtr = const_cast< TInputImage * >( this->GetInput() );
+  auto * inputPtr = const_cast< TInputImage * >( this->GetInput() );
   const TOutputImage * outputPtr = this->GetOutput();
 
   itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != ITK_NULLPTR );

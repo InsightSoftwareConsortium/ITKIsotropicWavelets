@@ -131,7 +131,7 @@ FrequencyShrinkViaInverseFFTImageFilter< TImageType >
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  TImageType * inputPtr = const_cast< TImageType * >(this->GetInput() );
+  auto * inputPtr = const_cast< TImageType * >(this->GetInput() );
 
   itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != ITK_NULLPTR );
 
