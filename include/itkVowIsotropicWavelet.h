@@ -74,7 +74,7 @@ public:
   using ArrayType = FixedArray< double, VImageDimension >;
 
   /** Evaluate the function */
-  FunctionValueType EvaluateMagnitude(const FunctionValueType& freq_norm_in_hz) const ITK_OVERRIDE;
+  FunctionValueType EvaluateMagnitude(const FunctionValueType& freq_norm_in_hz) const override;
 
   /** Gets and sets parameters */
   itkSetMacro(Kappa, TFunctionValue);
@@ -82,8 +82,8 @@ public:
 
 protected:
   VowIsotropicWavelet();
-  virtual ~VowIsotropicWavelet();
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  ~VowIsotropicWavelet() override;
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(VowIsotropicWavelet);

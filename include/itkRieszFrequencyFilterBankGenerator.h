@@ -109,11 +109,11 @@ public:
   itkGetModifiableObjectMacro(Evaluator, RieszFunctionType);
 protected:
   RieszFrequencyFilterBankGenerator();
-  virtual ~RieszFrequencyFilterBankGenerator() {}
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  ~RieszFrequencyFilterBankGenerator() override {}
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Generate data */
-  virtual void GenerateData() ITK_OVERRIDE;
+  void GenerateData() override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(RieszFrequencyFilterBankGenerator);

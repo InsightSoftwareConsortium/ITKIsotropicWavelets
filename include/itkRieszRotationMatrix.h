@@ -68,7 +68,7 @@ public:
    *  sqrt(\frac{m!}{n!}) \sum_{|k1| = n1} \cdots \sum_{|kd| = nd}
    *  \delta_{k1 + k2 + k3, m} x
    *  \\frac{n!}{k1! \cdots kd!} r_1^{k_1} \cdots r_d^{k_d}
-   * 
+   *
    * The indices are ordered in descending order:
    * For example, for order = 2:
    * ( 2, 0, 0, )( 1, 1, 0, )( 1, 0, 1, )( 0, 2, 0, )( 0, 1, 1, )( 0, 0, 2, )

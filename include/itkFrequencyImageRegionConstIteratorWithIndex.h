@@ -29,7 +29,7 @@ namespace itk
  *
  * This class is a specialization of ImageRegionConstIteratorWithIndex,
  * adding method GetFrequencyBins to give the frequency bins corresponding to image indices, and GetFrequency to get the frequency of the bin.
- * 
+ *
  * This iterator assumes that the image is already in the frequency domain, so GetFrequencyBin is a wrap around GetIndex(), and GetFrequency is a wrap around Get().
  *
  * For a different layout, use other frequency iterator.
