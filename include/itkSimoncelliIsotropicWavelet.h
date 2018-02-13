@@ -72,12 +72,12 @@ public:
   using FunctionValueType = typename Superclass::FunctionValueType;
 
   /** Evaluate the function */
-  FunctionValueType EvaluateMagnitude(const FunctionValueType& freq_norm_in_hz) const ITK_OVERRIDE;
+  FunctionValueType EvaluateMagnitude(const FunctionValueType& freq_norm_in_hz) const override;
 
 protected:
   SimoncelliIsotropicWavelet();
   virtual ~SimoncelliIsotropicWavelet();
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(SimoncelliIsotropicWavelet);

@@ -110,10 +110,10 @@ public:
 protected:
   RieszFrequencyFilterBankGenerator();
   virtual ~RieszFrequencyFilterBankGenerator() {}
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Generate data */
-  virtual void GenerateData() ITK_OVERRIDE;
+  virtual void GenerateData() override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(RieszFrequencyFilterBankGenerator);

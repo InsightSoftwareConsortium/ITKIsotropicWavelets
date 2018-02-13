@@ -186,12 +186,12 @@ public:
 protected:
   StructureTensor();
   ~StructureTensor() {}
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual void BeforeThreadedGenerateData() ITK_OVERRIDE;
+  virtual void BeforeThreadedGenerateData() override;
 
   virtual void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-                                    ThreadIdType threadId) ITK_OVERRIDE;
+                                    ThreadIdType threadId) override;
 
   /** Assuming that row>=column */
   static unsigned int LowerTriangleToLinearIndex(unsigned int r, unsigned int c)

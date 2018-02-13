@@ -68,7 +68,7 @@ public:
   };
 
   /** Evaluate the function at a given frequency point. Because the function is istropic, this calls the EvaluateMagnitude with the magnitude of the point. */
-  virtual FunctionValueType Evaluate(const TInput & frequency_point) const ITK_OVERRIDE
+  virtual FunctionValueType Evaluate(const TInput & frequency_point) const override
   {
     return this->EvaluateMagnitude( static_cast<TFunctionValue>(this->Magnitude(frequency_point)) );
   }
@@ -84,7 +84,7 @@ public:
 protected:
   IsotropicFrequencyFunction() {};
   virtual ~IsotropicFrequencyFunction() {};
-  virtual void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE
+  virtual void PrintSelf(std::ostream & os, Indent indent) const override
   {
     Superclass::PrintSelf(os, indent);
   }

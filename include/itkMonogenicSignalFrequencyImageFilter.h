@@ -87,12 +87,12 @@ public:
 protected:
   MonogenicSignalFrequencyImageFilter();
   ~MonogenicSignalFrequencyImageFilter() {}
-  virtual void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  virtual void PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual void GenerateOutputInformation() ITK_OVERRIDE;
+  virtual void GenerateOutputInformation() override;
 
   virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
-                                     ThreadIdType threadId) ITK_OVERRIDE;
+                                     ThreadIdType threadId) override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(MonogenicSignalFrequencyImageFilter);

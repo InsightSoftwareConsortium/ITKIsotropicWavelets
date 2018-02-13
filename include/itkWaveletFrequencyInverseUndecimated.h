@@ -121,10 +121,10 @@ public:
 protected:
   WaveletFrequencyInverseUndecimated();
   ~WaveletFrequencyInverseUndecimated() {}
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Single-threaded version of GenerateData. */
-  void GenerateData() ITK_OVERRIDE;
+  void GenerateData() override;
 
   /************ Information *************/
 
@@ -136,14 +136,14 @@ protected:
    * below.
    * \sa ProcessObject::GenerateOutputInformaton()
    */
-  virtual void GenerateOutputInformation() ITK_OVERRIDE;
+  virtual void GenerateOutputInformation() override;
 
   /** Given one output whose requested region has been set, this method sets
    * the requested region for the remaining output images.  The original
    * documentation of this method is below.
    * \sa ProcessObject::GenerateOutputRequestedRegion()
    */
-  virtual void GenerateOutputRequestedRegion(DataObject *output) ITK_OVERRIDE;
+  virtual void GenerateOutputRequestedRegion(DataObject *output) override;
 
   /** WaveletFrequencyInverseUndecimated requires a larger input requested
    * region than the output requested regions to accommodate the shrinkage and
@@ -152,11 +152,11 @@ protected:
    * original documentation of this method is below.
    * \sa ProcessObject::GenerateInputRequestedRegion()
    */
-  virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
+  virtual void GenerateInputRequestedRegion() override;
 
   /** Input images do not occupy the same physical space.
    * Remove the check. */
-  virtual void VerifyInputInformation() ITK_OVERRIDE {};
+  virtual void VerifyInputInformation() override {};
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyInverseUndecimated);

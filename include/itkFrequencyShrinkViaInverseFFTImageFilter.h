@@ -88,14 +88,14 @@ public:
   /** Get the shrink factors. */
   itkGetConstReferenceMacro(ShrinkFactors, ShrinkFactorsType);
 
-  virtual void GenerateOutputInformation() ITK_OVERRIDE;
+  virtual void GenerateOutputInformation() override;
 
   /** FrequencyShrinkViaInverseFFTImageFilter needs a larger input requested region than the output
    * requested region.  As such, FrequencyShrinkViaInverseFFTImageFilter needs to provide an
    * implementation for GenerateInputRequestedRegion() in order to inform the
    * pipeline execution model.
    * \sa ProcessObject::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion() ITK_OVERRIDE;
+  virtual void GenerateInputRequestedRegion() override;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
@@ -106,9 +106,9 @@ public:
 
 protected:
   FrequencyShrinkViaInverseFFTImageFilter();
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateData() ITK_OVERRIDE;
+  void GenerateData() override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyShrinkViaInverseFFTImageFilter);
