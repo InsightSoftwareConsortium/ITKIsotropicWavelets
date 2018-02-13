@@ -86,12 +86,12 @@ public:
   itkGetModifiableObjectMacro(Evaluator, RieszFunctionType);
 protected:
   MonogenicSignalFrequencyImageFilter();
-  ~MonogenicSignalFrequencyImageFilter() {}
-  virtual void PrintSelf(std::ostream & os, Indent indent) const override;
+  ~MonogenicSignalFrequencyImageFilter() override {}
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual void GenerateOutputInformation() override;
+  void GenerateOutputInformation() override;
 
-  virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
+  void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
                                      ThreadIdType threadId) override;
 
 private:

@@ -68,9 +68,9 @@ public:
 
 protected:
   VectorInverseFFTImageFilter() {}
-  virtual ~VectorInverseFFTImageFilter() {}
+  ~VectorInverseFFTImageFilter() override {}
 
-  virtual void GenerateData() override;
+  void GenerateData() override;
 
   void PrintSelf(std::ostream & os, Indent indent) const override;
 

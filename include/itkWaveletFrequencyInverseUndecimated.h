@@ -86,7 +86,7 @@ public:
    * Set to 2 (dyadic), not modifiable, but providing future flexibility */
   itkGetConstReferenceMacro(ScaleFactor, unsigned int)
 
-  /** 
+  /**
    * If On, applies to each input the appropiate Level-Band multiplicative factor. Needed for perfect reconstruction.
    * It has to be turned off for some applications (phase analysis for example) */
   itkGetConstReferenceMacro(ApplyReconstructionFactors, bool)
@@ -120,7 +120,7 @@ public:
 
 protected:
   WaveletFrequencyInverseUndecimated();
-  ~WaveletFrequencyInverseUndecimated() {}
+  ~WaveletFrequencyInverseUndecimated() override {}
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Single-threaded version of GenerateData. */
@@ -136,14 +136,14 @@ protected:
    * below.
    * \sa ProcessObject::GenerateOutputInformaton()
    */
-  virtual void GenerateOutputInformation() override;
+  void GenerateOutputInformation() override;
 
   /** Given one output whose requested region has been set, this method sets
    * the requested region for the remaining output images.  The original
    * documentation of this method is below.
    * \sa ProcessObject::GenerateOutputRequestedRegion()
    */
-  virtual void GenerateOutputRequestedRegion(DataObject *output) override;
+  void GenerateOutputRequestedRegion(DataObject *output) override;
 
   /** WaveletFrequencyInverseUndecimated requires a larger input requested
    * region than the output requested regions to accommodate the shrinkage and
@@ -152,11 +152,11 @@ protected:
    * original documentation of this method is below.
    * \sa ProcessObject::GenerateInputRequestedRegion()
    */
-  virtual void GenerateInputRequestedRegion() override;
+  void GenerateInputRequestedRegion() override;
 
   /** Input images do not occupy the same physical space.
    * Remove the check. */
-  virtual void VerifyInputInformation() override {};
+  void VerifyInputInformation() override {};
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyInverseUndecimated);

@@ -80,9 +80,9 @@ public:
 
 protected:
   ZeroDCImageFilter();
-  virtual ~ZeroDCImageFilter() {}
+  ~ZeroDCImageFilter() override {}
 
-  virtual void PrintSelf(std::ostream& os, Indent indent) const override;
+  void PrintSelf(std::ostream& os, Indent indent) const override;
 
   void GenerateData() override;
 

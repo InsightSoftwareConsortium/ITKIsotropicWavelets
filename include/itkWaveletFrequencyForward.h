@@ -144,7 +144,7 @@ public:
 
 protected:
   WaveletFrequencyForward();
-  ~WaveletFrequencyForward() {}
+  ~WaveletFrequencyForward() override {}
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Single-threaded version of GenerateData. */
@@ -160,14 +160,14 @@ protected:
    * below.
    * \sa ProcessObject::GenerateOutputInformaton()
    */
-  virtual void GenerateOutputInformation() override;
+  void GenerateOutputInformation() override;
 
   /** Given one output whose requested region has been set, this method sets
    * the requested region for the remaining output images.  The original
    * documentation of this method is below.
    * \sa ProcessObject::GenerateOutputRequestedRegion()
    */
-  virtual void GenerateOutputRequestedRegion(DataObject *output) override;
+  void GenerateOutputRequestedRegion(DataObject *output) override;
 
   /** WaveletFrequencyForward requires a larger input requested
    * region than the output requested regions to accommodate the shrinkage and
@@ -176,7 +176,7 @@ protected:
    * original documentation of this method is below.
    * \sa ProcessObject::GenerateInputRequestedRegion()
    */
-  virtual void GenerateInputRequestedRegion() override;
+  void GenerateInputRequestedRegion() override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyForward);

@@ -126,12 +126,12 @@ public:
 
 protected:
   PhaseAnalysisImageFilter();
-  ~PhaseAnalysisImageFilter() {}
+  ~PhaseAnalysisImageFilter() override {}
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual void BeforeThreadedGenerateData() override;
+  void BeforeThreadedGenerateData() override;
 
-  virtual void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
+  void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
                                     ThreadIdType threadId) override;
 
   inline OutputImagePixelType ComputeFeatureVectorNormSquare( const InputImagePixelType & inputPixel) const

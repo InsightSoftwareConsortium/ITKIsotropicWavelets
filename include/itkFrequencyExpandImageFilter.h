@@ -142,14 +142,14 @@ public:
    * UpdateOutputInformation() in order to inform the pipeline execution model.
    * The original documentation of this method is below.
    * \sa ProcessObject::GenerateOutputInformaton() */
-  virtual void GenerateOutputInformation() override;
+  void GenerateOutputInformation() override;
 
   /** FrequencyExpandImageFilter needs a smaller input requested region than the output
    * requested region.  As such, ShrinkImageFilter needs to provide an
    * implementation for GenerateInputRequestedRegion() in order to inform
    * the pipeline execution model.
    * \sa ProcessObject::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion() override;
+  void GenerateInputRequestedRegion() override;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   // Begin concept checking
@@ -160,10 +160,10 @@ public:
 
 protected:
   FrequencyExpandImageFilter();
-  ~FrequencyExpandImageFilter() {}
+  ~FrequencyExpandImageFilter() override {}
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual
+
   void GenerateData() override;
 
 private:

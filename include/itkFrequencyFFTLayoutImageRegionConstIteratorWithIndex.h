@@ -281,7 +281,7 @@ private:
           this->m_MinIndex[dim] + std::floor( sizeImage[dim] / 2.0 ));
       // Set frequency metadata.
       // Origin of frequencies is zero in the standard layout of a FFT output.
-      this->m_FrequencyOrigin[dim] = 0.0; 
+      this->m_FrequencyOrigin[dim] = 0.0;
       // SamplingFrequency = 1.0 / SpatialSpacing
       samplingFrequency[dim] = 1.0 / this->m_Image->GetSpacing()[dim];
       // Freq_BinSize = SamplingFrequency / Size

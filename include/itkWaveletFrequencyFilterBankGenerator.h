@@ -126,10 +126,10 @@ public:
 
 protected:
   WaveletFrequencyFilterBankGenerator();
-  virtual ~WaveletFrequencyFilterBankGenerator() {}
+  ~WaveletFrequencyFilterBankGenerator() override {}
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual void GenerateData() override;
+  void GenerateData() override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyFilterBankGenerator);
