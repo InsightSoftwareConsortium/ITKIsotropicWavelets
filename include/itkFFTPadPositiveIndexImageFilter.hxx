@@ -30,7 +30,7 @@ template< class TInputImage, class TOutputImage >
 FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
 ::FFTPadPositiveIndexImageFilter()
   : m_SizeGreatestPrimeFactor(2),
-  m_BoundaryCondition(ITK_NULLPTR)
+  m_BoundaryCondition(nullptr)
 {
   m_FFTPadFilter = FFTPadFilterType::New();
   m_FFTPadFilter->ReleaseDataFlagOn();
@@ -48,7 +48,7 @@ FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
   auto * inputPtr = const_cast< InputImageType * >( this->GetInput() );
   const OutputImageType * outputPtr = this->GetOutput();
 
-  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != ITK_NULLPTR );
+  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != nullptr );
   itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr );
 
   const typename InputImageType::RegionType & inputLargestPossibleRegion =
@@ -65,7 +65,7 @@ FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
   // Ask the boundary condition for the input requested region.
   if ( !m_BoundaryCondition )
     {
-    itkExceptionMacro( << "Boundary condition is ITK_NULLPTR so no request region can be generated.");
+    itkExceptionMacro( << "Boundary condition is nullptr so no request region can be generated.");
     }
   typename InputImageType::RegionType inputRequestedRegion =
     m_BoundaryCondition->GetInputRequestedRegion( inputLargestPossibleRegion,
@@ -86,7 +86,7 @@ FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
   OutputImageType * outputPtr = this->GetOutput();
 
   itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr );
-  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != ITK_NULLPTR );
+  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != nullptr );
 
   RegionType inputRegion = inputPtr->GetLargestPossibleRegion();
   SizeType size;
