@@ -13,7 +13,6 @@ build: off
 
 test: off
 
-
 artifacts:
 
   # pushing entire folder as a zip archive
