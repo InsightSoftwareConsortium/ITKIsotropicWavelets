@@ -64,8 +64,7 @@ runIsotropicWaveletFrequencyFunctionTest(
 {
   itk::NumberToString< float > n2s;
   using WaveletFunctionType = TWaveletFunction;
-  typename WaveletFunctionType::Pointer motherWavelet =
-    WaveletFunctionType::New();
+  auto motherWavelet = WaveletFunctionType::New();
   motherWavelet->SetHighPassSubBands( inputBands );
 
   double init   = 0.0;
@@ -99,8 +98,8 @@ runIsotropicWaveletFrequencyFunctionTest(
     }
 
   // Write subbands
-  const std::string outputFilePathSubBands = profileDataRootPath + "_" + waveletTypeName +  "_" + n2s(inputBands)
-    + "_SubBands.txt";
+  const std::string outputFilePathSubBands = profileDataRootPath +
+    "_" + waveletTypeName +  "_" + n2s(inputBands) + "_SubBands.txt";
   std::ofstream ofsSB(outputFilePathSubBands.c_str(), std::ofstream::out);
   for ( unsigned int i = 0; i < points; ++i )
     {
@@ -113,8 +112,8 @@ runIsotropicWaveletFrequencyFunctionTest(
     }
   ofsSB.close();
   // Write mother wavelets
-  const std::string outputFilePathMotherWavelet = profileDataRootPath + "_" + waveletTypeName +  "_" + n2s(inputBands)
-    + "_Mother.txt";
+  const std::string outputFilePathMotherWavelet = profileDataRootPath +
+    "_" + waveletTypeName +  "_" + n2s(inputBands) + "_Mother.txt";
   std::ofstream ofsMW(outputFilePathMotherWavelet.c_str(), std::ofstream::out);
   for ( unsigned int i = 0; i < points; ++i )
     {

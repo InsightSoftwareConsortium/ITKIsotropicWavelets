@@ -322,12 +322,12 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
   m_WaveletFilterBankPyramid.clear();
 
   using CastFilterType = itk::CastImageFilter< InputImageType, OutputImageType >;
-  typename CastFilterType::Pointer castFilter = CastFilterType::New();
+  auto castFilter = CastFilterType::New();
   castFilter->SetInput(input);
   castFilter->Update();
   OutputImagePointer inputPerLevel = castFilter->GetOutput();
   using ChangeInformationFilterType = itk::ChangeInformationImageFilter< OutputImageType >;
-  typename ChangeInformationFilterType::Pointer changeInputInfoFilter = ChangeInformationFilterType::New();
+  auto changeInputInfoFilter = ChangeInformationFilterType::New();
   typename InputImageType::PointType origin_old  = inputPerLevel->GetOrigin();
   typename InputImageType::SpacingType spacing_old = inputPerLevel->GetSpacing();
   typename InputImageType::PointType origin_new  = origin_old;
@@ -371,7 +371,7 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
       unsigned int n_output = level * this->m_HighPassSubBands + band;
       /******* Band dilation factor for HighPass bands *****/
       //  2^(1/#bands) instead of Dyadic dilations.
-      typename MultiplyFilterType::Pointer multiplyByAnalysisBandFactor = MultiplyFilterType::New();
+      auto multiplyByAnalysisBandFactor = MultiplyFilterType::New();
       multiplyByAnalysisBandFactor->SetInput1(highPassWavelets[band]);
       // double expBandFactor = 0;
       // double expBandFactor = - static_cast<double>(level*ImageDimension)/2.0;
@@ -383,7 +383,7 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
       // multiplyByAnalysisBandFactor->InPlaceOn();
       multiplyByAnalysisBandFactor->Update();
 
-      typename MultiplyFilterType::Pointer multiplyHighBandFilter = MultiplyFilterType::New();
+      auto multiplyHighBandFilter = MultiplyFilterType::New();
       multiplyHighBandFilter->SetInput1(multiplyByAnalysisBandFactor->GetOutput());
       multiplyHighBandFilter->SetInput2(inputPerLevel);
       multiplyHighBandFilter->InPlaceOn();
@@ -396,14 +396,14 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
       }
 
     /******* Calculate LowPass band *****/
-    typename MultiplyFilterType::Pointer multiplyLowFilter = MultiplyFilterType::New();
+    auto multiplyLowFilter = MultiplyFilterType::New();
     multiplyLowFilter->SetInput1(lowPassWavelet);
     multiplyLowFilter->SetInput2(inputPerLevel);
     // multiplyLowFilter->InPlaceOn();
     multiplyLowFilter->Update();
     if ( level == this->m_Levels - 1 ) // Set low_pass output (index=this->m_TotalOutputs - 1)
       {
-      typename MultiplyFilterType::Pointer multiplyByLevelFactor = MultiplyFilterType::New();
+      auto multiplyByLevelFactor = MultiplyFilterType::New();
       multiplyByLevelFactor->SetInput1(multiplyLowFilter->GetOutput());
       double expLevelFactor = ( -static_cast< double >(this->m_Levels * ImageDimension ) ) / 2.0;
       multiplyByLevelFactor->SetConstant(std::pow(scaleFactor, expLevelFactor));

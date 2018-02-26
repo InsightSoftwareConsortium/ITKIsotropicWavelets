@@ -70,7 +70,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
     }
 
   // Create an image
-  ImageType3D::Pointer image = ImageType3D::New();
+  auto image = ImageType3D::New();
   ImageType3D::RegionType region;
   region.SetSize( size );
 
@@ -81,7 +81,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   image->FillBuffer( 1.0 );
 
   using BandFilterType = itk::FrequencyBandImageFilter< ImageType3D >;
-  BandFilterType::Pointer passBandFilter = BandFilterType::New();
+  auto passBandFilter = BandFilterType::New();
 
   EXERCISE_BASIC_OBJECT_METHODS( passBandFilter, FrequencyBandImageFilter,
     ImageToImageFilter );
@@ -130,7 +130,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
 #endif
 
   // Stop-band
-  BandFilterType::Pointer stopBandFilter = BandFilterType::New();
+  auto stopBandFilter = BandFilterType::New();
 
   stopBandFilter->SetInput(image);
 
@@ -153,13 +153,12 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   // Sum of bandPass and stopBand images with these settings should be equal
   // to original image
   using AddFilterType = itk::AddImageFilter< ImageType3D, ImageType3D >;
-  AddFilterType::Pointer addFilter = AddFilterType::New();
+  auto addFilter = AddFilterType::New();
   addFilter->SetInput1( passBandFilter->GetOutput() );
   addFilter->SetInput2( stopBandFilter->GetOutput() );
 
   using DifferenceFilterType = itk::Testing::ComparisonImageFilter< ImageType3D, ImageType3D >;
-  DifferenceFilterType::Pointer differenceFilter =
-    DifferenceFilterType::New();
+  auto differenceFilter = DifferenceFilterType::New();
 
   differenceFilter->SetToleranceRadius( 0 );
   differenceFilter->SetDifferenceThreshold( 0 );
@@ -224,7 +223,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   // Test with ShiftedIterator.
   using FrequencyShiftedIterator = itk::FrequencyShiftedFFTLayoutImageRegionIteratorWithIndex< ImageType3D >;
   using BandShiftedFilterType = itk::FrequencyBandImageFilter< ImageType3D, FrequencyShiftedIterator >;
-  BandShiftedFilterType::Pointer passBandShiftedFilter = BandShiftedFilterType::New();
+  auto passBandShiftedFilter = BandShiftedFilterType::New();
 
   passBandShiftedFilter->SetInput( image );
   passBandShiftedFilter->SetLowFrequencyThreshold( lowFreqThreshold );
@@ -239,7 +238,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
 #endif
 
   // using WriterType = itk::ImageFileWriter< ImageType3D >;
-  // WriterType::Pointer writer = WriterType::New();
+  // auto writer = WriterType::New();
   // writer->SetInput( passBandFilter->GetOutput() );
   // writer->SetFileName( argv[1] );
   //

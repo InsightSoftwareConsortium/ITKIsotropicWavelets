@@ -41,7 +41,7 @@ ViewImage( const T* img,
            size_t win_y )
 {
   using ConnectorType = itk::ImageToVTKImageFilter< T >;
-  typename ConnectorType::Pointer connector = ConnectorType::New();
+  auto connector = ConnectorType::New();
   connector->SetInput(img);
   connector->Update();
   connector->UpdateLargestPossibleRegion();
@@ -67,7 +67,7 @@ ViewImage( const T* img,
 
   // Prepare for slices.
   using FilterType = itk::StatisticsImageFilter< T >;
-  typename FilterType::Pointer filter = FilterType::New();
+  auto filter = FilterType::New();
   filter->SetInput(img);
   filter->Update();
   filter->UpdateLargestPossibleRegion();
@@ -127,13 +127,13 @@ ViewImages( const TLeft* leftImg,
             size_t win_y )
 {
   using LeftConnectorType = itk::ImageToVTKImageFilter< TLeft >;
-  typename LeftConnectorType::Pointer leftConnector = LeftConnectorType::New();
+  auto leftConnector = LeftConnectorType::New();
   leftConnector->SetInput(leftImg);
   leftConnector->Update();
   leftConnector->UpdateLargestPossibleRegion();
 
   using RightConnectorType = itk::ImageToVTKImageFilter< TRight >;
-  typename RightConnectorType::Pointer rightConnector = RightConnectorType::New();
+  auto rightConnector = RightConnectorType::New();
   rightConnector->SetInput(rightImg);
   rightConnector->Update();
   rightConnector->UpdateLargestPossibleRegion();
@@ -159,7 +159,7 @@ ViewImages( const TLeft* leftImg,
 
   using LeftFilterType = itk::StatisticsImageFilter< TLeft >;
   // Prepare for slices (BOTH)
-  typename LeftFilterType::Pointer leftFilter = LeftFilterType::New();
+  auto leftFilter = LeftFilterType::New();
   leftFilter->SetInput(leftImg);
   leftFilter->Update();
   leftFilter->UpdateLargestPossibleRegion();
@@ -169,7 +169,7 @@ ViewImages( const TLeft* leftImg,
   double leftLevel  = leftMin_intensity + leftWindow / 2;
 
   using RightFilterType = itk::StatisticsImageFilter< TRight >;
-  typename RightFilterType::Pointer rightFilter = RightFilterType::New();
+  auto rightFilter = RightFilterType::New();
   rightFilter->SetInput(rightImg);
   rightFilter->Update();
   rightFilter->UpdateLargestPossibleRegion();

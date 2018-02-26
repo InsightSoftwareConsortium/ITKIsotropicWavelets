@@ -133,7 +133,7 @@ void
 FFTPadPositiveIndexImageFilter< TInputImage, TOutputImage >
 ::GenerateData()
 {
-  ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
+  auto progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);
 
   // Get pointers to the input and output

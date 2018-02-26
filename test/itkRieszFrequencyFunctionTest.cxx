@@ -44,8 +44,7 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
   using InputType = itk::Point< itk::SpacePrecisionType, Dimension >;
 
   using RieszFrequencyFunctionType = itk::RieszFrequencyFunction< OutputType, Dimension, InputType >;
-  typename RieszFrequencyFunctionType::Pointer rieszFunction =
-    RieszFrequencyFunctionType::New();
+  auto rieszFunction = RieszFrequencyFunctionType::New();
 
   InputType frequencyPoint;
   frequencyPoint.Fill(0.1);
@@ -102,7 +101,8 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
     std::cout << ")" << std::endl;
     }
 
-  unsigned int expectedNumberOfComponents = RieszFrequencyFunctionType::ComputeNumberOfComponents(inputOrder);
+  unsigned int expectedNumberOfComponents =
+    RieszFrequencyFunctionType::ComputeNumberOfComponents(inputOrder);
   unsigned int actualNumberOfComponents = allPermutations.size();
   if ( actualNumberOfComponents != expectedNumberOfComponents )
     {
@@ -124,8 +124,9 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
     expectedNumberOfComponents = RieszFrequencyFunctionType::ComputeNumberOfComponents(order);
     if ( actualNumberOfComponents != expectedNumberOfComponents )
       {
-      std::cerr << "Error. NumberOfComponents for order: " << order << "; actual: " << actualNumberOfComponents
-                << " expected: " << expectedNumberOfComponents << " are not equal!" << std::endl;
+        std::cerr << "Error. NumberOfComponents for order: " << order
+          << "; actual: " << actualNumberOfComponents
+          << " expected: " << expectedNumberOfComponents << " are not equal!" << std::endl;
       testPassed = false;
       }
     }
@@ -155,7 +156,7 @@ runRieszFrequencyFunctionTest(unsigned int inputOrder)
 
 //   // Get real part of complex image for visualization
 //   using ComplexToRealFilter = itk::ComplexToRealImageFilter< ComplexImageType, ImageType >;
-//   ComplexToRealFilter::Pointer complexToRealFilter = ComplexToRealFilter::New();
+//   auto complexToRealFilter = ComplexToRealFilter::New();
 //   std::cout << "Real part of complex image:" << std::endl;
 //   for( unsigned int dir = 0; dir < ImageType::ImageDimension; dir++ )
 //     {

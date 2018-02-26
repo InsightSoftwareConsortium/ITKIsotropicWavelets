@@ -111,9 +111,9 @@ StructureTensor< TInputImage, TOutputImage >
     this->m_GaussianSource->Update();
     }
   using MultiplyFilterType = itk::MultiplyImageFilter< InputImageType >;
-  typename MultiplyFilterType::Pointer multiply = MultiplyFilterType::New();
+  auto multiply = MultiplyFilterType::New();
   using ConvolutionFilterType = itk::ConvolutionImageFilter< InputImageType, FloatImageType, InputImageType >;
-  typename ConvolutionFilterType::Pointer convolve = ConvolutionFilterType::New();
+  auto convolve = ConvolutionFilterType::New();
   convolve->SetKernelImage(this->m_GaussianSource->GetOutput());
   convolve->NormalizeOn();
   // using BoundaryConditionType = itk::ConstantBoundaryCondition<InputImageType>;
@@ -158,7 +158,7 @@ StructureTensor< TInputImage, TOutputImage >
   ProgressReporter progress( this, threadId, outputRegionForThread.GetNumberOfPixels() );
   unsigned int nInputs = this->GetNumberOfInputs();
 
-  typename OutputImageType::Pointer outputPtr = this->GetOutput();
+  auto outputPtr = this->GetOutput();
 
   /******* Iterators ********/
   using OutputImageIterator = typename itk::ImageScanlineIterator< OutputImageType >;
@@ -249,7 +249,7 @@ StructureTensor< TInputImage, TOutputImage >
   // Allocate output of this method:
   // Use duplicator to copy metadata as well.
   using DuplicatorType = itk::ImageDuplicator< InputImageType >;
-  typename DuplicatorType::Pointer duplicator = DuplicatorType::New();
+  auto duplicator = DuplicatorType::New();
   duplicator->SetInputImage(this->GetInput(0));
   duplicator->Update();
   InputImagePointer projectImage = duplicator->GetOutput();
