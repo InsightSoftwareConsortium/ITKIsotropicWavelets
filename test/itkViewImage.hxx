@@ -40,7 +40,7 @@ ViewImage( const T* img,
            size_t win_x,
            size_t win_y )
 {
-  typedef itk::ImageToVTKImageFilter< T > ConnectorType;
+  using ConnectorType = itk::ImageToVTKImageFilter< T >;
   typename ConnectorType::Pointer connector = ConnectorType::New();
   connector->SetInput(img);
   connector->Update();
@@ -66,7 +66,7 @@ ViewImage( const T* img,
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
   // Prepare for slices.
-  typedef itk::StatisticsImageFilter< T > FilterType;
+  using FilterType = itk::StatisticsImageFilter< T >;
   typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput(img);
   filter->Update();
@@ -126,13 +126,13 @@ ViewImages( const TLeft* leftImg,
             size_t win_x,
             size_t win_y )
 {
-  typedef itk::ImageToVTKImageFilter< TLeft > LeftConnectorType;
+  using LeftConnectorType = itk::ImageToVTKImageFilter< TLeft >;
   typename LeftConnectorType::Pointer leftConnector = LeftConnectorType::New();
   leftConnector->SetInput(leftImg);
   leftConnector->Update();
   leftConnector->UpdateLargestPossibleRegion();
 
-  typedef itk::ImageToVTKImageFilter< TRight > RightConnectorType;
+  using RightConnectorType = itk::ImageToVTKImageFilter< TRight >;
   typename RightConnectorType::Pointer rightConnector = RightConnectorType::New();
   rightConnector->SetInput(rightImg);
   rightConnector->Update();
@@ -157,7 +157,7 @@ ViewImages( const TLeft* leftImg,
   // Render and start interaction
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
-  typedef itk::StatisticsImageFilter< TLeft > LeftFilterType;
+  using LeftFilterType = itk::StatisticsImageFilter< TLeft >;
   // Prepare for slices (BOTH)
   typename LeftFilterType::Pointer leftFilter = LeftFilterType::New();
   leftFilter->SetInput(leftImg);
@@ -168,7 +168,7 @@ ViewImages( const TLeft* leftImg,
   double leftWindow = leftMax_intensity - leftMin_intensity;
   double leftLevel  = leftMin_intensity + leftWindow / 2;
 
-  typedef itk::StatisticsImageFilter< TRight > RightFilterType;
+  using RightFilterType = itk::StatisticsImageFilter< TRight >;
   typename RightFilterType::Pointer rightFilter = RightFilterType::New();
   rightFilter->SetInput(rightImg);
   rightFilter->Update();

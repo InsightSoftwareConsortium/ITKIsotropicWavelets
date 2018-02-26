@@ -44,14 +44,14 @@ ComputeNumberOfComponents(const unsigned int &order, const unsigned int &dimensi
 template
 void
 ComputeUniqueIndices<std::vector<unsigned int>, 3>(
-  std::vector<unsigned int> subIndice,
+  std::vector<unsigned int> subIndex,
   std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > > &uniqueIndices,
   unsigned int init );
 
 template
 void
 ComputeUniqueIndices<std::vector<unsigned int>, 2>(
-  std::vector<unsigned int> subIndice,
+  std::vector<unsigned int> subIndex,
   std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > > &uniqueIndices,
   unsigned int init );
 

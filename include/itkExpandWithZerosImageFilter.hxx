@@ -116,7 +116,7 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
   const InputImageType * inputPtr = this->GetInput();
 
   // Iterator for walking the output
-  typedef ImageScanlineIterator< TOutputImage > OutputIterator;
+  using OutputIterator = ImageScanlineIterator< TOutputImage >;
 
   OutputIterator outIt(outputPtr, outputRegionForThread);
 

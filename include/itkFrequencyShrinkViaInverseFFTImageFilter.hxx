@@ -131,9 +131,9 @@ FrequencyShrinkViaInverseFFTImageFilter< TImageType >
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  TImageType * inputPtr = const_cast< TImageType * >(this->GetInput() );
+  auto * inputPtr = const_cast< TImageType * >(this->GetInput() );
 
-  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != ITK_NULLPTR );
+  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != nullptr );
 
   // The filter chops high frequencys [0 1...H,H-1 H-2...1].
   // We need the whole input image, indepently of the RequestedRegion.
@@ -153,7 +153,7 @@ FrequencyShrinkViaInverseFFTImageFilter< TImageType >
   TImageType * outputPtr = this->GetOutput();
 
   itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr );
-  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != ITK_NULLPTR );
+  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != nullptr );
 
   // Compute the output spacing, the output image size, and the
   // output image start index

@@ -168,13 +168,13 @@ FrequencyShrinkImageFilter< TImageType >
   /// }}}
 
   // Prepare filter to paste the different regions into output.
-  typedef itk::PasteImageFilter< ImageType > PasteFilterType;
+  using PasteFilterType = itk::PasteImageFilter< ImageType >;
   typename PasteFilterType::Pointer pasteFilter = PasteFilterType::New();
   pasteFilter->SetSourceImage(inputPtr);
   pasteFilter->SetDestinationImage(outputPtr);
   // pasteFilter->InPlaceOn();
 
-  typedef typename ImageType::RegionType RegionType;
+  using RegionType = typename ImageType::RegionType;
   ProgressReporter progress(this, 0, numberOfRegions );
   for ( unsigned int n = 0; n < numberOfRegions; ++n )
     {
@@ -205,7 +205,7 @@ FrequencyShrinkImageFilter< TImageType >
     pasteFilter->SetDestinationIndex(outputIndex);
     pasteFilter->Update();
     // Sum the quadrants.
-    typedef itk::AddImageFilter< TImageType, TImageType > AddFilterType;
+    using AddFilterType = itk::AddImageFilter< TImageType, TImageType >;
     typename AddFilterType::Pointer addFilter = AddFilterType::New();
     addFilter->SetInput1(outputPtr);
     addFilter->SetInput2(pasteFilter->GetOutput());
@@ -214,7 +214,7 @@ FrequencyShrinkImageFilter< TImageType >
       {
       addFilter->Update();
       outputPtr = addFilter->GetOutput();
-      typedef itk::MultiplyImageFilter< TImageType, TImageType, TImageType > MultiplyFilterType;
+      using MultiplyFilterType = itk::MultiplyImageFilter< TImageType, TImageType, TImageType >;
       typename MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
       multiplyFilter->SetInput(outputPtr);
       multiplyFilter->SetConstant(static_cast< typename TImageType::PixelType::value_type >(1.0 / numberOfRegions));
@@ -277,9 +277,9 @@ FrequencyShrinkImageFilter< TImageType >
 // }
 
   // // Apply a gaussian window of the size of the output.
-  // typedef itk::GaussianSpatialFunction<double, ImageDimension> FunctionType;
+  // using FunctionType = itk::GaussianSpatialFunction<double, ImageDimension>;
   // typename FunctionType::Pointer gaussian = FunctionType::New();
-  // typedef FixedArray< double, ImageDimension > ArrayType;
+  // using ArrayType = FixedArray< double, ImageDimension >;
   // ArrayType m_Mean;
   // ArrayType m_Sigma;
   // double m_Scale = 1.0;
@@ -297,7 +297,7 @@ FrequencyShrinkImageFilter< TImageType >
   // gaussian->SetNormalized(m_Normalized);
   //
   // // Create an iterator that will walk the output region
-  // typedef itk::FrequencyImageRegionIteratorWithIndex< TImageType > OutputIterator;
+  // using OutputIterator = itk::FrequencyImageRegionIteratorWithIndex< TImageType >;
   // OutputIterator outIt = OutputIterator( outputPtr,
   //     outputPtr->GetRequestedRegion() );
   // outIt.GoToBegin();
@@ -325,9 +325,9 @@ FrequencyShrinkImageFilter< TImageType >
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  TImageType * inputPtr = const_cast< TImageType * >(this->GetInput() );
+  auto * inputPtr = const_cast< TImageType * >(this->GetInput() );
 
-  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != ITK_NULLPTR );
+  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != nullptr );
 
   // The filter chops high frequencys [0 1...H,H-1 H-2...1].
   // We need the whole input image, indepently of the RequestedRegion.
@@ -347,7 +347,7 @@ FrequencyShrinkImageFilter< TImageType >
   TImageType * outputPtr = this->GetOutput();
 
   itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr );
-  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != ITK_NULLPTR );
+  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != nullptr );
 
   // Compute the output spacing, the output image size, and the
   // output image start index

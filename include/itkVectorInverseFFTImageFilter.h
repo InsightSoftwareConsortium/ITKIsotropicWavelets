@@ -46,16 +46,16 @@ class VectorInverseFFTImageFilter:
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
-  /** Standard class typedefs. */
-  typedef TInputImage                         InputImageType;
-  typedef typename InputImageType::PixelType  InputPixelType;
-  typedef TOutputImage                        OutputImageType;
-  typedef typename OutputImageType::PixelType OutputPixelType;
+  /** Standard class type alias. */
+  using InputImageType = TInputImage;
+  using InputPixelType = typename InputImageType::PixelType;
+  using OutputImageType = TOutputImage;
+  using OutputPixelType = typename OutputImageType::PixelType;
 
-  typedef VectorInverseFFTImageFilter                           Self;
-  typedef ImageToImageFilter< InputImageType, OutputImageType > Superclass;
-  typedef SmartPointer< Self >                                  Pointer;
-  typedef SmartPointer< const Self >                            ConstPointer;
+  using Self = VectorInverseFFTImageFilter;
+  using Superclass = ImageToImageFilter< InputImageType, OutputImageType >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -64,16 +64,15 @@ public:
   itkTypeMacro(VectorInverseFFTImageFilter, ImageToImageFilter);
 
   /** ImageDimension enumeration. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      InputImageType::ImageDimension);
+  static constexpr unsigned int ImageDimension = InputImageType::ImageDimension;
 
 protected:
   VectorInverseFFTImageFilter() {}
-  virtual ~VectorInverseFFTImageFilter() {}
+  ~VectorInverseFFTImageFilter() override {}
 
-  virtual void GenerateData() ITK_OVERRIDE;
+  void GenerateData() override;
 
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(VectorInverseFFTImageFilter);

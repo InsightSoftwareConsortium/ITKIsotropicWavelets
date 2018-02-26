@@ -48,14 +48,14 @@ class RieszRotationMatrix:
   public itk::VariableSizeMatrix< T >
 {
 public:
-  /** Standard typedefs */
-  typedef RieszRotationMatrix          Self;
-  typedef itk::VariableSizeMatrix< T > Superclass;
+  /** Standard type alias */
+  using Self = RieszRotationMatrix;
+  using Superclass = itk::VariableSizeMatrix< T >;
 
   /** Component value type */
-  typedef typename Superclass::ValueType                     ValueType;
-  typedef typename Superclass::InternalMatrixType            InternalMatrixType;
-  typedef itk::Matrix< T, VImageDimension, VImageDimension > SpatialRotationMatrixType;
+  using ValueType = typename Superclass::ValueType;
+  using InternalMatrixType = typename Superclass::InternalMatrixType;
+  using SpatialRotationMatrixType = itk::Matrix< T, VImageDimension, VImageDimension >;
 
   /** Matrix by std::vector multiplication.  */
   std::vector< T > operator *(const std::vector< T > & vector) const;
@@ -68,7 +68,7 @@ public:
    *  sqrt(\frac{m!}{n!}) \sum_{|k1| = n1} \cdots \sum_{|kd| = nd}
    *  \delta_{k1 + k2 + k3, m} x
    *  \\frac{n!}{k1! \cdots kd!} r_1^{k_1} \cdots r_d^{k_d}
-   * 
+   *
    * The indices are ordered in descending order:
    * For example, for order = 2:
    * ( 2, 0, 0, )( 1, 1, 0, )( 1, 0, 1, )( 0, 2, 0, )( 0, 1, 1, )( 0, 0, 2, )
@@ -77,10 +77,10 @@ public:
   const InternalMatrixType & ComputeSteerableMatrix();
 
   /// Typedefs for IndicesMatrix
-  typedef std::vector<unsigned int>     IndicesArrayType;
-  typedef std::vector<IndicesArrayType> IndicesVector;
-  typedef std::vector<IndicesVector>    IndicesMatrixRow;
-  typedef std::vector<IndicesMatrixRow> IndicesMatrix;
+  using IndicesArrayType = std::vector<unsigned int>;
+  using IndicesVector = std::vector<IndicesArrayType>;
+  using IndicesMatrixRow = std::vector<IndicesVector>;
+  using IndicesMatrix = std::vector<IndicesMatrixRow>;
 
   /**
    * Generate a matrix-like structure of the same size than the
