@@ -36,6 +36,8 @@ class FrequencyFunction:
   public SpatialFunction< TFunctionValue, VImageDimension, TInput >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyFunction);
+
   /** Standard class type alias. */
   using Self = FrequencyFunction;
   using Superclass = SpatialFunction< TFunctionValue, VImageDimension, TInput >;
@@ -70,9 +72,6 @@ protected:
   {
     Superclass::PrintSelf(os, indent);
   }
-
-private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyFunction);
 };
 } // end namespace itk
 

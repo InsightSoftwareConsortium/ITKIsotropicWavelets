@@ -41,6 +41,8 @@ class ZeroDCImageFilter:
   public ImageToImageFilter< TImageType, TImageType >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(ZeroDCImageFilter);
+
   /** Standard class type alias. */
   using Self = ZeroDCImageFilter;
   using Superclass = ImageToImageFilter<TImageType, TImageType>;
@@ -87,7 +89,6 @@ protected:
   void GenerateData() override;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(ZeroDCImageFilter);
   typename StatisticsFilterType::Pointer m_StatisticsFilter;
   typename SubtractFilterType::Pointer   m_SubtractFilter;
 };

@@ -54,6 +54,8 @@ class FFTPadPositiveIndexImageFilter:
   public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(FFTPadPositiveIndexImageFilter);
+
   /** Standard class type alias. */
   using Self = FFTPadPositiveIndexImageFilter;
   using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
@@ -112,7 +114,6 @@ protected:
   void GenerateData() override;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(FFTPadPositiveIndexImageFilter);
   typename FFTPadFilterType::Pointer     m_FFTPadFilter;
   typename ChangeInfoFilterType::Pointer m_ChangeInfoFilter;
   SizeValueType                          m_SizeGreatestPrimeFactor;

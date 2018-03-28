@@ -43,6 +43,8 @@ class RieszFrequencyFilterBankGenerator:
   public itk::GenerateImageSource< TOutputImage >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(RieszFrequencyFilterBankGenerator);
+
   /** Standard type alias */
   using Self = RieszFrequencyFilterBankGenerator;
   using Superclass = itk::GenerateImageSource<TOutputImage>;
@@ -116,7 +118,6 @@ protected:
   void GenerateData() override;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(RieszFrequencyFilterBankGenerator);
   unsigned int         m_Order;
   RieszFunctionPointer m_Evaluator;
 }; // end of class

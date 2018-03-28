@@ -48,6 +48,8 @@ class ShannonIsotropicWavelet:
   public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(ShannonIsotropicWavelet);
+
   /** Standard class type alias. */
   using Self = ShannonIsotropicWavelet;
   using Superclass = IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >;
@@ -73,9 +75,6 @@ protected:
   ShannonIsotropicWavelet();
   ~ShannonIsotropicWavelet() override;
   void PrintSelf(std::ostream & os, Indent indent) const override;
-
-private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(ShannonIsotropicWavelet);
 };
 } // end namespace itk
 

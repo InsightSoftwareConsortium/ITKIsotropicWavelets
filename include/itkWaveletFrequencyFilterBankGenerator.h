@@ -53,6 +53,8 @@ class WaveletFrequencyFilterBankGenerator:
   public itk::GenerateImageSource< TOutputImage >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyFilterBankGenerator);
+
   /** Standard type alias */
   using Self = WaveletFrequencyFilterBankGenerator;
   using Superclass = itk::GenerateImageSource<TOutputImage>;
@@ -132,8 +134,6 @@ protected:
   void GenerateData() override;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyFilterBankGenerator);
-
   unsigned int           m_HighPassSubBands;
   bool                   m_InverseBank;
   WaveletFunctionPointer m_WaveletFunction;

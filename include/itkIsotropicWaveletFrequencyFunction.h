@@ -57,6 +57,8 @@ class IsotropicWaveletFrequencyFunction:
   public IsotropicFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(IsotropicWaveletFrequencyFunction);
+
   /** Standard class type alias. */
   using Self = IsotropicWaveletFrequencyFunction;
   using Superclass = IsotropicFrequencyFunction< TFunctionValue, VImageDimension, TInput >;
@@ -116,9 +118,6 @@ protected:
 
   unsigned int      m_HighPassSubBands;
   FunctionValueType m_FreqCutOff;
-
-private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(IsotropicWaveletFrequencyFunction);
 };
 } // end namespace itk
 

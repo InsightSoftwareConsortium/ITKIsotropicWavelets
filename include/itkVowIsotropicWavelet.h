@@ -52,6 +52,8 @@ class VowIsotropicWavelet:
   public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(VowIsotropicWavelet);
+
   /** Standard class type alias. */
   using Self = VowIsotropicWavelet;
   using Superclass = IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >;
@@ -86,8 +88,6 @@ protected:
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(VowIsotropicWavelet);
-
   /** kappa value, default is optimal:0.75 */
   FunctionValueType m_Kappa;
 };

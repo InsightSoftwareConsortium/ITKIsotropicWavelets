@@ -40,6 +40,8 @@ class RieszFrequencyFunction:
   public FrequencyFunction< TFunctionValue, VImageDimension, TInput >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(RieszFrequencyFunction);
+
   /** Standard class type alias. */
   using Self = RieszFrequencyFunction;
   using Superclass = SpatialFunction< TFunctionValue, VImageDimension, TInput >;
@@ -196,7 +198,6 @@ protected:
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(RieszFrequencyFunction);
   unsigned int m_Order;
   SetType      m_Indices;
 };

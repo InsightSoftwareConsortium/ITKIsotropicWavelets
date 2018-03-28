@@ -83,6 +83,8 @@ class StructureTensor:
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(StructureTensor);
+
   /** Some convenient type alias. */
   /** Standard class type alias. */
   using Self = StructureTensor;
@@ -200,7 +202,6 @@ protected:
   }
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(StructureTensor);
   unsigned int                         m_GaussianWindowRadius;
   FloatType                            m_GaussianWindowSigma;
   typename GaussianSourceType::Pointer m_GaussianSource;

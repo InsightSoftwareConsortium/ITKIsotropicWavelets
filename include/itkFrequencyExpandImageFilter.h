@@ -102,6 +102,8 @@ class FrequencyExpandImageFilter:
   public ImageToImageFilter< TImageType, TImageType >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyExpandImageFilter);
+
   /** Standard class type alias. */
   using Self = FrequencyExpandImageFilter;
   using Superclass = ImageToImageFilter<TImageType, TImageType>;
@@ -167,8 +169,6 @@ protected:
   void GenerateData() override;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyExpandImageFilter);
-
   ExpandFactorsType m_ExpandFactors;
 };
 } // end namespace itk
