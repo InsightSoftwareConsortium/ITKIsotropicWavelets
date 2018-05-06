@@ -126,7 +126,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   TRY_EXPECT_NO_EXCEPTION( passBandFilter->Update() );
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View( passBandFilter->GetOutput(), "PassBand - default" );
+  itk::ViewImage<ImageType3D>::View( passBandFilter->GetOutput(), "PassBand - default" );
 #endif
 
   // Stop-band
@@ -146,7 +146,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   TRY_EXPECT_NO_EXCEPTION( stopBandFilter->Update() );
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View(stopBandFilter->GetOutput(), "StopBand" );
+  itk::ViewImage<ImageType3D>::View(stopBandFilter->GetOutput(), "StopBand" );
 #endif
 
   // Regression test
@@ -202,7 +202,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   TRY_EXPECT_NO_EXCEPTION( passBandFilter->Update() );
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View( passBandFilter->GetOutput(), "PassBand - radians" );
+  itk::ViewImage<ImageType3D>::View( passBandFilter->GetOutput(), "PassBand - radians" );
 #endif
 
   // Test the non-radial cut-off.
@@ -217,7 +217,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   passBandFilter->Update();
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View( passBandFilter->GetOutput(), "PassBand - RadialBandOff" );
+  itk::ViewImage<ImageType3D>::View( passBandFilter->GetOutput(), "PassBand - RadialBandOff" );
 #endif
 
   // Test with ShiftedIterator.
@@ -234,7 +234,7 @@ itkFrequencyBandImageFilterTest( int argc, char* argv[] )
   passBandShiftedFilter->SetPassBand( passLowFreqThreshold, passHighFreqThreshold );
   TRY_EXPECT_NO_EXCEPTION( passBandShiftedFilter->Update() );
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View( passBandShiftedFilter->GetOutput(), "PassBand - FrequencyShiftedIterator" );
+  itk::ViewImage<ImageType3D>::View( passBandShiftedFilter->GetOutput(), "PassBand - FrequencyShiftedIterator" );
 #endif
 
   // using WriterType = itk::ImageFileWriter< ImageType3D >;

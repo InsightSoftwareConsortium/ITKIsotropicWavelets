@@ -142,7 +142,7 @@ runStructureTensorWithGeneralizedRieszTest(
       if ( visualizeRieszWavelets )
         {
         itk::NumberToString< unsigned int > n2s;
-        itk::ViewImage::View( inverseFFT->GetOutput(),
+        itk::ViewImage<ImageType>::View( inverseFFT->GetOutput(),
           "RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
         }
       bool visualizeRieszWaveletsInFrequency = false;
@@ -155,11 +155,11 @@ runStructureTensorWithGeneralizedRieszTest(
         auto complexToImaginary = ComplexToImaginaryFilterType::New();
         complexToReal->SetInput(rieszWavelets[rieszComp]);
         complexToReal->Update();
-        itk::ViewImage::View( complexToReal->GetOutput(),
+        itk::ViewImage<ImageType>::View( complexToReal->GetOutput(),
           "REAL:RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
         complexToImaginary->SetInput(rieszWavelets[rieszComp]);
         complexToImaginary->Update();
-        itk::ViewImage::View( complexToImaginary->GetOutput(),
+        itk::ViewImage<ImageType>::View( complexToImaginary->GetOutput(),
           "IMAGINARY:RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
         }
 #endif
@@ -190,10 +190,10 @@ runStructureTensorWithGeneralizedRieszTest(
       auto inverseFFT = InverseFFTFilterType::New();
       inverseFFT->SetInput(analysisWavelets[i]);
       inverseFFT->Update();
-      itk::ViewImage::View( inverseFFT->GetOutput(), "WaveletCoef: output #" + n2s(i) );
+      itk::ViewImage<ImageType>::View( inverseFFT->GetOutput(), "WaveletCoef: output #" + n2s(i) );
       inverseFFT->SetInput(modifiedWavelets[i]);
       inverseFFT->Update();
-      itk::ViewImage::View( inverseFFT->GetOutput(), "WaveletCoef. LargestComponentStructureTensor #" + n2s(i) );
+      itk::ViewImage<ImageType>::View( inverseFFT->GetOutput(), "WaveletCoef. LargestComponentStructureTensor #" + n2s(i) );
       }
     }
 #endif
@@ -212,8 +212,8 @@ runStructureTensorWithGeneralizedRieszTest(
   inverseFFT->Update();
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View( reader->GetOutput(), "Input Image" );
-  itk::ViewImage::View( inverseFFT->GetOutput(), "Inverse Wavelet" );
+  itk::ViewImage<ImageType>::View( reader->GetOutput(), "Input Image" );
+  itk::ViewImage<ImageType>::View( inverseFFT->GetOutput(), "Inverse Wavelet" );
 #endif
 
   // using WriterType = itk::ImageFileWriter< typename InverseFFTFilterType::OutputImageType >;

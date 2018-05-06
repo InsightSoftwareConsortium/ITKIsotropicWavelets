@@ -99,8 +99,8 @@ runStructureTensorTest()
     }
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View( inputImage1.GetPointer(), "input1" );
-  itk::ViewImage::View( inputImage2.GetPointer(), "input2" );
+  itk::ViewImage<ImageType>::View( inputImage1.GetPointer(), "input1" );
+  itk::ViewImage<ImageType>::View( inputImage2.GetPointer(), "input2" );
 #endif
 
   // Structure Tensor
@@ -141,7 +141,7 @@ runStructureTensorTest()
               << eigenMatrixCols << std::endl;
     }
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View( tensor->GetGaussianSource()->GetOutput(), "Gaussian" );
+  itk::ViewImage<ImageType>::View( tensor->GetGaussianSource()->GetOutput(), "Gaussian" );
 #endif
 
   typename ImageType::Pointer largestEigenValueProjectionImage;
@@ -156,12 +156,12 @@ runStructureTensorTest()
 
 #ifdef ITK_VISUALIZE_TESTS
     itk::NumberToString< float > n2s;
-    itk::ViewImage::View( projectImage.GetPointer(), "eigen number: " + n2s( eigenNumber ) );
+    itk::ViewImage<ImageType>::View( projectImage.GetPointer(), "eigen number: " + n2s( eigenNumber ) );
 #endif
     }
   auto coherencyImage = tensor->ComputeCoherencyImage();
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage::View( coherencyImage.GetPointer(), "Coherency image" );
+  itk::ViewImage<ImageType>::View( coherencyImage.GetPointer(), "Coherency image" );
 #endif
 
   // Compare to known result
