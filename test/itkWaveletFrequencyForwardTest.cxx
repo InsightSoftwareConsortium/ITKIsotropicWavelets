@@ -218,7 +218,7 @@ int runWaveletFrequencyForwardTest( const std::string& inputImage,
 #ifdef ITK_VISUALIZE_TESTS
       std::pair< unsigned int, unsigned int > pairLvBand =
         forwardWavelet->OutputIndexToLevelBand( nOutput );
-      itk::Testing::ViewImage( inverseFFT->GetOutput(),
+      itk::ViewImage::View( inverseFFT->GetOutput(),
         "Wavelet coef. n_out: " + n2s( nOutput ) + " level: " + n2s( pairLvBand.first )
         + " , band: " +  n2s( pairLvBand.second ) + "/" + n2s( inputBands ) );
 #endif

@@ -103,12 +103,12 @@ runWaveletFrequencyFilterBankGeneratorDownsampleTest( const std::string& inputIm
   auto complexToRealFilter = ComplexToRealFilter::New();
   complexToRealFilter->SetInput(shrinkFilter->GetOutput());
   complexToRealFilter->Update();
-  itk::Testing::ViewImage( complexToRealFilter->GetOutput(),
+  itk::ViewImage::View( complexToRealFilter->GetOutput(),
     "shrinked (by half) FilterBank");
   // complexToRealFilter->SetInput(forwardFilterBankDown->GetOutputHighPass());
   complexToRealFilter->SetInput(forwardFilterBankDown->GetOutputLowPass());
   complexToRealFilter->Update();
-  itk::Testing::ViewImage( complexToRealFilter->GetOutput(),
+  itk::ViewImage::View( complexToRealFilter->GetOutput(),
     "FilterBank of halfSizeImage (highPassBand)");
 #endif
 

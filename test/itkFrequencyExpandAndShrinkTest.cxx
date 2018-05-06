@@ -106,8 +106,8 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
 //   auto inverseFFTExpand2 = InverseFFTFilterType::New();
 //   inverseFFTExpand2->SetInput(expandViaInverseFFTFilter->GetOutput());
 //   inverseFFTExpand2->Update();
-//   itk::Testing::ViewImage(inverseFFTExpand1->GetOutput(), "Expand via frequency manipulation");
-//   itk::Testing::ViewImage(inverseFFTExpand2->GetOutput(), "Expand ViaInverseFFT");
+//   itk::ViewImage::View(inverseFFTExpand1->GetOutput(), "Expand via frequency manipulation");
+//   itk::ViewImage::View(inverseFFTExpand2->GetOutput(), "Expand ViaInverseFFT");
 // #endif
 
   /*********** SHRINK ***************/
@@ -171,8 +171,8 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
   inverseFFT2->Update();
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::Testing::ViewImage( zeroDCFilter->GetOutput(), "Original" );
-  itk::Testing::ViewImage( inverseFFT1->GetOutput(), "ExpandAndShrink via frequency manipulation" );
+  itk::ViewImage::View( zeroDCFilter->GetOutput(), "Original" );
+  itk::ViewImage::View( inverseFFT1->GetOutput(), "ExpandAndShrink via frequency manipulation" );
 #endif
 
   // Comparison
@@ -196,7 +196,7 @@ runFrequencyExpandAndShrinkTest( const std::string & inputImage, const std::stri
 
   // Via inverseFFT and spatial domain manipulation.
 #ifdef ITK_VISUALIZE_TESTS
-  itk::Testing::ViewImage( inverseFFT2->GetOutput(), "ExpandAndShrink ViaInverseFFT" );
+  itk::ViewImage::View( inverseFFT2->GetOutput(), "ExpandAndShrink ViaInverseFFT" );
 #endif
   differenceFilter->SetTestInput( inverseFFT2->GetOutput() );
   differenceFilter->Update();
