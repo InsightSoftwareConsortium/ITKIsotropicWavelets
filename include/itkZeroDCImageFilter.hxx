@@ -47,7 +47,7 @@ ZeroDCImageFilter< TImageType >
   auto progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);
 
-  /***** Calculate mean value and substract: ****/
+  /***** Calculate mean value and subtract: ****/
   m_StatisticsFilter->SetInput(this->GetInput());
   progress->RegisterInternalFilter(m_StatisticsFilter, 1.0f / 2.0f);
   m_StatisticsFilter->Update();
