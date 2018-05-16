@@ -28,7 +28,7 @@
 // Convolution/Neighborhood Operations
 #include <itkConvolutionImageFilter.h>
 #include <itkConstantBoundaryCondition.h>
-#include "itkProgressReporter.h"
+
 namespace itk
 {
 template< typename TInputImage, typename TOutputImage >
@@ -38,6 +38,8 @@ StructureTensor< TInputImage, TOutputImage >
   m_GaussianWindowSigma(1.0)
 {
   this->m_GaussianSource = GaussianSourceType::New();
+
+  this->DynamicMultiThreadingOn();
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -151,11 +153,8 @@ StructureTensor< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 StructureTensor< TInputImage, TOutputImage >
-::ThreadedGenerateData(
-  const OutputImageRegionType & outputRegionForThread,
-  ThreadIdType threadId)
+::DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread )
 {
-  ProgressReporter progress( this, threadId, outputRegionForThread.GetNumberOfPixels() );
   unsigned int nInputs = this->GetNumberOfInputs();
 
   auto outputPtr = this->GetOutput();

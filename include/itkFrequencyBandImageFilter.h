@@ -182,8 +182,7 @@ protected:
 
   void BeforeThreadedGenerateData() override;
 
-  void ThreadedGenerateData(const ImageRegionType & outputRegionForThread,
-                                    ThreadIdType threadId) override;
+  void DynamicThreadedGenerateData(const ImageRegionType & outputRegionForThread) override;
 
 private:
   FrequencyValueType m_LowFrequencyThreshold;

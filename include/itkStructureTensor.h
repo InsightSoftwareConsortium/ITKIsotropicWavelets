@@ -192,8 +192,7 @@ protected:
 
   void BeforeThreadedGenerateData() override;
 
-  void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-                                    ThreadIdType threadId) override;
+  void DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread ) override;
 
   /** Assuming that row>=column */
   static unsigned int LowerTriangleToLinearIndex(unsigned int r, unsigned int c)
