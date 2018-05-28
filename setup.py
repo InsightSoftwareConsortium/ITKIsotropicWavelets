@@ -18,7 +18,7 @@ setup(
     author_email='pablo.hernandez.cerdan@outlook.com',
     packages=['itk'],
     package_dir={'itk': 'itk'},
-    download_url=r'https://github.com/phcerdan/ITKIsotropicWavelets',
+    download_url=r'https://github.com/InsightSoftwareConsortium/ITKIsotropicWavelets',
     description=r'Steerable Wavelet Pyramid with Isotropic Wavelets and Riesz Functions',
     long_description='ITKIsotropicWavelets provides a multiresolution analysis'
                      '(MRA) framework using isotropic and steerable wavelets in the frequency'
@@ -51,7 +51,7 @@ setup(
         ],
     license='Apache',
     keywords='ITK InsightToolkit Wavelet Pyramid Steerable Riesz',
-    url=r'https://github.com/phcerdan/ITKIsotropicWavelets',
+    url=r'https://github.com/InsightSoftwareConsortium/ITKIsotropicWavelets',
     install_requires=[
         r'itk'
     ]

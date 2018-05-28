@@ -18,6 +18,7 @@ itk_module(IsotropicWavelets
     ITKTestKernel
     ITKVtkGlue
   EXCLUDE_FROM_DEFAULT
+  ENABLE_SHARED
   DESCRIPTION
   "${DOCUMENTATION}"
   )
@@ -31,6 +32,7 @@ itk_module(IsotropicWavelets
   TEST_DEPENDS
     ITKTestKernel
   EXCLUDE_FROM_DEFAULT
+  ENABLE_SHARED
   DESCRIPTION
   "${DOCUMENTATION}"
   )
