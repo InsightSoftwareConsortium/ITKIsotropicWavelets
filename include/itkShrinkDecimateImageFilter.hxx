@@ -117,7 +117,6 @@ ShrinkDecimateImageFilter< TInputImage, TOutputImage >
     {
     return;
     }
-  const size_t numberOfLinesToProcess = outputRegionForThread.GetNumberOfPixels() / size0;
 
   // const typename OutputImageType::IndexType outputOriginIndex = outputPtr->GetLargestPossibleRegion().GetIndex();
   // const typename InputImageType::IndexType  inputOriginIndex  = inputPtr->GetLargestPossibleRegion().GetIndex();
