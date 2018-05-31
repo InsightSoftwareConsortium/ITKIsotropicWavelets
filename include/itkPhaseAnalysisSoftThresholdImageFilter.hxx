@@ -112,7 +112,6 @@ PhaseAnalysisSoftThresholdImageFilter< TInputImage, TOutputImage >
     }
 
   // Set output to cos(phase) applying SoftThreshold if requested.
-  using OutputImageRegionIterator = typename itk::ImageScanlineIterator< OutputImageType >;
   OutputImageRegionIterator outIt(outputPtr, outputRegionForThread);
   using OutputImageRegionConstIterator = typename itk::ImageScanlineConstIterator< OutputImageType >;
   OutputImageRegionConstIterator ampIt(amplitudePtr, outputRegionForThread);
