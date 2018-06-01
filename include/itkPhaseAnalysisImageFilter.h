@@ -132,9 +132,7 @@ protected:
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
   void BeforeThreadedGenerateData() override;
-
-  void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-                                    ThreadIdType threadId) override;
+  void DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread ) override;
 
   inline OutputImagePixelType ComputeFeatureVectorNormSquare( const InputImagePixelType & inputPixel) const
   {

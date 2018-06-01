@@ -18,7 +18,6 @@
 #ifndef itkPhaseAnalysisImageFilter_hxx
 #define itkPhaseAnalysisImageFilter_hxx
 #include "itkPhaseAnalysisImageFilter.h"
-#include "itkProgressReporter.h"
 
 namespace itk
 {
@@ -32,6 +31,8 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
     {
     this->SetNthOutput(n_output, this->MakeOutput(n_output));
     }
+
+  this->DynamicMultiThreadingOn();
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -60,13 +61,8 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 PhaseAnalysisImageFilter< TInputImage, TOutputImage >
-::ThreadedGenerateData(
-  const OutputImageRegionType & outputRegionForThread,
-  ThreadIdType threadId)
+::DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread )
 {
-  ProgressReporter progress(this, threadId,
-    outputRegionForThread.GetNumberOfPixels() / outputRegionForThread.GetSize()[0]);
-
   typename OutputImageType::Pointer phasePtr     = this->GetOutputPhase();
   typename OutputImageType::Pointer amplitudePtr = this->GetOutputAmplitude();
 
@@ -89,7 +85,6 @@ PhaseAnalysisImageFilter< TInputImage, TOutputImage >
       }
 
     inputIt.NextLine(); ampIt.NextLine(); phaseIt.NextLine();
-    progress.CompletedPixel();
     }
 }
 

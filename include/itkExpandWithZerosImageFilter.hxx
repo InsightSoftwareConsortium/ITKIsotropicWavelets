@@ -23,7 +23,6 @@
 #include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkObjectFactory.h"
 #include "itkNumericTraits.h"
-#include "itkProgressReporter.h"
 
 namespace itk
 {
@@ -39,6 +38,8 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
     {
     m_ExpandFactors[j] = 1;
     }
+
+  this->DynamicMultiThreadingOn();
 }
 
 /**
@@ -108,8 +109,7 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 ExpandWithZerosImageFilter< TInputImage, TOutputImage >
-::ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread,
-  ThreadIdType threadId)
+::DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread )
 {
   // Get the input and output pointers
   OutputImagePointer outputPtr    = this->GetOutput();
@@ -126,8 +126,6 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
     {
     return;
     }
-  const size_t numberOfLinesToProcess = outputRegionForThread.GetNumberOfPixels() / size0;
-  ProgressReporter progress( this, threadId, static_cast< SizeValueType >( numberOfLinesToProcess ) );
 
   const typename OutputImageType::IndexType outputOriginIndex = outputPtr->GetLargestPossibleRegion().GetIndex();
   // Walk the output region, and interpolate the input image
@@ -170,7 +168,6 @@ ExpandWithZerosImageFilter< TInputImage, TOutputImage >
       }
 
     outIt.NextLine();
-    progress.CompletedPixel();
     }
 }
 
