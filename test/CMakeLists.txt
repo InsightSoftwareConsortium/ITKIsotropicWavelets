@@ -4,10 +4,6 @@ set(Libraries
 
 set(IsotropicWaveletsTests
     #### Frequency Manipulation ###
-    # Iterator with Index.
-    itkFrequencyFFTLayoutImageRegionIteratorWithIndexTest.cxx
-    # BandPass Filter
-    itkFrequencyBandImageFilterTest.cxx
     # Resize
     itkFrequencyExpandTest.cxx
     itkFrequencyShrinkTest.cxx
@@ -296,17 +292,9 @@ itk_add_test(NAME itkShannonIsotropicWaveletTest
   COMMAND IsotropicWaveletsTestDriver itkShannonIsotropicWaveletTest)
 itk_add_test(NAME itkVowIsotropicWaveletTest
   COMMAND IsotropicWaveletsTestDriver itkVowIsotropicWaveletTest)
-# FrequencyIterator
-itk_add_test(NAME itkFrequencyFFTLayoutImageRegionIteratorWithIndexTest
-  COMMAND IsotropicWaveletsTestDriver itkFrequencyFFTLayoutImageRegionIteratorWithIndexTest)
 ##Ind2Sub
 itk_add_test(NAME itkInd2SubTest
   COMMAND IsotropicWaveletsTestDriver itkInd2SubTest)
-## BandPass
-itk_add_test(NAME itkFrequencyBandImageFilterEvenTest
-  COMMAND IsotropicWaveletsTestDriver itkFrequencyBandImageFilterTest "Even")
-itk_add_test(NAME itkFrequencyBandImageFilterOddTest
-  COMMAND IsotropicWaveletsTestDriver itkFrequencyBandImageFilterTest "Odd")
 ## ExpandWithZeros (in spatial domain)
 itk_add_test(NAME itkExpandWithZerosImageFilterTest2D
   COMMAND IsotropicWaveletsTestDriver itkExpandWithZerosImageFilterTest 2 3)
@@ -451,5 +439,3 @@ itk_python_expression_add_test(NAME itkFrequencyExpandViaInverseFFTImageFilterPy
   EXPRESSION "instance = itk.FrequencyExpandViaInverseFFTImageFilter.New()")
 itk_python_expression_add_test(NAME itkFrequencyShrinkViaInverseFFTImageFilterPythonTest
   EXPRESSION "instance = itk.FrequencyShrinkViaInverseFFTImageFilter.New()")
-itk_python_expression_add_test(NAME itkFrequencyBandImageFilterPythonTest
-  EXPRESSION "instance = itk.FrequencyBandImageFilter.New()")
