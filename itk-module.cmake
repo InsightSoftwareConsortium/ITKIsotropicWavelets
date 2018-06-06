@@ -14,6 +14,7 @@ itk_module(IsotropicWavelets
     ITKFFT
     ITKRegistrationCommon
     ITKConvolution
+    ITKImageFrequency
   TEST_DEPENDS
     ITKTestKernel
     ITKVtkGlue
@@ -29,6 +30,7 @@ itk_module(IsotropicWavelets
     ITKFFT
     ITKRegistrationCommon
     ITKConvolution
+    ITKImageFrequency
   TEST_DEPENDS
     ITKTestKernel
   EXCLUDE_FROM_DEFAULT
