@@ -18,18 +18,19 @@
 #ifndef itkRieszUtilities_h
 #define itkRieszUtilities_h
 
+#include <algorithm>
+#include <functional>
 #include <set>
 #include <vector>
-#include <functional>
-#include <algorithm>
+
+#include "IsotropicWaveletsExport.h"
 
 namespace itk
 {
 namespace utils
 {
 /// Factorial
-long
-Factorial(long n);
+IsotropicWavelets_EXPORT long Factorial(long n);
 
 /**
  * Compute number of components p(N, d), where N = Order, d = Dimension.
@@ -40,8 +41,9 @@ Factorial(long n);
  *
  * @return NumberOfComponents given the order for the ImageDimension.
  */
-unsigned int
-ComputeNumberOfComponents( const unsigned int & order, const unsigned int & dimension );
+IsotropicWavelets_EXPORT
+unsigned int ComputeNumberOfComponents( const unsigned int & order,
+    const unsigned int & dimension );
 
 /**
  * Compute all possible unique indices given the subIndex: (X, 0, ..., 0).
@@ -55,8 +57,8 @@ ComputeNumberOfComponents( const unsigned int & order, const unsigned int & dime
  * @param init position to evaluate  subIndex. Needed for recursion purposes.
  */
 template< typename TIndicesArrayType, unsigned int VImageDimension >
-void
-ComputeUniqueIndices( TIndicesArrayType subIndex,
+IsotropicWavelets_EXPORT
+void ComputeUniqueIndices( TIndicesArrayType subIndex,
   std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > & uniqueIndices,
   unsigned int init = 0 )
 {
@@ -99,6 +101,7 @@ ComputeUniqueIndices( TIndicesArrayType subIndex,
  * Compute all the permutations from a set of uniqueIndices.
  */
 template< typename TIndicesArrayType >
+IsotropicWavelets_EXPORT
 std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >
 ComputeAllPermutations(
   const std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > & uniqueIndices)
@@ -124,6 +127,7 @@ ComputeAllPermutations(
  * where \f$ \text{index}[i]>=0 \f$
  */
 template< typename TIndicesArrayType, unsigned int VImageDimension >
+IsotropicWavelets_EXPORT
 std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >
 ComputeAllPossibleIndices(const unsigned int & order)
 {
@@ -137,8 +141,8 @@ ComputeAllPossibleIndices(const unsigned int & order)
 }
 
 template< typename TIndicesArrayType, unsigned int VImageDimension >
-bool
-LessOrEqualIndiceComparisson(
+IsotropicWavelets_EXPORT
+bool LessOrEqualIndiceComparisson(
   const TIndicesArrayType& rhs,
   const TIndicesArrayType& lhs)
 {
