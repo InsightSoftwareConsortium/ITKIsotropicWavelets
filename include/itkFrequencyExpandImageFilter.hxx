@@ -121,7 +121,6 @@ FrequencyExpandImageFilter< TImageType >
   typename TImageType::SizeType inputSize = inputPtr->GetLargestPossibleRegion().GetSize();
   typename TImageType::IndexType inputOriginIndex = inputPtr->GetLargestPossibleRegion().GetIndex();
   typename TImageType::SizeType outputSize = outputPtr->GetLargestPossibleRegion().GetSize();
-  FixedArray< bool, TImageType::ImageDimension > inputSizeIsEven;
 
   const typename TImageType::IndexType indexRequested = outputPtr->GetLargestPossibleRegion().GetIndex();
 
@@ -273,7 +272,7 @@ FrequencyExpandImageFilter< TImageType >
   typename TImageType::IndexType outputStartIndex;
   typename TImageType::PointType outputOrigin;
 
-  typename TImageType::SpacingType inputOriginShift;
+  //typename TImageType::SpacingType inputOriginShift;
   for ( unsigned int i = 0; i < TImageType::ImageDimension; i++ )
     {
     outputSpacing[i]    = inputSpacing[i] / m_ExpandFactors[i];

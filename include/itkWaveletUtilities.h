@@ -58,7 +58,7 @@ namespace utils
    * returns 1 if any size is not divisible by the scale factor.
    */
 template < unsigned int VImageDimension >
-IsotropicWavelets_EXPORT unsigned int ComputeMaxNumberOfLevels(
+ITK_TEMPLATE_EXPORT unsigned int ComputeMaxNumberOfLevels(
   const Size< VImageDimension >& inputSize, const unsigned int & scaleFactor)
   {
   FixedArray< unsigned int, VImageDimension > exponentPerAxis;

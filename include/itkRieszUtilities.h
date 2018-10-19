@@ -23,6 +23,8 @@
 #include <set>
 #include <vector>
 
+#include "itkMacro.h"
+
 #include "IsotropicWaveletsExport.h"
 
 namespace itk
@@ -57,7 +59,7 @@ unsigned int ComputeNumberOfComponents( const unsigned int & order,
  * @param init position to evaluate  subIndex. Needed for recursion purposes.
  */
 template< typename TIndicesArrayType, unsigned int VImageDimension >
-IsotropicWavelets_EXPORT
+ITK_TEMPLATE_EXPORT
 void ComputeUniqueIndices( TIndicesArrayType subIndex,
   std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > & uniqueIndices,
   unsigned int init = 0 )
@@ -101,7 +103,7 @@ void ComputeUniqueIndices( TIndicesArrayType subIndex,
  * Compute all the permutations from a set of uniqueIndices.
  */
 template< typename TIndicesArrayType >
-IsotropicWavelets_EXPORT
+ITK_TEMPLATE_EXPORT
 std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >
 ComputeAllPermutations(
   const std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > & uniqueIndices)
@@ -127,7 +129,7 @@ ComputeAllPermutations(
  * where \f$ \text{index}[i]>=0 \f$
  */
 template< typename TIndicesArrayType, unsigned int VImageDimension >
-IsotropicWavelets_EXPORT
+ITK_TEMPLATE_EXPORT
 std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >
 ComputeAllPossibleIndices(const unsigned int & order)
 {
@@ -141,7 +143,7 @@ ComputeAllPossibleIndices(const unsigned int & order)
 }
 
 template< typename TIndicesArrayType, unsigned int VImageDimension >
-IsotropicWavelets_EXPORT
+ITK_TEMPLATE_EXPORT
 bool LessOrEqualIndiceComparisson(
   const TIndicesArrayType& rhs,
   const TIndicesArrayType& lhs)

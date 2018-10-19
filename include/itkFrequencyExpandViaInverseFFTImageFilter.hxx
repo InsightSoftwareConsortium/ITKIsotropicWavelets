@@ -212,7 +212,6 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
   typename TImageType::IndexType outputStartIndex;
   typename TImageType::PointType outputOrigin;
 
-  typename TImageType::SpacingType inputOriginShift;
   for ( unsigned int i = 0; i < TImageType::ImageDimension; i++ )
     {
     outputSpacing[i]    = inputSpacing[i] / m_ExpandFactors[i];
