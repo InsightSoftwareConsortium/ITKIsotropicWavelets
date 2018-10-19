@@ -7,35 +7,23 @@ Cerdan, P.H. \"ITK Wavelet Module\".
   September, 2016.
 ")
 
+set(VTKGlueModule "")
 if(ITKVtkGlue_ENABLED)
-itk_module(IsotropicWavelets
-  DEPENDS
-    ITKImageFunction
-    ITKFFT
-    ITKRegistrationCommon
-    ITKConvolution
-    ITKImageFrequency
-  TEST_DEPENDS
-    ITKTestKernel
-    ITKVtkGlue
-  EXCLUDE_FROM_DEFAULT
-  ENABLE_SHARED
-  DESCRIPTION
-  "${DOCUMENTATION}"
-  )
-else()
-itk_module(IsotropicWavelets
-  DEPENDS
-    ITKImageFunction
-    ITKFFT
-    ITKRegistrationCommon
-    ITKConvolution
-    ITKImageFrequency
-  TEST_DEPENDS
-    ITKTestKernel
-  EXCLUDE_FROM_DEFAULT
-  ENABLE_SHARED
-  DESCRIPTION
-  "${DOCUMENTATION}"
-  )
+    set(VTKGlueModule ITKVtkGlue)
 endif()
+
+itk_module(IsotropicWavelets
+  DEPENDS
+    ITKImageFunction
+    ITKFFT
+    ITKRegistrationCommon
+    ITKConvolution
+    ITKImageFrequency
+  TEST_DEPENDS
+    ITKTestKernel
+    ${VTKGlueModule}
+  EXCLUDE_FROM_DEFAULT
+  ENABLE_SHARED
+  DESCRIPTION
+  "${DOCUMENTATION}"
+  )
