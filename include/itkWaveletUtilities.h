@@ -18,12 +18,14 @@
 #ifndef itkWaveletUtilities_h
 #define itkWaveletUtilities_h
 
-#include <vector>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <vector>
 #include <itkFixedArray.h>
 #include <itkMath.h>
 #include <itkSize.h>
+
+#include "IsotropicWaveletsExport.h"
 
 namespace itk
 {
@@ -47,8 +49,8 @@ namespace utils
    *
    * Note that bands and levels are always >= 1. The level/bands returned here corresponds to an index.
    */
-  IndexPairType IndexToLevelBandSteerablePyramid(unsigned int linearIndex,
-      unsigned int levels, unsigned int bands);
+  IsotropicWavelets_EXPORT IndexPairType IndexToLevelBandSteerablePyramid(
+    unsigned int linearIndex, unsigned int levels, unsigned int bands);
 
   /** Compute max number of levels depending on the size of the image.
    * Return J: $ J = \text{min_element}\{J_0,\ldots, J_d\} $;
@@ -56,7 +58,8 @@ namespace utils
    * returns 1 if any size is not divisible by the scale factor.
    */
 template < unsigned int VImageDimension >
-unsigned int ComputeMaxNumberOfLevels(const Size< VImageDimension >& inputSize, const unsigned int & scaleFactor)
+ITK_TEMPLATE_EXPORT unsigned int ComputeMaxNumberOfLevels(
+  const Size< VImageDimension >& inputSize, const unsigned int & scaleFactor)
   {
   FixedArray< unsigned int, VImageDimension > exponentPerAxis;
   // The minimum level is 1.
