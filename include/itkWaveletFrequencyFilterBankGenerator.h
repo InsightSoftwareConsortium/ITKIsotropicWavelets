@@ -22,6 +22,7 @@
 #include <complex>
 #include <itkGenerateImageSource.h>
 #include <itkFrequencyFFTLayoutImageRegionIteratorWithIndex.h>
+#include <itkVectorContainer.h>
 
 namespace itk
 {
@@ -78,8 +79,8 @@ public:
   using WaveletFunctionPointer = typename WaveletFunctionType::Pointer;
   using FunctionValueType = typename WaveletFunctionType::FunctionValueType;
 
-  using OutputsType = typename std::vector<OutputImagePointer>;
-  // using OutputsType = typename itk::VectorContainer<int, OutputImagePointer>;
+  using OutputsType = typename itk::VectorContainer<unsigned int, OutputImagePointer>;
+  using OutputsTypePointer = typename OutputsType::Pointer;
 
   static constexpr unsigned int ImageDimension = TOutputImage::ImageDimension;
 
@@ -115,10 +116,10 @@ public:
   OutputImagePointer GetOutputSubBand(unsigned int k);
 
   /** Returns all the outputs, starting at low-pass to highest subband*/
-  OutputsType GetOutputsAll();
+  OutputsTypePointer GetOutputsAll();
 
   /** Returns all the high pass subbands in ascending order, but not the low pass*/
-  OutputsType GetOutputsHighPassBands();
+  OutputsTypePointer GetOutputsHighPassBands();
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /// This ensure that OutputPixelType is complex<float||double>

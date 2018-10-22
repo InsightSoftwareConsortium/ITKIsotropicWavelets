@@ -130,7 +130,7 @@ runRieszRotationMatrixInterfaceWithRieszFrequencyFilterBankGeneratorTest()
   }
 
   auto imagesMultipliedByRieszRotationMatrix =
-    S.MultiplyWithVectorOfImages<ImageType>(images);
+    S.MultiplyWithVectorOfImages<std::vector<ImagePointer>>(images);
   std::cout << "Size: ";
   std::cout << imagesMultipliedByRieszRotationMatrix.size() << std::endl;
 

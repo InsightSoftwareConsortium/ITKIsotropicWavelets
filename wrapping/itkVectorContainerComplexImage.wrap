@@ -1,0 +1,9 @@
+itk_wrap_class("itk::VectorContainer" POINTER)
+  # used in IsotropicWavelets (outputs/inputs)
+  foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    foreach(tc ${WRAP_ITK_COMPLEX_REAL})
+      itk_wrap_template("${ITKM_UI}${ITKM_I${tc}${d}}" "${ITKT_UI}, ${ITKT_I${tc}${d}}::Pointer")
+    endforeach()
+  endforeach()
+itk_end_wrap_class()
+

@@ -45,6 +45,7 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
 {
   this->SetNumberOfRequiredOutputs(1);
   this->m_WaveletFilterBank = WaveletFilterBankType::New();
+  this->m_WaveletFilterBankPyramid = InputsType::New();
 }
 
 template< typename TInputImage,
@@ -110,18 +111,18 @@ template< typename TInputImage,
 void
 WaveletFrequencyInverse< TInputImage, TOutputImage,
   TWaveletFilterBank, TFrequencyExpandFilterType >
-::SetInputs(const InputsType & inputs)
+::SetInputs( const InputsTypePointer & inputs)
 {
-  if ( inputs.size() != this->m_TotalInputs )
+  if ( inputs->size() != this->m_TotalInputs )
     {
     itkExceptionMacro(<< "Error seting inputs in inverse wavelet. Wrong vector size: "
-                      << inputs.size() << " .According to number of levels and bands it should be: " << m_TotalInputs);
+                      << inputs->size() << " .According to number of levels and bands it should be: " << m_TotalInputs);
     }
   for ( unsigned int nin = 0; nin < this->m_TotalInputs; ++nin )
     {
-    if ( this->GetInput(nin) != inputs[nin] )
+    if ( this->GetInput(nin) != inputs->ElementAt(nin) )
       {
-      this->SetNthInput(nin, inputs[nin]);
+      this->SetNthInput(nin, inputs->ElementAt(nin));
       }
     }
 }
@@ -145,17 +146,17 @@ template< typename TInputImage,
 void
 WaveletFrequencyInverse< TInputImage, TOutputImage,
   TWaveletFilterBank, TFrequencyExpandFilterType >
-::SetInputsHighPass(const InputsType & inputs)
+::SetInputsHighPass( const InputsTypePointer & inputs)
 {
-  if ( inputs.size() != this->m_TotalInputs - 1 )
+  if ( inputs->size() != this->m_TotalInputs - 1 )
     {
     itkExceptionMacro(<< "Error seting inputs in inverse wavelet. Wrong vector size: "
-                      << inputs.size() << " .According to number of levels and bands it should be: " << m_TotalInputs
+                      << inputs->size() << " .According to number of levels and bands it should be: " << m_TotalInputs
         - 1);
     }
   for ( unsigned int nin = 0; nin < this->m_TotalInputs - 1; ++nin )
     {
-    this->SetNthInput(nin, inputs[nin]);
+    this->SetNthInput(nin, inputs->ElementAt(nin));
     }
 }
 
@@ -381,7 +382,7 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
       }
     else
       {
-      waveletLow = this->m_WaveletFilterBankPyramid[level * (1 + this->m_HighPassSubBands)];
+      waveletLow = this->m_WaveletFilterBankPyramid->ElementAt(level * (1 + this->m_HighPassSubBands));
       }
     itkDebugMacro(<< "waveletLow: " << level << " Region:" << waveletLow->GetLargestPossibleRegion() );
 
@@ -405,17 +406,17 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
     low_pass_per_level = multiplyLowPass->GetOutput();
 
     /******* HighPass sub-bands *****/
-    InputsType highPassMasks;
+     auto highPassMasks = InputsType::New();
     if ( !this->m_UseWaveletFilterBankPyramid )
       {
       highPassMasks = this->m_WaveletFilterBank->GetOutputsHighPassBands();
       }
     else
       {
-      highPassMasks.insert(highPassMasks.begin(),
-        this->m_WaveletFilterBankPyramid.begin()
+      highPassMasks->insert(highPassMasks->begin(),
+        this->m_WaveletFilterBankPyramid->begin()
         + 1 + level * (1 + this->m_HighPassSubBands),
-        this->m_WaveletFilterBankPyramid.begin()
+        this->m_WaveletFilterBankPyramid->begin()
         + this->m_HighPassSubBands + 1 + level * (1 + this->m_HighPassSubBands) );
       }
     // Store HighBands steps into high_pass_reconstruction image:
@@ -432,7 +433,7 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
       reconstructed->SetOrigin(bandInputImage->GetOrigin());
 
       auto changeWaveletHighInfoFilter = ChangeInformationFilterType::New();
-      changeWaveletHighInfoFilter->SetInput(highPassMasks[band]);
+      changeWaveletHighInfoFilter->SetInput(highPassMasks->ElementAt(band));
       changeWaveletHighInfoFilter->UseReferenceImageOn();
       changeWaveletHighInfoFilter->SetReferenceImage( bandInputImage );
       changeWaveletHighInfoFilter->ChangeDirectionOff();
@@ -440,11 +441,11 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
       changeWaveletHighInfoFilter->ChangeSpacingOn();
       changeWaveletHighInfoFilter->ChangeOriginOn();
       changeWaveletHighInfoFilter->UpdateLargestPossibleRegion();
-      highPassMasks[band] = changeWaveletHighInfoFilter->GetOutput();
-      highPassMasks[band]->DisconnectPipeline();
+      highPassMasks->ElementAt(band) = changeWaveletHighInfoFilter->GetOutput();
+      highPassMasks->ElementAt(band)->DisconnectPipeline();
 
       auto multiplyHighBandFilter = MultiplyFilterType::New();
-      multiplyHighBandFilter->SetInput1(highPassMasks[band]);
+      multiplyHighBandFilter->SetInput1(highPassMasks->ElementAt(band));
       multiplyHighBandFilter->SetInput2(bandInputImage);
       multiplyHighBandFilter->UpdateLargestPossibleRegion();
 

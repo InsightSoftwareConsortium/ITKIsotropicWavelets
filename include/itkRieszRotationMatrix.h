@@ -61,8 +61,8 @@ public:
    * To perform the rotation with the output of
    * \ref RieszFrequencyFilterBankGenerator.
    */
-  template <typename TImage>
-  std::vector< typename TImage::Pointer > MultiplyWithVectorOfImages(const std::vector< typename TImage::Pointer > & vect) const;
+  template <typename TImagesVectorContainer>
+  TImagesVectorContainer MultiplyWithVectorOfImages(const TImagesVectorContainer & vect) const;
 
   /**
    * Multi-index notation

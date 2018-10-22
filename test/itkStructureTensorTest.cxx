@@ -125,9 +125,9 @@ runStructureTensorTest()
     tensor->GetModifiableGaussianSource();
   gaussianSource = StructureTensorType::GaussianSourceType::New();
 
-  std::vector< typename ImageType::Pointer > inputs;
-  inputs.push_back( inputImage1 );
-  inputs.push_back( inputImage2 );
+  auto inputs = StructureTensorType::InputsType::New();
+  inputs->push_back( inputImage1 );
+  inputs->push_back( inputImage2 );
   tensor->SetInputs( inputs );
   tensor->Update();
 

@@ -89,11 +89,9 @@ runWaveletFrequencyForwardUndecimatedTest( const std::string& inputImage,
   forwardWavelet->Update();
 
   // Regression tests
-  using OutputsType = typename ForwardWaveletType::OutputsType;
-  OutputsType allOutputs =
-    forwardWavelet->GetOutputs();
+  auto allOutputs = forwardWavelet->GetOutputs();
   unsigned int expectedNumberOfOutputs = forwardWavelet->GetTotalOutputs();
-  unsigned int computedNumberOfOutputs = forwardWavelet->GetOutputs().size();
+  unsigned int computedNumberOfOutputs = forwardWavelet->GetOutputs()->size();
   if ( computedNumberOfOutputs != expectedNumberOfOutputs )
     {
     std::cerr << "Error in GetTotalOutputs()" << std::endl;
@@ -105,11 +103,11 @@ runWaveletFrequencyForwardUndecimatedTest( const std::string& inputImage,
   typename ForwardWaveletType::OutputImagePointer lowPass =
     forwardWavelet->GetOutputLowPass();
 
-  OutputsType allHighSubBands = forwardWavelet->GetOutputsHighPass();
+  auto allHighSubBands = forwardWavelet->GetOutputsHighPass();
   unsigned int expectedNumberOfHighSubBands =
     forwardWavelet->GetTotalOutputs() - 1;
   unsigned int computedNumberOfHighSubBands =
-    forwardWavelet->GetOutputsHighPass().size();
+    forwardWavelet->GetOutputsHighPass()->size();
   if ( computedNumberOfHighSubBands != expectedNumberOfHighSubBands )
     {
     std::cerr << "Error in GetOutputsHighPass()" << std::endl;
@@ -118,11 +116,11 @@ runWaveletFrequencyForwardUndecimatedTest( const std::string& inputImage,
     testPassed = false;
     }
 
-  OutputsType highSubBandsPerLevel = forwardWavelet->GetOutputsHighPassByLevel(0);
+  auto highSubBandsPerLevel = forwardWavelet->GetOutputsHighPassByLevel(0);
   unsigned int expectedNumberOfHighSubBandsPerLevel =
     forwardWavelet->GetHighPassSubBands();
   unsigned int computedNumberOfHighSubBandsPerLevel =
-    forwardWavelet->GetOutputsHighPassByLevel( 0 ).size();
+    forwardWavelet->GetOutputsHighPassByLevel( 0 )->size();
   if ( computedNumberOfHighSubBandsPerLevel != expectedNumberOfHighSubBandsPerLevel )
     {
     std::cerr << "Error in GetOutputsHighPassByLevel()" << std::endl;

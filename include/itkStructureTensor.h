@@ -25,6 +25,7 @@
 #include <itkVariableSizeMatrix.h>
 #include <itkSymmetricSecondRankTensor.h>
 #include <itkGaussianImageSource.h>
+#include <itkVectorContainer.h>
 namespace itk
 {
 /** \class StructureTensor
@@ -133,10 +134,10 @@ public:
   using SymmetricEigenAnalysisType = itk::SymmetricEigenAnalysis<EigenMatrixType, EigenValuesType>;
   using GaussianSourceType = GaussianImageSource< FloatImageType >;
 
-  using InputsType = typename std::vector<InputImagePointer>;
-  // using InputsType = typename itk::VectorContainer<int, InputImagePointer>;
-  //
-  void SetInputs(const InputsType & inputs);
+  using InputsType = typename itk::VectorContainer<unsigned int, InputImagePointer>;
+  using InputsTypePointer = typename InputsType::Pointer;
+
+  void SetInputs(const InputsTypePointer & inputs);
 
   /**
   * Set/Get Radius of the gaussian window.
@@ -204,7 +205,7 @@ private:
   unsigned int                         m_GaussianWindowRadius;
   FloatType                            m_GaussianWindowSigma;
   typename GaussianSourceType::Pointer m_GaussianSource;
-  InputsType                           m_SquareSmoothedImages;
+  InputsTypePointer                    m_SquareSmoothedImages;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION

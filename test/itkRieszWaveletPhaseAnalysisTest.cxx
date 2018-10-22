@@ -107,8 +107,8 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   forwardWavelet->SetLevels( levels );
   forwardWavelet->SetInput( fftForwardFilter->GetOutput() );
   forwardWavelet->Update();
-  typename ForwardWaveletType::OutputsType analysisWavelets =
-    forwardWavelet->GetOutputs();
+  auto analysisWavelets = ForwardWaveletType::OutputsType::New();
+  analysisWavelets = forwardWavelet->GetOutputs();
 
   // Apply Monogenic signal to wavelet results
   using MonogenicSignalFrequencyFilterType = itk::MonogenicSignalFrequencyImageFilter< ComplexImageType >;
@@ -116,7 +116,7 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
   using VectorInverseFFTType = itk::VectorInverseFFTImageFilter< VectorMonoOutputType >;
   using PhaseAnalysisFilter = itk::PhaseAnalysisSoftThresholdImageFilter< typename VectorInverseFFTType::OutputImageType >;
 
-  typename ForwardWaveletType::OutputsType modifiedWavelets;
+  auto modifiedWavelets = ForwardWaveletType::OutputsType::New();
   unsigned int numberOfOutputs = forwardWavelet->GetNumberOfOutputs();
   for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
     {
@@ -128,7 +128,7 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     // In 3D, the best results are following Held: 64, M = 6, choose M - 3 = 3
     if( i == numberOfOutputs - 1 )
       {
-      modifiedWavelets.push_back( analysisWavelets[i] );
+      modifiedWavelets->push_back( analysisWavelets->ElementAt(i) );
       continue;
       }
     auto monoFilter = MonogenicSignalFrequencyFilterType::New();
@@ -137,7 +137,7 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     auto fftForwardPhaseFilter = FFTForwardFilterType::New();
 
     // Generate a monogenic signal (vector valued)
-    monoFilter->SetInput( analysisWavelets[i] );
+    monoFilter->SetInput( analysisWavelets->ElementAt(i) );
     monoFilter->Update();
 
     vecInverseFFT->SetInput( monoFilter->GetOutput() );
@@ -154,8 +154,8 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     fftForwardPhaseFilter->SetInput( phaseAnalyzer->GetOutputCosPhase() );
     fftForwardPhaseFilter->Update();
 
-    modifiedWavelets.push_back( fftForwardPhaseFilter->GetOutput() );
-    modifiedWavelets.back()->DisconnectPipeline();
+    modifiedWavelets->push_back( fftForwardPhaseFilter->GetOutput() );
+    modifiedWavelets->back()->DisconnectPipeline();
     }
 
 #ifdef ITK_VISUALIZE_TESTS
@@ -166,10 +166,10 @@ runRieszWaveletPhaseAnalysisTest( const std::string& inputImage,
     for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
       {
       auto inverseFFT = InverseFFTFilterType::New();
-      inverseFFT->SetInput(analysisWavelets[i]);
+      inverseFFT->SetInput(analysisWavelets->ElementAt(i));
       inverseFFT->Update();
       itk::ViewImage<ImageType>::View( inverseFFT->GetOutput(), "WaveletCoef: output #" + n2s(i) );
-      inverseFFT->SetInput(modifiedWavelets[i]);
+      inverseFFT->SetInput(modifiedWavelets->ElementAt(i));
       inverseFFT->Update();
       itk::ViewImage<ImageType>::View( inverseFFT->GetOutput(), "WaveletCoef. PhaseAnalyzed #" + n2s(i) );
       }

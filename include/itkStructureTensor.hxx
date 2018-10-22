@@ -38,6 +38,7 @@ StructureTensor< TInputImage, TOutputImage >
   m_GaussianWindowSigma(1.0)
 {
   this->m_GaussianSource = GaussianSourceType::New();
+  this->m_SquareSmoothedImages = InputsType::New();
 
   this->DynamicMultiThreadingOn();
 }
@@ -45,19 +46,19 @@ StructureTensor< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 StructureTensor< TInputImage, TOutputImage >
-::SetInputs(const InputsType & inputs)
+::SetInputs(const InputsTypePointer & inputs)
 {
-  if ( inputs.size() <= 1 )
+  if ( inputs->size() <= 1 )
     {
     itkExceptionMacro(
         << "StructureTensor requires at least 2 input images. Current size of input vector in SetInputs: "
-        << inputs.size());
+        << inputs->size());
     }
-  for ( unsigned int nin = 0; nin < inputs.size(); ++nin )
+  for ( unsigned int nin = 0; nin < inputs->size(); ++nin )
     {
-    if ( this->GetInput(nin) != inputs[nin] )
+    if ( this->GetInput(nin) != inputs->ElementAt(nin) )
       {
-      this->SetNthInput(nin, inputs[nin]);
+      this->SetNthInput(nin, inputs->ElementAt(nin));
       }
     }
 }
@@ -131,8 +132,8 @@ StructureTensor< TInputImage, TOutputImage >
       multiply->Update();
       convolve->SetInput(multiply->GetOutput());
       convolve->Update();
-      this->m_SquareSmoothedImages.push_back(convolve->GetOutput());
-      this->m_SquareSmoothedImages.back()->DisconnectPipeline();
+      this->m_SquareSmoothedImages->push_back(convolve->GetOutput());
+      this->m_SquareSmoothedImages->back()->DisconnectPipeline();
       }
     }
 }
@@ -172,7 +173,7 @@ StructureTensor< TInputImage, TOutputImage >
       {
       unsigned int linear_index = this->LowerTriangleToLinearIndex(m, n);
       inputIts.push_back(
-        InputImageConstIterator(this->m_SquareSmoothedImages[linear_index], outputRegionForThread) );
+        InputImageConstIterator(this->m_SquareSmoothedImages->ElementAt(linear_index), outputRegionForThread) );
       inputIts.back().GoToBegin();
       }
     }

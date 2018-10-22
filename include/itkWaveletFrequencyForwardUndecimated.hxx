@@ -41,6 +41,7 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
 {
   this->SetNumberOfRequiredInputs(1);
   m_WaveletFilterBank = WaveletFilterBankType::New();
+  m_WaveletFilterBankPyramid = OutputsType::New();
 }
 
 template< typename TInputImage,
@@ -59,15 +60,15 @@ template< typename TInputImage,
   typename TOutputImage,
   typename TWaveletFilterBank >
 typename WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
-    TWaveletFilterBank >::OutputsType
+    TWaveletFilterBank >::OutputsTypePointer
 WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
   TWaveletFilterBank >
 ::GetOutputs()
 {
-  OutputsType outputPtrs;
+  auto outputPtrs = OutputsType::New();
   for ( unsigned int nout = 0; nout < this->m_TotalOutputs; ++nout )
     {
-    outputPtrs.push_back(this->GetOutput(nout));
+    outputPtrs->push_back(this->GetOutput(nout));
     }
   return outputPtrs;
 }
@@ -76,15 +77,15 @@ template< typename TInputImage,
   typename TOutputImage,
   typename TWaveletFilterBank >
 typename WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
-    TWaveletFilterBank >::OutputsType
+    TWaveletFilterBank >::OutputsTypePointer
 WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
   TWaveletFilterBank >
 ::GetOutputsHighPass()
 {
-  OutputsType outputPtrs;
+  auto outputPtrs = OutputsType::New();
   for ( unsigned int nout = 1; nout < this->m_TotalOutputs; ++nout )
     {
-    outputPtrs.push_back(this->GetOutput(nout));
+    outputPtrs->push_back(this->GetOutput(nout));
     }
   return outputPtrs;
 }
@@ -105,12 +106,12 @@ template< typename TInputImage,
   typename TOutputImage,
   typename TWaveletFilterBank >
 typename WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
-    TWaveletFilterBank >::OutputsType
+    TWaveletFilterBank >::OutputsTypePointer
 WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
   TWaveletFilterBank >
 ::GetOutputsHighPassByLevel(unsigned int level)
 {
-  OutputsType outputPtrs;
+  auto outputPtrs = OutputsType::New();
   unsigned int nOutput_start =  level * this->m_HighPassSubBands;
   unsigned int nOutput_end   = (level + 1) * this->m_HighPassSubBands;
   if ( nOutput_end > this->m_TotalOutputs )
@@ -119,7 +120,7 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
     }
   for ( unsigned int nOutput = nOutput_start; nOutput < nOutput_end; ++nOutput )
     {
-    outputPtrs.push_back(this->GetOutput(nOutput));
+    outputPtrs->push_back(this->GetOutput(nOutput));
     }
   return outputPtrs;
 }
@@ -319,7 +320,7 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
   this->AllocateOutputs();
 
   // note: clear reduces size to zero, but doesn't change capacity.
-  m_WaveletFilterBankPyramid.clear();
+  m_WaveletFilterBankPyramid->clear();
 
   using CastFilterType = itk::CastImageFilter< InputImageType, OutputImageType >;
   auto castFilter = CastFilterType::New();
@@ -348,14 +349,14 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
   this->m_WaveletFilterBank->SetHighPassSubBands(this->m_HighPassSubBands);
   this->m_WaveletFilterBank->SetSize(changeInputInfoFilter->GetOutput()->GetLargestPossibleRegion().GetSize() );
   this->m_WaveletFilterBank->Update();
-  OutputsType highPassWavelets = this->m_WaveletFilterBank->GetOutputsHighPassBands();
+  auto highPassWavelets = this->m_WaveletFilterBank->GetOutputsHighPassBands();
   OutputImagePointer lowPassWavelet = this->m_WaveletFilterBank->GetOutputLowPass();
 
   if ( this->m_StoreWaveletFilterBankPyramid )
     {
     for ( unsigned int bankOutput = 0; bankOutput < this->m_HighPassSubBands + 1; ++bankOutput )
       {
-      this->m_WaveletFilterBankPyramid.push_back(this->m_WaveletFilterBank->GetOutput(bankOutput));
+      this->m_WaveletFilterBankPyramid->push_back(this->m_WaveletFilterBank->GetOutput(bankOutput));
       }
     }
 
@@ -365,14 +366,14 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
   for ( unsigned int level = 0; level < this->m_Levels; ++level )
     {
     /******* Set HighPass bands *****/
-    itkDebugMacro(<< "Number of FilterBank high pass bands: " << highPassWavelets.size() );
+    itkDebugMacro(<< "Number of FilterBank high pass bands: " << highPassWavelets->size() );
     for ( unsigned int band = 0; band < this->m_HighPassSubBands; ++band )
       {
       unsigned int n_output = level * this->m_HighPassSubBands + band;
       /******* Band dilation factor for HighPass bands *****/
       //  2^(1/#bands) instead of Dyadic dilations.
       auto multiplyByAnalysisBandFactor = MultiplyFilterType::New();
-      multiplyByAnalysisBandFactor->SetInput1(highPassWavelets[band]);
+      multiplyByAnalysisBandFactor->SetInput1(highPassWavelets->ElementAt(band));
       // double expBandFactor = 0;
       // double expBandFactor = - static_cast<double>(level*ImageDimension)/2.0;
       double expBandFactor = ( -static_cast< double >(level + 1)
@@ -424,15 +425,15 @@ WaveletFrequencyForwardUndecimated< TInputImage, TOutputImage,
       highPassWavelets = m_WaveletFilterBank->GetOutputsHighPassBands();
       for ( unsigned int band = 0; band < this->m_HighPassSubBands; ++band )
         {
-        highPassWavelets[band]->DisconnectPipeline();
+        highPassWavelets->ElementAt(band)->DisconnectPipeline();
         }
 
       if ( this->m_StoreWaveletFilterBankPyramid )
         {
-        m_WaveletFilterBankPyramid.push_back(lowPassWavelet);
+        m_WaveletFilterBankPyramid->push_back(lowPassWavelet);
         for ( unsigned int band = 0; band < this->m_HighPassSubBands; ++band )
           {
-          m_WaveletFilterBankPyramid.push_back(highPassWavelets[band]);
+          m_WaveletFilterBankPyramid->push_back(highPassWavelets->ElementAt(band));
           }
         }
       } // end update inputPerLevel

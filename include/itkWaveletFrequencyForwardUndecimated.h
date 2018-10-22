@@ -24,6 +24,7 @@
 #include <complex>
 #include <itkFixedArray.h>
 #include <itkImageToImageFilter.h>
+#include <itkVectorContainer.h>
 
 namespace itk
 {
@@ -63,8 +64,8 @@ public:
   using OutputImagePointer = typename Superclass::OutputImagePointer;
   using InputImageConstPointer = typename Superclass::InputImageConstPointer;
 
-  using OutputsType = typename std::vector<OutputImagePointer>;
-  // using OutputsType = typename itk::VectorContainer<int, OutputImagePointer>;
+  using OutputsType = typename itk::VectorContainer<unsigned int, OutputImagePointer>;
+  using OutputsTypePointer = typename OutputsType::Pointer;
 
   using OutputRegionIterator = typename itk::ImageRegionIterator<OutputImageType>;
   using InputRegionConstIterator = typename itk::ImageRegionConstIterator<InputImageType>;
@@ -111,7 +112,7 @@ public:
   itkGetMacro(StoreWaveletFilterBankPyramid, bool)
   itkBooleanMacro(StoreWaveletFilterBankPyramid);
 
-  itkGetMacro(WaveletFilterBankPyramid, OutputsType);
+  itkGetMacro(WaveletFilterBankPyramid, OutputsTypePointer);
 
   /** Compute max number of levels depending on the size of the image.
    * Return J: $ J = \text{min_element}\{J_0,\ldots, J_d\} $;
@@ -129,13 +130,13 @@ public:
   IndexPairType OutputIndexToLevelBand(unsigned int linear_index);
 
   /** Retrieve outputs */
-  OutputsType GetOutputs();
+  OutputsTypePointer GetOutputs();
 
-  OutputsType GetOutputsHighPass();
+  OutputsTypePointer GetOutputsHighPass();
 
   OutputImagePointer GetOutputLowPass();
 
-  OutputsType GetOutputsHighPassByLevel(unsigned int level);
+  OutputsTypePointer GetOutputsHighPassByLevel(unsigned int level);
 
 protected:
   WaveletFrequencyForwardUndecimated();
@@ -180,7 +181,7 @@ private:
   unsigned int             m_ScaleFactor;
   WaveletFilterBankPointer m_WaveletFilterBank;
   bool                     m_StoreWaveletFilterBankPyramid;
-  OutputsType              m_WaveletFilterBankPyramid;
+  OutputsTypePointer       m_WaveletFilterBankPyramid;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION

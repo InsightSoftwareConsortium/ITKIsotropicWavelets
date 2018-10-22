@@ -106,28 +106,28 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
 
 template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator >
 typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction,
-    TFrequencyRegionIterator >::OutputsType
+    TFrequencyRegionIterator >::OutputsTypePointer
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator >
 ::GetOutputsAll()
 {
-  OutputsType outputList;
+  auto outputList = OutputsType::New();
   for ( unsigned int band = 0; band < this->m_HighPassSubBands + 1; ++band )
     {
-    outputList.push_back(this->GetOutputSubBand(band));
+    outputList->push_back(this->GetOutputSubBand(band));
     }
   return outputList;
 }
 
 template< typename TOutputImage, typename TWaveletFunction, typename TFrequencyRegionIterator >
 typename WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction,
-    TFrequencyRegionIterator >::OutputsType
+    TFrequencyRegionIterator >::OutputsTypePointer
 WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyRegionIterator >
 ::GetOutputsHighPassBands()
 {
-  OutputsType outputList;
+  auto outputList = OutputsType::New();
   for ( unsigned int band = 1; band < this->m_HighPassSubBands + 1; ++band )
     {
-    outputList.push_back(this->GetOutputSubBand(band));
+    outputList->push_back(this->GetOutputSubBand(band));
     }
   return outputList;
 }
@@ -140,18 +140,18 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
   this->m_WaveletFunction->SetHighPassSubBands(this->m_HighPassSubBands);
 
   /***************** Allocate Outputs *****************/
-  std::vector< OutputImagePointer > outputList;
+  auto outputList = OutputsType::New();
   std::vector< OutputRegionIterator > outputItList;
   for ( unsigned int band = 0; band < this->m_HighPassSubBands + 1; ++band )
     {
-    outputList.push_back(this->GetOutput(band));
-    OutputImagePointer& outputPtr = outputList.back();
+    outputList->push_back(this->GetOutput(band));
+    OutputImagePointer& outputPtr = outputList->back();
     // TODO maybe you need a GenerateOutputInformation instead of setting here metadata.
     // outputPtr->SetOrigin(this->GetOrigin());
     // outputPtr->SetSpacing(this->GetSpacing());
     // outputPtr->SetDirection(this->GetDirection());
     // GenerateImageSource superclass allocates primary output, so use its region.
-    outputPtr->SetRegions(outputList[0]->GetLargestPossibleRegion());
+    outputPtr->SetRegions(outputList->ElementAt(0)->GetLargestPossibleRegion());
     outputPtr->Allocate();
     outputPtr->FillBuffer(0);
     outputItList.push_back(OutputRegionIterator(outputPtr, outputPtr->GetRequestedRegion()));
@@ -161,7 +161,7 @@ WaveletFrequencyFilterBankGenerator< TOutputImage, TWaveletFunction, TFrequencyR
   /***************** Set Outputs *****************/
   FunctionValueType w(0);
   // Iterator to calculate frequency modulo only once (optimization)
-  OutputRegionIterator frequencyIt(outputList[0], outputList[0]->GetRequestedRegion());
+  OutputRegionIterator frequencyIt(outputList->ElementAt(0), outputList->ElementAt(0)->GetRequestedRegion());
   for ( frequencyIt.GoToBegin(); !frequencyIt.IsAtEnd(); ++frequencyIt )
     {
     w = static_cast< FunctionValueType >(

@@ -44,14 +44,14 @@ RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegio
 /* ******* Get Outputs *****/
 template< typename TOutputImage, typename TRieszFunction, typename TFrequencyRegionIterator >
 typename RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction,
-    TFrequencyRegionIterator >::OutputsType
+    TFrequencyRegionIterator >::OutputsTypePointer
 RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegionIterator >
 ::GetOutputs()
 {
-  OutputsType outputList;
+  auto outputList = OutputsType::New();
   for ( unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp )
     {
-    outputList.push_back(this->GetOutput(comp));
+    outputList->push_back(this->GetOutput(comp));
     }
   return outputList;
 }
@@ -62,14 +62,14 @@ RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegio
 ::GenerateData()
 {
   /***************** Allocate Outputs *****************/
-  std::vector< OutputImagePointer > outputList;
+  auto outputList = OutputsType::New();
   std::vector< OutputRegionIterator > outputItList;
   for ( unsigned int comp = 0; comp < this->GetNumberOfOutputs(); ++comp )
     {
-    outputList.push_back(this->GetOutput(comp));
-    OutputImagePointer& outputPtr = outputList.back();
+    outputList->push_back(this->GetOutput(comp));
+    OutputImagePointer& outputPtr = outputList->back();
     // GenerateImageSource superclass allocates primary output, so use its region.
-    outputPtr->SetRegions(outputList[0]->GetLargestPossibleRegion());
+    outputPtr->SetRegions(outputList->ElementAt(0)->GetLargestPossibleRegion());
     outputPtr->Allocate();
     outputPtr->FillBuffer(0);
     outputItList.push_back(OutputRegionIterator(outputPtr, outputPtr->GetRequestedRegion()));
@@ -77,7 +77,7 @@ RieszFrequencyFilterBankGenerator< TOutputImage, TRieszFunction, TFrequencyRegio
     }
 
   /***************** Set Outputs *****************/
-  OutputRegionIterator frequencyIt(outputList[0], outputList[0]->GetRequestedRegion());
+  OutputRegionIterator frequencyIt(outputList->ElementAt(0), outputList->ElementAt(0)->GetRequestedRegion());
   for ( frequencyIt.GoToBegin(); !frequencyIt.IsAtEnd(); ++frequencyIt )
     {
     typename TRieszFunction::OutputComponentsType evaluatedArray =

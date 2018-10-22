@@ -60,8 +60,8 @@ public:
   using OutputImagePointer = typename Superclass::OutputImagePointer;
   using InputImageConstPointer = typename Superclass::InputImageConstPointer;
 
-  using InputsType = typename std::vector<InputImagePointer>;
-  // using InputsType = typename itk::VectorContainer<int, InputImagePointer>;
+  using InputsType = typename itk::VectorContainer<unsigned int, InputImagePointer>;
+  using InputsTypePointer = typename InputsType::Pointer;
 
   using WaveletFilterBankType = TWaveletFilterBank;
   using WaveletFilterBankPointer = typename WaveletFilterBankType::Pointer;
@@ -112,7 +112,7 @@ public:
    * Set vector containing the WaveletFilterBankPyramid.
    * This vector is generated in the ForwardWavelet when StoreWaveletFilterBankPyramid is On.
    */
-  void SetWaveletFilterBankPyramid(const InputsType &filterBankPyramid)
+  void SetWaveletFilterBankPyramid(const InputsTypePointer& filterBankPyramid)
     {
     this->m_WaveletFilterBankPyramid = filterBankPyramid;
     }
@@ -121,11 +121,11 @@ public:
   /** Get the (Level,Band) from a linear index input */
   IndexPairType InputIndexToLevelBand(unsigned int linear_index);
 
-  void SetInputs(const InputsType & inputs);
+  void SetInputs(const InputsTypePointer & inputs);
 
   void SetInputLowPass(const InputImagePointer & input_low_pass);
 
-  void SetInputsHighPass(const InputsType & inputs);
+  void SetInputsHighPass(const InputsTypePointer & inputs);
 
 protected:
   WaveletFrequencyInverse();
@@ -175,7 +175,7 @@ private:
   bool                     m_ApplyReconstructionFactors;
   bool                     m_UseWaveletFilterBankPyramid;
   WaveletFilterBankPointer m_WaveletFilterBank;
-  InputsType               m_WaveletFilterBankPyramid;
+  InputsTypePointer        m_WaveletFilterBankPyramid;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION

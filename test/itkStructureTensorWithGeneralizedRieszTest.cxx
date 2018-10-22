@@ -92,8 +92,7 @@ runStructureTensorWithGeneralizedRieszTest(
   forwardWavelet->SetLevels( levels );
   forwardWavelet->SetInput( fftForwardFilter->GetOutput() );
   forwardWavelet->Update();
-  typename ForwardWaveletType::OutputsType analysisWavelets =
-    forwardWavelet->GetOutputs();
+  auto analysisWavelets = forwardWavelet->GetOutputs();
 
   // Generalized Riesz Function of Order N.
   // using FunctionType = itk::RieszFrequencyFunction<>;
@@ -105,7 +104,7 @@ runStructureTensorWithGeneralizedRieszTest(
 
   using MultiplyFilterType = itk::MultiplyImageFilter< ComplexImageType >;
 
-  typename ForwardWaveletType::OutputsType modifiedWavelets;
+  auto modifiedWavelets = ForwardWaveletType::OutputsType::New();
   unsigned int numberOfOutputs = forwardWavelet->GetNumberOfOutputs();
   std::cout << "RieszOrder: " << inputRieszOrder << std::endl;
   for ( unsigned int i = 0; i < forwardWavelet->GetNumberOfOutputs(); ++i )
@@ -113,30 +112,30 @@ runStructureTensorWithGeneralizedRieszTest(
     std::cout << "Output #: " << i << " / " << numberOfOutputs - 1 << std::endl;
     if ( i == numberOfOutputs - 1 ) // Don't apply riesz stuff to the low pass.
       {
-      modifiedWavelets.push_back( analysisWavelets[i] );
+      modifiedWavelets->push_back( analysisWavelets->ElementAt(i) );
       continue;
       }
 
     auto filterBank = RieszFilterBankType::New();
-    filterBank->SetOutputParametersFromImage(analysisWavelets[i]);
+    filterBank->SetOutputParametersFromImage(analysisWavelets->ElementAt(i));
     filterBank->SetOrder(inputRieszOrder);
     filterBank->Update();
     std::cout << "RieszOutputs: " << filterBank->GetNumberOfOutputs() << std::endl;
-    std::vector< typename ComplexImageType::Pointer > rieszOutputs = filterBank->GetOutputs();
-    std::vector< typename ComplexImageType::Pointer > rieszWavelets;
-    std::vector< typename ImageType::Pointer > rieszWaveletsSpatial;
+    auto rieszOutputs = filterBank->GetOutputs();
+    auto rieszWavelets = RieszFilterBankType::OutputsType::New();
+    auto rieszWaveletsSpatial = itk::VectorContainer<unsigned int, typename ImageType::Pointer>::New();
     for ( unsigned int rieszComp = 0; rieszComp < filterBank->GetNumberOfOutputs(); ++rieszComp )
       {
       // Multiply wavelet with riesz.
       auto multiplyWaveletRiesz = MultiplyFilterType::New();
-      multiplyWaveletRiesz->SetInput1(analysisWavelets[i]);
-      multiplyWaveletRiesz->SetInput2(rieszOutputs[rieszComp]);
+      multiplyWaveletRiesz->SetInput1(analysisWavelets->ElementAt(i));
+      multiplyWaveletRiesz->SetInput2(rieszOutputs->ElementAt(rieszComp));
       multiplyWaveletRiesz->Update();
-      rieszWavelets.push_back(multiplyWaveletRiesz->GetOutput());
+      rieszWavelets->push_back(multiplyWaveletRiesz->GetOutput());
       auto inverseFFT = InverseFFTFilterType::New();
-      inverseFFT->SetInput(rieszWavelets[rieszComp]);
+      inverseFFT->SetInput(rieszWavelets->ElementAt(rieszComp));
       inverseFFT->Update();
-      rieszWaveletsSpatial.push_back(inverseFFT->GetOutput());
+      rieszWaveletsSpatial->push_back(inverseFFT->GetOutput());
 #ifdef ITK_VISUALIZE_TESTS
       bool visualizeRieszWavelets = true;
       if ( visualizeRieszWavelets )
@@ -153,11 +152,11 @@ runStructureTensorWithGeneralizedRieszTest(
         using ComplexToImaginaryFilterType = itk::ComplexToImaginaryImageFilter< ComplexImageType, ImageType >;
         auto complexToReal = ComplexToRealFilterType::New();
         auto complexToImaginary = ComplexToImaginaryFilterType::New();
-        complexToReal->SetInput(rieszWavelets[rieszComp]);
+        complexToReal->SetInput(rieszWavelets->ElementAt(rieszComp));
         complexToReal->Update();
         itk::ViewImage<ImageType>::View( complexToReal->GetOutput(),
           "REAL:RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
-        complexToImaginary->SetInput(rieszWavelets[rieszComp]);
+        complexToImaginary->SetInput(rieszWavelets->ElementAt(rieszComp));
         complexToImaginary->Update();
         itk::ViewImage<ImageType>::View( complexToImaginary->GetOutput(),
           "IMAGINARY:RieszWaveletCoef: output #" + n2s(i) + " RieszComp: " + n2s(rieszComp) );
@@ -175,8 +174,8 @@ runStructureTensorWithGeneralizedRieszTest(
     fftForwardTensor->SetInput( tensor->ComputeProjectionImageWithLargestResponse() );
     fftForwardTensor->Update();
 
-    modifiedWavelets.push_back( fftForwardTensor->GetOutput() );
-    modifiedWavelets.back()->DisconnectPipeline();
+    modifiedWavelets->push_back( fftForwardTensor->GetOutput() );
+    modifiedWavelets->back()->DisconnectPipeline();
     }
 
 #ifdef ITK_VISUALIZE_TESTS

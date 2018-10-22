@@ -23,6 +23,7 @@
 #include <complex>
 #include "itkRieszFrequencyFunction.h"
 #include <itkFrequencyFFTLayoutImageRegionIteratorWithIndex.h>
+#include <itkVectorContainer.h>
 
 namespace itk
 {
@@ -68,15 +69,15 @@ public:
   using RieszFunctionPointer = typename RieszFunctionType::Pointer;
   using FunctionValueType = typename RieszFunctionType::FunctionValueType;
 
-  using OutputsType = typename std::vector<OutputImagePointer>;
-  // using OutputsType = typename itk::VectorContainer<int, OutputImagePointer>;
+  using OutputsType = typename itk::VectorContainer<unsigned int, OutputImagePointer>;
+  using OutputsTypePointer = typename OutputsType::Pointer;
 
   /** Dimension */
   static constexpr unsigned int ImageDimension = TOutputImage::ImageDimension;
 
   /** Get Outputs *****/
   /** Return vector of images from all directions */
-  OutputsType GetOutputs();
+  OutputsTypePointer GetOutputs();
 
 // #ifdef ITK_USE_CONCEPT_CHECKING
 //   itkConceptMacro( OutputPixelTypeIsFloatCheck,

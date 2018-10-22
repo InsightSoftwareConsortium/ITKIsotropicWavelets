@@ -65,10 +65,10 @@ RieszRotationMatrix< T, VImageDimension >
 }
 
 template< typename T, unsigned int VImageDimension >
-template <typename TImage>
-std::vector< typename TImage::Pointer >
+template <typename TImagesVectorContainer>
+TImagesVectorContainer
 RieszRotationMatrix< T, VImageDimension >
-::MultiplyWithVectorOfImages(const std::vector< typename TImage::Pointer > & vect) const
+::MultiplyWithVectorOfImages(const TImagesVectorContainer & vect) const
 {
   unsigned int rows = this->Rows();
   unsigned int cols = this->Cols();
@@ -79,9 +79,9 @@ RieszRotationMatrix< T, VImageDimension >
                               << "multiplied with vector of images of length: " << vect.size() );
     }
 
-  using ImageType = TImage;
-  using ImagePointer = typename ImageType::Pointer;
-  std::vector< ImagePointer > result(rows);
+  using ImagePointer = typename TImagesVectorContainer::value_type;
+  using ImageType = typename ImagePointer::ObjectType;
+  TImagesVectorContainer result(rows);
   for ( unsigned int r = 0; r < rows; r++ )
     {
     // Init result image to zero.
