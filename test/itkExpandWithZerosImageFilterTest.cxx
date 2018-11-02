@@ -173,8 +173,8 @@ itkExpandWithZerosImageFilterTest( int argc, char *argv[] )
     ImageToImageFilter );
 
   // Parse input arguments
-  unsigned int dimension = atoi( argv[1] );
-  auto expandFactor = static_cast< unsigned int >( atoi(argv[2]) );
+  unsigned int dimension = std::stoi( argv[1] );
+  auto expandFactor = static_cast< unsigned int >( std::stoi(argv[2]) );
 
 
   if ( dimension == 2 )
