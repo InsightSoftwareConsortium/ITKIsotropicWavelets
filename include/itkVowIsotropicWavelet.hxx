@@ -53,12 +53,12 @@ VowIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
 ::EvaluateMagnitude(const FunctionValueType & freq_norm_in_hz) const
 {
   // freq_in_rad_per_sec = freq_norm_in_hz * 2 * pi
-  // Dev: std::log2 is c++11 only.  std::log2(x) = std::log(x)/vnl_math::ln2
+  // Dev: std::log2 is c++11 only.  std::log2(x) = std::log(x)/itk::Math::ln2
   if ( freq_norm_in_hz >= 1 / 8.0 && freq_norm_in_hz < 1 / 4.0 )
     {
     return static_cast< TFunctionValue >(
       sqrt(0.5
-        + std::tan(this->m_Kappa * (1.0 + (2.0 / vnl_math::ln2) * std::log(4 * freq_norm_in_hz)))
+        + std::tan(this->m_Kappa * (1.0 + (2.0 / itk::Math::ln2) * std::log(4 * freq_norm_in_hz)))
         / (2.0 * std::tan(this->m_Kappa)))
       );
     }
@@ -67,7 +67,7 @@ VowIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
     {
     return static_cast< TFunctionValue >(
       sqrt(0.5
-        - std::tan(this->m_Kappa * (1.0 + (2.0 / vnl_math::ln2) * std::log(2 * freq_norm_in_hz)))
+        - std::tan(this->m_Kappa * (1.0 + (2.0 / itk::Math::ln2) * std::log(2 * freq_norm_in_hz)))
         / (2.0 * std::tan(this->m_Kappa)))
       );
     }
