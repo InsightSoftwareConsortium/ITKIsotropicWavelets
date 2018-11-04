@@ -341,7 +341,7 @@ WaveletFrequencyInverse< TInputImage, TOutputImage,
   auto duplicator = DuplicatorType::New();
   duplicator->SetInputImage(low_pass);
   duplicator->Update();
-  InputImagePointer low_pass_per_level = duplicator->GetModifiableOutput();
+  InputImagePointer low_pass_per_level = duplicator->GetOutput();
 
   using MultiplyFilterType = itk::MultiplyImageFilter< InputImageType >;
 
