@@ -77,7 +77,7 @@ and
  */
 template<typename TInputImage,
          typename TOutputImage = itk::Image<
-           itk::VariableSizeMatrix<typename TInputImage::PixelType>,
+           itk::VariableSizeMatrix<double>,
            TInputImage::ImageDimension> >
 class StructureTensor:
   public ImageToImageFilter< TInputImage, TOutputImage >
@@ -184,6 +184,23 @@ public:
    * @return Image filled with the coherency at each pixel.
    */
   InputImagePointer ComputeCoherencyImage() const;
+
+  /**
+   * From the output matrix at each index, computes the rotation matrix,
+   * which is the transpose of the eigenvector matrix computed in the output of
+   * this image filter.
+   * If reOrderLargestEigenvectorInFirstRow is true the first row of the rotation
+   * matrix will have the largest eigenvector. If false (the default), the largest
+   * eigenvector will be in the last row.
+   *
+   * @param outputMatrix matrix at any index stored in the output of this filter.
+   * @param reOrderLargestEigenvectorInFirstRow flag to reorder eigenvectors.
+   *
+   * @return rotationMatrix
+   */
+  EigenMatrixType GetRotationMatrixFromOutputMatrix(
+      const EigenMatrixType & outputMatrix,
+      bool reOrderLargestEigenvectorInFirstRow = false) const;
 
 protected:
   StructureTensor();
