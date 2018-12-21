@@ -20,16 +20,17 @@ setup(
     package_dir={'itk': 'itk'},
     download_url=r'https://github.com/InsightSoftwareConsortium/ITKIsotropicWavelets',
     description=r'Steerable Wavelet Pyramid with Isotropic Wavelets and Riesz Functions',
-    long_description='ITKIsotropicWavelets provides a multiresolution analysis'
-                     '(MRA) framework using isotropic and steerable wavelets in the frequency'
+    long_description='itk-isotropicwavelets provides a multiresolution analysis '
+                     '(MRA) framework using isotropic and steerable wavelets in the frequency '
                      'domain.\n'
-                     'This framework provides the backbone for state of the art filters'
-                     'for denoising, feature detection or phase analysis in N-dimensions.'
-                     'It focus on reusability, and highly decoupled modules for easy extension'
+                     'This framework provides the backbone for state of the art filters '
+                     'for denoising, feature detection or phase analysis in N-dimensions. '
+                     'It focuses on reusability, and highly decoupled modules for easy extension '
                      'and implementation of new filters.\n'
                      'Please refer to:'
                      'P. Hernandez-Cerdan, “Isotropic and Steerable Wavelets in N Dimensions.\n'
-                     'A multiresolution analysis framework”, Insight Journal, http://hdl.handle.net/10380/3558, 2017.',
+                     'A multiresolution analysis framework”, Insight Journal, January-December 2016 '
+                     'http://hdl.handle.net/10380/3558.',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
