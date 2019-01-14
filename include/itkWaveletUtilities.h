@@ -45,7 +45,7 @@ namespace utils
    * if only one level:
    * n:bands ---> l:0, b=0
    * Independently of the numbers of levels or bands, the last index is always the low pass:
-   * nLowPass ---> l:Levels - 1, b=0
+   * nLowPass ---> l:Levels, b=0
    *
    * Note that bands and levels are always >= 1. The level/bands returned here corresponds to an index.
    */
