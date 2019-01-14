@@ -45,20 +45,23 @@ template<>
 void
 ComputeUniqueIndices<std::vector<unsigned int>, 3>(
   std::vector<unsigned int> subIndex,
-  std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > > &uniqueIndices,
+  std::set< std::vector<unsigned int>,
+            std::greater<std::vector<unsigned int> > > &uniqueIndices,
   unsigned int init );
 
 template<>
 void
 ComputeUniqueIndices<std::vector<unsigned int>, 2>(
   std::vector<unsigned int> subIndex,
-  std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > > &uniqueIndices,
+  std::set< std::vector<unsigned int>,
+            std::greater<std::vector<unsigned int> > > &uniqueIndices,
   unsigned int init );
 
 template<>
 std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > >
-ComputeAllPermutations<std::vector<unsigned int> >( 
-    const std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > > & uniqueIndices);
+ComputeAllPermutations<std::vector<unsigned int> >(
+    const std::set< std::vector<unsigned int>,
+                    std::greater<std::vector<unsigned int> > > & uniqueIndices);
 
 template<>
 std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > >
@@ -72,10 +75,12 @@ ComputeAllPossibleIndices<std::vector<unsigned int>, 2>(
 
 template<>
 bool
-LessOrEqualIndiceComparisson<std::vector<unsigned int>, 3>(const std::vector<unsigned int> & rhs, const std::vector<unsigned int> & lhs);
+LessOrEqualIndiceComparisson<std::vector<unsigned int>, 3>(
+    const std::vector<unsigned int> & rhs, const std::vector<unsigned int> & lhs);
 
 template<>
 bool
-LessOrEqualIndiceComparisson<std::vector<unsigned int>, 2>(const std::vector<unsigned int> & rhs, const std::vector<unsigned int> & lhs);
+LessOrEqualIndiceComparisson<std::vector<unsigned int>, 2>(
+    const std::vector<unsigned int> & rhs, const std::vector<unsigned int> & lhs);
 } // end namespace utils
 } // end namespace itk
