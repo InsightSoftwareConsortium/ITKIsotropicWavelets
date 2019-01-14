@@ -37,7 +37,7 @@ IndexPairType IndexToLevelBandSteerablePyramid(unsigned int linearIndex,
   // Low pass (band = 0).
   if (linearIndex == totalOutputs - 1 )
     {
-    return std::make_pair(levels - 1, 0);
+    return std::make_pair(levels, 0);
     }
 
   unsigned int band = (linearIndex ) % bands + 1;
