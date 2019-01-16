@@ -295,7 +295,7 @@ int main( int argc, char *argv[] )
     }
   else if ( dimension == 3 )
     {
-    constexpr unsigned int ImageDimension = 2;
+    constexpr unsigned int ImageDimension = 3;
     return runWithChosenWavelet<WaveletScalarType, ImageDimension>(waveletFunction,
       inputImage, outputImage, inputLevels, inputBands,
       applySoftThreshold, thresholdNumOfSigmas);
