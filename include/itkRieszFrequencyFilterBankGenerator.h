@@ -115,7 +115,8 @@ protected:
   void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Generate data */
-  void GenerateData() override;
+  void BeforeThreadedGenerateData() override;
+  void DynamicThreadedGenerateData(const OutputImageRegionType & threadRegion) override;
 
 private:
   unsigned int         m_Order;
