@@ -71,7 +71,9 @@ ITK_TEMPLATE_EXPORT unsigned int ComputeMaxNumberOfLevels(
     // check that exponent is integer: the fractional part is 0
     double exponentIntPart;
     double exponentFractionPart = std::modf(exponent, &exponentIntPart );
-    if ( itk::Math::FloatAlmostEqual(exponentFractionPart, 0.0) )
+    // DEV (phcerdan): Increased epsilon due to numeric errors with Alpine-musl (Travis CI).
+    // Failing test when exponent == log(27) / log(3).
+    if ( itk::Math::FloatAlmostEqual(exponentFractionPart, 0.0, 4, 10 * itk::NumericTraits<double>::epsilon() ))
       {
       exponentPerAxis[axis] = static_cast< unsigned int >(exponent);
       }
