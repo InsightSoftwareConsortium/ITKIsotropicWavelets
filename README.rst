@@ -45,10 +45,7 @@ For more information, see the `Insight Journal article <http://hdl.handle.net/10
 
 Cite with::
 
-  P. Hernandez-Cerdan, “Isotropic and Steerable Wavelets in N Dimensions.
-  A multiresolution analysis framework”, Insight Journal,
-  http://hdl.handle.net/10380/3558, 2017.
-
+  P. Hernandez-Cerdan, “Isotropic and Steerable Wavelets in N Dimensions. A multiresolution analysis framework for ITK,” arXiv:1710.01103 [cs], Oct. 2017.
 
 
 Installation
