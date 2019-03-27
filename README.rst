@@ -1,8 +1,8 @@
 ITKIsotropicWavelets
 =================================
 
-.. image:: https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_apis/build/status/itkisotropicwavelets?branchName=master
-    :target: https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_build/latest?definitionId=8&branchName=master
+.. image:: https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_apis/build/status/InsightSoftwareConsortium.ITKIsotropicWavelets?branchName=master
+    :target: https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_build/latest?definitionId=5&branchName=master
     :alt:    Build Status
 
 Overview
