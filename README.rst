@@ -1,21 +1,9 @@
 ITKIsotropicWavelets
-====================
+=================================
 
-.. |CircleCI| image:: https://circleci.com/gh/InsightSoftwareConsortium/ITKIsotropicWavelets.svg?style=shield
-    :target: https://circleci.com/gh/InsightSoftwareConsortium/ITKIsotropicWavelets
-
-.. |TravisCI| image:: https://travis-ci.org/InsightSoftwareConsortium/ITKIsotropicWavelets.svg?branch=master
-    :target: https://travis-ci.org/InsightSoftwareConsortium/ITKIsotropicWavelets
-
-.. |AppVeyor| image:: https://img.shields.io/appveyor/ci/itkrobot/itkisotropicwavelets.svg
-    :target: https://ci.appveyor.com/project/itkrobot/itkisotropicwavelets
-
-=========== =========== ===========
-   Linux      macOS       Windows
-=========== =========== ===========
-|CircleCI|  |TravisCI|  |AppVeyor|
-=========== =========== ===========
-
+.. image:: https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_apis/build/status/itkisotropicwavelets?branchName=master
+    :target: https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_build/latest?definitionId=8&branchName=master
+    :alt:    Build Status
 
 Overview
 --------
