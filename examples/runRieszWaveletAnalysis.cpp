@@ -18,7 +18,7 @@
 
 #include "itkForwardFFTImageFilter.h"
 #include "itkInverseFFTImageFilter.h"
-#include "itkFFTPadPositiveIndexImageFilter.h"
+#include "itkFFTPadImageFilter.h"
 #include "itkWaveletFrequencyForward.h"
 #include "itkWaveletFrequencyInverse.h"
 #include "itkWaveletFrequencyForwardUndecimated.h"
@@ -74,7 +74,7 @@ runRieszWaveletPhaseAnalysis( const std::string& inputImage,
   reader->SetFileName( inputImage );
   reader->Update();
 
-  using FFTPadFilterType = itk::FFTPadPositiveIndexImageFilter<ImageType>;
+  using FFTPadFilterType = itk::FFTPadImageFilter<ImageType>;
   auto fftPadFilter = FFTPadFilterType::New();
   fftPadFilter->SetInput(reader->GetOutput());
   fftPadFilter->SetBoundaryConditionToConstant(0);

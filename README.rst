@@ -300,15 +300,6 @@ maximize the response at every pixel.
   itkStructureTensor.hxx
 
 
-FFTPad but avoiding setting negative index, which is problematic working with
-neighborhoods.
-
-::
-
-  itkFFTPadPositiveIndexImageFilter.h
-  itkFFTPadPositiveIndexImageFilter.hxx
-
-
 Regular shrinkers without interpolation
 '''''''''''''''''''''''''''''''''''''''
 
