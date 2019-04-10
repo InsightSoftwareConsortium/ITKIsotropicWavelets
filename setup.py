@@ -13,7 +13,7 @@ except ImportError:
 
 setup(
     name='itk-isotropicwavelets',
-    version='0.5.1',
+    version='0.5.2',
     author='Pablo Hernandez-Cerdan',
     author_email='pablo.hernandez.cerdan@outlook.com',
     packages=['itk'],
