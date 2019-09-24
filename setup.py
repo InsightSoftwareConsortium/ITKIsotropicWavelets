@@ -13,7 +13,7 @@ except ImportError:
 
 setup(
     name='itk-isotropicwavelets',
-    version='0.5.3',
+    version='0.5.4',
     author='Pablo Hernandez-Cerdan',
     author_email='pablo.hernandez.cerdan@outlook.com',
     packages=['itk'],
@@ -54,6 +54,6 @@ setup(
     keywords='ITK InsightToolkit Wavelet Pyramid Steerable Riesz',
     url=r'https://github.com/InsightSoftwareConsortium/ITKIsotropicWavelets',
     install_requires=[
-        r'itk>=5.0.0',
+        r'itk>=5.0.1',
     ]
     )

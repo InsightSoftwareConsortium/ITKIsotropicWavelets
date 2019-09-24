@@ -1,5 +1,6 @@
 variables:
-  ITKGitTag: v5.0rc01
+  ITKGitTag: v5.0.1
+  ITKPythonGitTag: v5.0.1
   CMakeBuildType: Release
 
 trigger:
@@ -57,7 +58,9 @@ jobs:
     displayName: 'Install build dependencies'
 
   - script: |
-      git clone --depth 5 --branch $(ITKGitTag) https://github.com/InsightSoftwareConsortium/ITK.git
+      git clone https://github.com/InsightSoftwareConsortium/ITK.git
+      cd ITK
+      git checkout $(ITKGitTag)
     workingDirectory: $(Agent.BuildDirectory)
     displayName: 'Download ITK'
 
@@ -156,7 +159,7 @@ jobs:
     displayName: 'Fetch build script'
 
   - script: |
-      export ITK_PACKAGE_VERSION=$(ITKGitTag)
+      export ITK_PACKAGE_VERSION=$(ITKPythonGitTag)
       ./dockcross-manylinux-download-cache-and-build-module-wheels.sh
     displayName: 'Build Python packages'
 
@@ -180,7 +183,7 @@ jobs:
     displayName: 'Fetch build script'
 
   - script: |
-      export ITK_PACKAGE_VERSION=$(ITKGitTag)
+      export ITK_PACKAGE_VERSION=$(ITKPythonGitTag)
       ./macpython-download-cache-and-build-module-wheels.sh
     displayName: 'Build Python packages'
 
@@ -204,7 +207,7 @@ jobs:
 
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      set ITK_PACKAGE_VERSION=$(ITKGitTag)
+      set ITK_PACKAGE_VERSION=$(ITKPythonGitTag)
       set CC=cl.exe
       set CXX=cl.exe
       powershell.exe -file .\windows-download-cache-and-build-module-wheels.ps1
