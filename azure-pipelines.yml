@@ -1,5 +1,5 @@
 variables:
-  ITKGitTag: v5.0.0
+  ITKGitTag: v5.1rc02
   CMakeBuildType: MinSizeRel
 
 trigger:
