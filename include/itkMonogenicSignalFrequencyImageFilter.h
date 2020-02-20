@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,24 +38,21 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template< typename TInputImage,
-  typename TFrequencyImageRegionConstIterator =
-    FrequencyFFTLayoutImageRegionConstIteratorWithIndex< TInputImage> >
-class MonogenicSignalFrequencyImageFilter:
-  public ImageToImageFilter<
-    TInputImage,
-    VectorImage<typename TInputImage::PixelType,
-      TInputImage::ImageDimension> >
+template <typename TInputImage,
+          typename TFrequencyImageRegionConstIterator =
+            FrequencyFFTLayoutImageRegionConstIteratorWithIndex<TInputImage>>
+class MonogenicSignalFrequencyImageFilter
+  : public ImageToImageFilter<TInputImage, VectorImage<typename TInputImage::PixelType, TInputImage::ImageDimension>>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(MonogenicSignalFrequencyImageFilter);
 
   /** Standard class type alias. */
   using Self = MonogenicSignalFrequencyImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, VectorImage<typename TInputImage::PixelType,
-          TInputImage::ImageDimension > >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass =
+    ImageToImageFilter<TInputImage, VectorImage<typename TInputImage::PixelType, TInputImage::ImageDimension>>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** ImageDimension constants */
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
@@ -64,13 +61,12 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(MonogenicSignalFrequencyImageFilter,
-               ImageToImageFilter);
+  itkTypeMacro(MonogenicSignalFrequencyImageFilter, ImageToImageFilter);
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /// This ensure that InputPixelType is complex<float||double>
-  itkConceptMacro( InputPixelTypeIsComplexAndFloatCheck,
-                   ( Concept::IsFloatingPoint< typename TInputImage::PixelType::value_type > ) );
+  itkConceptMacro(InputPixelTypeIsComplexAndFloatCheck,
+                  (Concept::IsFloatingPoint<typename TInputImage::PixelType::value_type>));
 #endif
 
   /** Some convenient type alias. */
@@ -81,26 +77,30 @@ public:
   using OutputImageRegionType = typename Superclass::OutputImageRegionType;
 
   /** RieszFunction type alias. */
-  using RieszFunctionType = RieszFrequencyFunction< typename InputImageType::PixelType, ImageDimension>;
+  using RieszFunctionType = RieszFrequencyFunction<typename InputImageType::PixelType, ImageDimension>;
   using RieszFunctionPointer = typename RieszFunctionType::Pointer;
 
   /** Get the riesz function type */
   itkGetModifiableObjectMacro(Evaluator, RieszFunctionType);
+
 protected:
   MonogenicSignalFrequencyImageFilter();
-  ~MonogenicSignalFrequencyImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  ~MonogenicSignalFrequencyImageFilter() override = default;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
-  void DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread ) override;
+  void
+  DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
 
 private:
   RieszFunctionPointer m_Evaluator;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkMonogenicSignalFrequencyImageFilter.hxx"
+#  include "itkMonogenicSignalFrequencyImageFilter.hxx"
 #endif
 
 #endif

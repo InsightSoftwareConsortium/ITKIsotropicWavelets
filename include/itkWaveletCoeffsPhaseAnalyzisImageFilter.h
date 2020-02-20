@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,19 +43,17 @@
 namespace itk
 {
 /** \class WaveletCoeffsPhaseAnalyzis
- * @brief IsotropicWavelet multiscale analysis and reconstructing phase analysis results where input is an image in the spatial domain.
- * Output Layout:
- * Output is a single spatial domain image carrying the reconstructed phase analysis information.
+ * @brief IsotropicWavelet multiscale analysis and reconstructing phase analysis results where input is an image in the
+ * spatial domain. Output Layout: Output is a single spatial domain image carrying the reconstructed phase analysis
+ * information.
  *
  * @note The information/metadata of input image is ignored.
  * It can be saved on the disk with a @sa ImageFileWriter.
  *
  * \ingroup IsotropicWavelets
  */
-template < typename TImageType, 
- typename TWaveletFunction> 
-class WaveletCoeffsPhaseAnalyzisImageFilter: 
-  public ImageToImageFilter< TImageType, TImageType>
+template <typename TImageType, typename TWaveletFunction>
+class WaveletCoeffsPhaseAnalyzisImageFilter : public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletCoeffsPhaseAnalyzisImageFilter);
@@ -73,14 +71,13 @@ public:
   static constexpr unsigned int ImageDimension = ImageType::ImageDimension;
 
   using WaveletScalarType = double;
-  using ImageFloatType = Image< float, ImageDimension >;
+  using ImageFloatType = Image<float, ImageDimension>;
 
   /** Standard New method. */
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(WaveletCoeffsPhaseAnalyzisImageFilter, 
-               ImageToImageFilter);
+  itkTypeMacro(WaveletCoeffsPhaseAnalyzisImageFilter, ImageToImageFilter);
 
   /** Flag to store the number of levels, highpasssubbands, output index, applysoftthreshold,
   thresholdnumofsigmas.**/
@@ -99,56 +96,58 @@ protected:
   WaveletCoeffsPhaseAnalyzisImageFilter();
 
 protected:
-  using FFTPadType = FFTPadImageFilter< ImageType >;
-  using ZeroDCType = ZeroDCImageFilter< ImageType >;
-  using FFTForwardType = ForwardFFTImageFilter< typename ZeroDCType::OutputImageType >;
+  using FFTPadType = FFTPadImageFilter<ImageType>;
+  using ZeroDCType = ZeroDCImageFilter<ImageType>;
+  using FFTForwardType = ForwardFFTImageFilter<typename ZeroDCType::OutputImageType>;
   using ComplexImageType = typename FFTForwardType::OutputImageType;
 
-  using WaveletFunctionType = SimoncelliIsotropicWavelet< WaveletScalarType, ImageDimension>;
-  using WaveletFilterBankType = WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType >;
-  using ForwardWaveletType = WaveletFrequencyForward< ComplexImageType, ComplexImageType, WaveletFilterBankType >;
+  using WaveletFunctionType = SimoncelliIsotropicWavelet<WaveletScalarType, ImageDimension>;
+  using WaveletFilterBankType = WaveletFrequencyFilterBankGenerator<ComplexImageType, WaveletFunctionType>;
+  using ForwardWaveletType = WaveletFrequencyForward<ComplexImageType, ComplexImageType, WaveletFilterBankType>;
 
-  using MonogenicSignalFrequencyType = MonogenicSignalFrequencyImageFilter< ComplexImageType >;
+  using MonogenicSignalFrequencyType = MonogenicSignalFrequencyImageFilter<ComplexImageType>;
   using VectorMonoOutputType = typename MonogenicSignalFrequencyType::OutputImageType;
-  using VectorInverseFFTType = VectorInverseFFTImageFilter< VectorMonoOutputType >;
-  using PhaseAnalysisType = PhaseAnalysisSoftThresholdImageFilter< typename VectorInverseFFTType::OutputImageType >;
+  using VectorInverseFFTType = VectorInverseFFTImageFilter<VectorMonoOutputType>;
+  using PhaseAnalysisType = PhaseAnalysisSoftThresholdImageFilter<typename VectorInverseFFTType::OutputImageType>;
 
-  using InverseWaveletType = WaveletFrequencyInverse< ComplexImageType, ComplexImageType, WaveletFilterBankType >;
-  using InverseFFTType = InverseFFTImageFilter< ComplexImageType, ImageType >;
-  using ChangeInformationType = ChangeInformationImageFilter< ImageType >;
-  using CastFloatType = CastImageFilter< ImageType, ImageFloatType>;
+  using InverseWaveletType = WaveletFrequencyInverse<ComplexImageType, ComplexImageType, WaveletFilterBankType>;
+  using InverseFFTType = InverseFFTImageFilter<ComplexImageType, ImageType>;
+  using ChangeInformationType = ChangeInformationImageFilter<ImageType>;
+  using CastFloatType = CastImageFilter<ImageType, ImageFloatType>;
 
   /** Single-threaded version of GenerateData. */
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-  typename FFTPadType::Pointer                    m_FFTPadFilter;
-  typename ZeroDCType::Pointer                    m_ZeroDCFilter;
-  typename FFTForwardType::Pointer                m_ForwardFFTFilter;
-  typename ForwardWaveletType::Pointer            m_ForwardWaveletFilter;
+  typename FFTPadType::Pointer         m_FFTPadFilter;
+  typename ZeroDCType::Pointer         m_ZeroDCFilter;
+  typename FFTForwardType::Pointer     m_ForwardFFTFilter;
+  typename ForwardWaveletType::Pointer m_ForwardWaveletFilter;
 
-  typename MonogenicSignalFrequencyType::Pointer  m_MonogenicSignalFrequencyFilter;
-  typename VectorInverseFFTType::Pointer          m_VectorInverseFFTFilter;
-  typename PhaseAnalysisType::Pointer             m_PhaseAnalysisFilter;
-  typename FFTForwardType::Pointer                m_FFTForwardPhaseFilter;
+  typename MonogenicSignalFrequencyType::Pointer m_MonogenicSignalFrequencyFilter;
+  typename VectorInverseFFTType::Pointer         m_VectorInverseFFTFilter;
+  typename PhaseAnalysisType::Pointer            m_PhaseAnalysisFilter;
+  typename FFTForwardType::Pointer               m_FFTForwardPhaseFilter;
 
-  typename InverseWaveletType::Pointer            m_InverseWaveletFilter;
-  typename InverseFFTType::Pointer                m_InverseFFTFilter;
+  typename InverseWaveletType::Pointer m_InverseWaveletFilter;
+  typename InverseFFTType::Pointer     m_InverseFFTFilter;
 
-  typename ChangeInformationType::Pointer         m_ChangeInformationFilter;
-  typename CastFloatType::Pointer                 m_CastFloatFilter;
+  typename ChangeInformationType::Pointer m_ChangeInformationFilter;
+  typename CastFloatType::Pointer         m_CastFloatFilter;
 
-  unsigned int                                    m_Levels;
-  unsigned int                                    m_HighPassSubBands;
-  unsigned int                                    m_OutputIndex;
-  bool                                            m_ApplySoftThreshold;
-  double                                          m_ThresholdNumOfSigmas;
+  unsigned int m_Levels;
+  unsigned int m_HighPassSubBands;
+  unsigned int m_OutputIndex;
+  bool         m_ApplySoftThreshold;
+  double       m_ThresholdNumOfSigmas;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkWaveletCoeffsPhaseAnalyzisImageFilter.hxx"
+#  include "itkWaveletCoeffsPhaseAnalyzisImageFilter.hxx"
 #endif
 
 #endif

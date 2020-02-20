@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -46,20 +46,19 @@ namespace itk
  * \ingroup SpatialFunctions
  * \ingroup IsotropicWavelets
  */
-template< typename TFunctionValue = double,
-  unsigned int VImageDimension    = 3,
-  typename TInput = Point< SpacePrecisionType, VImageDimension > >
-class SimoncelliIsotropicWavelet:
-  public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
+template <typename TFunctionValue = double,
+          unsigned int VImageDimension = 3,
+          typename TInput = Point<SpacePrecisionType, VImageDimension>>
+class SimoncelliIsotropicWavelet : public IsotropicWaveletFrequencyFunction<TFunctionValue, VImageDimension, TInput>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(SimoncelliIsotropicWavelet);
 
   /** Standard class type alias. */
   using Self = SimoncelliIsotropicWavelet;
-  using Superclass = IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = IsotropicWaveletFrequencyFunction<TFunctionValue, VImageDimension, TInput>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -74,17 +73,19 @@ public:
   using FunctionValueType = typename Superclass::FunctionValueType;
 
   /** Evaluate the function */
-  FunctionValueType EvaluateMagnitude(const FunctionValueType& freq_norm_in_hz) const override;
+  FunctionValueType
+  EvaluateMagnitude(const FunctionValueType & freq_norm_in_hz) const override;
 
 protected:
   SimoncelliIsotropicWavelet();
   ~SimoncelliIsotropicWavelet() override;
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 };
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkSimoncelliIsotropicWavelet.hxx"
+#  include "itkSimoncelliIsotropicWavelet.hxx"
 #endif
 
 #endif

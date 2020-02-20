@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -33,20 +33,19 @@ namespace itk
  * \ingroup SpatialFunctions
  * \ingroup IsotropicWavelets
  */
-template< typename TFunctionValue = double,
-  unsigned int VImageDimension    = 3,
-  typename TInput = Point< SpacePrecisionType, VImageDimension > >
-class IsotropicFrequencyFunction:
-  public FrequencyFunction< TFunctionValue, VImageDimension, TInput >
+template <typename TFunctionValue = double,
+          unsigned int VImageDimension = 3,
+          typename TInput = Point<SpacePrecisionType, VImageDimension>>
+class IsotropicFrequencyFunction : public FrequencyFunction<TFunctionValue, VImageDimension, TInput>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(IsotropicFrequencyFunction);
 
   /** Standard class type alias. */
   using Self = IsotropicFrequencyFunction;
-  using Superclass = FrequencyFunction< TFunctionValue, VImageDimension, TInput >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = FrequencyFunction<TFunctionValue, VImageDimension, TInput>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(IsotropicFrequencyFunction, FrequencyFunction);
@@ -58,25 +57,30 @@ public:
   using FunctionValueType = typename Superclass::FunctionValueType;
   using OutputType = typename Superclass::OutputType;
   /** Calculate magnitude (euclidean norm ) of input point. **/
-  inline double Magnitude(const TInput & point) const
+  inline double
+  Magnitude(const TInput & point) const
   {
     double accum(0);
 
     for (size_t d = 0; d < VImageDimension; ++d)
-      {
+    {
       accum += point[d] * point[d];
-      }
+    }
     return sqrt(accum);
   };
 
-  /** Evaluate the function at a given frequency point. Because the function is istropic, this calls the EvaluateMagnitude with the magnitude of the point. */
-  FunctionValueType Evaluate(const TInput & frequency_point) const override
+  /** Evaluate the function at a given frequency point. Because the function is istropic, this calls the
+   * EvaluateMagnitude with the magnitude of the point. */
+  FunctionValueType
+  Evaluate(const TInput & frequency_point) const override
   {
-    return this->EvaluateMagnitude( static_cast<TFunctionValue>(this->Magnitude(frequency_point)) );
+    return this->EvaluateMagnitude(static_cast<TFunctionValue>(this->Magnitude(frequency_point)));
   }
 
-  /** Evaluate the function given the magnitude (euclidean norm) of the frequency point. This method is call by Evaluate, and has to be implemented on derived class. */
-  virtual FunctionValueType EvaluateMagnitude(const TFunctionValue& freq_norm_in_hz) const = 0;
+  /** Evaluate the function given the magnitude (euclidean norm) of the frequency point. This method is call by
+   * Evaluate, and has to be implemented on derived class. */
+  virtual FunctionValueType
+  EvaluateMagnitude(const TFunctionValue & freq_norm_in_hz) const = 0;
 
   // #<{(|*** Forward/Analysis **|)}>#
   // virtual FunctionValueType EvaluateForward(const TFunctionValue& freq_in_hz) const = 0;
@@ -84,9 +88,12 @@ public:
   // virtual FunctionValueType EvaluateInverse(const TFunctionValue& freq_in_hz) const = 0;
 
 protected:
-  IsotropicFrequencyFunction() {};
-  ~IsotropicFrequencyFunction() override {};
-  void PrintSelf(std::ostream & os, Indent indent) const override
+  IsotropicFrequencyFunction() = default;
+  ;
+  ~IsotropicFrequencyFunction() override = default;
+  ;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override
   {
     Superclass::PrintSelf(os, indent);
   }

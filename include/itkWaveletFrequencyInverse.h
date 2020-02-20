@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -35,23 +35,21 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template< typename TInputImage,
-  typename TOutputImage,
-  typename TWaveletFilterBank,
-  typename TFrequencyExpandFilterType =
-    FrequencyExpandImageFilter<TInputImage> >
-    // FrequencyExpandViaInverseFFTImageFilter<TInputImage> >
-class WaveletFrequencyInverse:
-  public ImageToImageFilter< TInputImage, TOutputImage>
+template <typename TInputImage,
+          typename TOutputImage,
+          typename TWaveletFilterBank,
+          typename TFrequencyExpandFilterType = FrequencyExpandImageFilter<TInputImage>>
+// FrequencyExpandViaInverseFFTImageFilter<TInputImage> >
+class WaveletFrequencyInverse : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyInverse);
 
   /** Standard classs type alias. */
   using Self = WaveletFrequencyInverse;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Inherit types from Superclass. */
   using InputImageType = typename Superclass::InputImageType;
@@ -77,15 +75,16 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(WaveletFrequencyInverse,
-               ImageToImageFilter);
+  itkTypeMacro(WaveletFrequencyInverse, ImageToImageFilter);
 
   /** Number of levels/scales. Maximum depends on size of image */
-  void SetLevels(unsigned int n);
+  void
+  SetLevels(unsigned int n);
   itkGetMacro(Levels, unsigned int);
 
   /** Number of high pass subbands, 1 minimum */
-  void SetHighPassSubBands(unsigned int n);
+  void
+  SetHighPassSubBands(unsigned int n);
   itkGetMacro(HighPassSubBands, unsigned int);
 
   /** Total number of inputs required: Levels*HighPassSubBands + 1 */
@@ -95,45 +94,50 @@ public:
    * Set to 2 (dyadic), not modifiable, but providing future flexibility */
   itkGetConstReferenceMacro(ScaleFactor, unsigned int)
 
-  /**
-   * If On, applies to each input the appropiate Level-Band multiplicative factor. Needed for perfect reconstruction.
-   * It has to be turned off for some applications (phase analysis for example) */
-  itkGetConstReferenceMacro(ApplyReconstructionFactors, bool)
-  itkSetMacro(ApplyReconstructionFactors, bool)
-  itkBooleanMacro(ApplyReconstructionFactors);
+    /**
+     * If On, applies to each input the appropiate Level-Band multiplicative factor. Needed for perfect reconstruction.
+     * It has to be turned off for some applications (phase analysis for example) */
+    itkGetConstReferenceMacro(ApplyReconstructionFactors, bool) itkSetMacro(ApplyReconstructionFactors, bool)
+      itkBooleanMacro(ApplyReconstructionFactors);
 
   /** Flag to use external WaveletFilterBankPyramid generated in ForwardWavelet.
    * Requires to use SetWaveletFilterBankPyramid. */
-  itkGetConstReferenceMacro(UseWaveletFilterBankPyramid, bool)
-  itkSetMacro(UseWaveletFilterBankPyramid, bool)
-  itkBooleanMacro(UseWaveletFilterBankPyramid);
+  itkGetConstReferenceMacro(UseWaveletFilterBankPyramid, bool) itkSetMacro(UseWaveletFilterBankPyramid, bool)
+    itkBooleanMacro(UseWaveletFilterBankPyramid);
 
   /**
    * Set vector containing the WaveletFilterBankPyramid.
    * This vector is generated in the ForwardWavelet when StoreWaveletFilterBankPyramid is On.
    */
-  void SetWaveletFilterBankPyramid(const InputsType &filterBankPyramid)
-    {
+  void
+  SetWaveletFilterBankPyramid(const InputsType & filterBankPyramid)
+  {
     this->m_WaveletFilterBankPyramid = filterBankPyramid;
-    }
+  }
 
   using IndexPairType = std::pair<unsigned int, unsigned int>;
   /** Get the (Level,Band) from a linear index input */
-  IndexPairType InputIndexToLevelBand(unsigned int linear_index);
+  IndexPairType
+  InputIndexToLevelBand(unsigned int linear_index);
 
-  void SetInputs(const InputsType & inputs);
+  void
+  SetInputs(const InputsType & inputs);
 
-  void SetInputLowPass(const InputImagePointer & input_low_pass);
+  void
+  SetInputLowPass(const InputImagePointer & input_low_pass);
 
-  void SetInputsHighPass(const InputsType & inputs);
+  void
+  SetInputsHighPass(const InputsType & inputs);
 
 protected:
   WaveletFrequencyInverse();
-  ~WaveletFrequencyInverse() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  ~WaveletFrequencyInverse() override = default;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Single-threaded version of GenerateData. */
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
   /************ Information *************/
 
@@ -145,14 +149,16 @@ protected:
    * below.
    * \sa ProcessObject::GenerateOutputInformaton()
    */
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
   /** Given one output whose requested region has been set, this method sets
    * the requested region for the remaining output images.  The original
    * documentation of this method is below.
    * \sa ProcessObject::GenerateOutputRequestedRegion()
    */
-  void GenerateOutputRequestedRegion(DataObject *output) override;
+  void
+  GenerateOutputRequestedRegion(DataObject * output) override;
 
   /** WaveletFrequencyInverse requires a larger input requested
    * region than the output requested regions to accommodate the shrinkage and
@@ -161,25 +167,27 @@ protected:
    * original documentation of this method is below.
    * \sa ProcessObject::GenerateInputRequestedRegion()
    */
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
   /** Input images do not occupy the same physical space.
    * Remove the check. */
-  void VerifyInputInformation() ITKv5_CONST override {};
+  void
+  VerifyInputInformation() ITKv5_CONST override{};
 
 private:
-  unsigned int             m_Levels;
-  unsigned int             m_HighPassSubBands;
-  unsigned int             m_TotalInputs;
-  unsigned int             m_ScaleFactor;
-  bool                     m_ApplyReconstructionFactors;
-  bool                     m_UseWaveletFilterBankPyramid;
+  unsigned int             m_Levels{ 1 };
+  unsigned int             m_HighPassSubBands{ 1 };
+  unsigned int             m_TotalInputs{ 0 };
+  unsigned int             m_ScaleFactor{ 2 };
+  bool                     m_ApplyReconstructionFactors{ true };
+  bool                     m_UseWaveletFilterBankPyramid{ false };
   WaveletFilterBankPointer m_WaveletFilterBank;
   InputsType               m_WaveletFilterBankPyramid;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkWaveletFrequencyInverse.hxx"
+#  include "itkWaveletFrequencyInverse.hxx"
 #endif
 
 #endif

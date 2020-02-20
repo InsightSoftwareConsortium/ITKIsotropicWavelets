@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,10 +41,8 @@
 
 namespace itk
 {
-template< typename TImageType,
-  typename TWaveletFunction>
-WaveletCoeffsPhaseAnalyzisImageFilter< TImageType, TWaveletFunction >
-:: WaveletCoeffsPhaseAnalyzisImageFilter()
+template <typename TImageType, typename TWaveletFunction>
+WaveletCoeffsPhaseAnalyzisImageFilter<TImageType, TWaveletFunction>::WaveletCoeffsPhaseAnalyzisImageFilter()
 {
   m_Levels = 4;
   m_HighPassSubBands = 3;
@@ -69,83 +67,79 @@ WaveletCoeffsPhaseAnalyzisImageFilter< TImageType, TWaveletFunction >
   m_CastFloatFilter = CastFloatType::New();
 }
 
-template< typename TImageType,
-  typename TWaveletFunction >
+template <typename TImageType, typename TWaveletFunction>
 void
-WaveletCoeffsPhaseAnalyzisImageFilter< TImageType, TWaveletFunction >
-:: GenerateData()
+WaveletCoeffsPhaseAnalyzisImageFilter<TImageType, TWaveletFunction>::GenerateData()
 {
   // ====================================================================
   // ==================== Graft Input Declaration =======================
   // ====================================================================
   typename ImageType::Pointer input = ImageType::New();
-  input->Graft(const_cast<ImageType*> ( this->GetInput() ));
-  m_FFTPadFilter->SetInput( input );
+  input->Graft(const_cast<ImageType *>(this->GetInput()));
+  m_FFTPadFilter->SetInput(input);
 
   // ==================== Filter Inter Connection =======================
-  m_ZeroDCFilter->SetInput( m_FFTPadFilter->GetOutput() );
-  m_ForwardFFTFilter->SetInput( m_ZeroDCFilter->GetOutput() );
-  m_ForwardWaveletFilter->SetInput( m_ForwardFFTFilter->GetOutput() );
+  m_ZeroDCFilter->SetInput(m_FFTPadFilter->GetOutput());
+  m_ForwardFFTFilter->SetInput(m_ZeroDCFilter->GetOutput());
+  m_ForwardWaveletFilter->SetInput(m_ForwardFFTFilter->GetOutput());
 
   // ==================== Filter Set Parameters =========================
-  m_ForwardWaveletFilter->SetHighPassSubBands( this->m_HighPassSubBands );
-  m_ForwardWaveletFilter->SetLevels( this->m_Levels );
+  m_ForwardWaveletFilter->SetHighPassSubBands(this->m_HighPassSubBands);
+  m_ForwardWaveletFilter->SetLevels(this->m_Levels);
 
   // ======================== Loop the Filters ==========================
-  typename ForwardWaveletType::OutputsType        modifiedWavelets;
-  for ( unsigned int i = 0; i < m_ForwardWaveletFilter->GetNumberOfOutputs(); ++i )
-    {
-    m_MonogenicSignalFrequencyFilter->SetInput( m_ForwardWaveletFilter->GetOutput(i) ); // This API is strange.
-    m_VectorInverseFFTFilter->SetInput( m_MonogenicSignalFrequencyFilter->GetOutput() );
-    m_PhaseAnalysisFilter->SetInput( m_VectorInverseFFTFilter->GetOutput() );
+  typename ForwardWaveletType::OutputsType modifiedWavelets;
+  for (unsigned int i = 0; i < m_ForwardWaveletFilter->GetNumberOfOutputs(); ++i)
+  {
+    m_MonogenicSignalFrequencyFilter->SetInput(m_ForwardWaveletFilter->GetOutput(i)); // This API is strange.
+    m_VectorInverseFFTFilter->SetInput(m_MonogenicSignalFrequencyFilter->GetOutput());
+    m_PhaseAnalysisFilter->SetInput(m_VectorInverseFFTFilter->GetOutput());
 
-    m_PhaseAnalysisFilter->SetApplySoftThreshold( this->m_ApplySoftThreshold );
+    m_PhaseAnalysisFilter->SetApplySoftThreshold(this->m_ApplySoftThreshold);
     if (this->m_ApplySoftThreshold)
-      {
+    {
       m_PhaseAnalysisFilter->SetNumOfSigmas(this->m_ThresholdNumOfSigmas);
-      }
-
-    m_FFTForwardPhaseFilter->SetInput( m_PhaseAnalysisFilter->GetOutputCosPhase() );
-
-    m_FFTForwardPhaseFilter->Update();
-    modifiedWavelets.push_back( m_FFTForwardPhaseFilter->GetOutput() );
-    modifiedWavelets.back()->DisconnectPipeline();
     }
 
+    m_FFTForwardPhaseFilter->SetInput(m_PhaseAnalysisFilter->GetOutputCosPhase());
+
+    m_FFTForwardPhaseFilter->Update();
+    modifiedWavelets.push_back(m_FFTForwardPhaseFilter->GetOutput());
+    modifiedWavelets.back()->DisconnectPipeline();
+  }
+
   // ==================== Filter Set Parameters =========================
-  m_InverseWaveletFilter->SetHighPassSubBands( this->m_HighPassSubBands );
-  m_InverseWaveletFilter->SetLevels( this->m_Levels );
+  m_InverseWaveletFilter->SetHighPassSubBands(this->m_HighPassSubBands);
+  m_InverseWaveletFilter->SetLevels(this->m_Levels);
   m_InverseWaveletFilter->ApplyReconstructionFactorsOff();
-  m_InverseWaveletFilter->SetInputs( modifiedWavelets );
+  m_InverseWaveletFilter->SetInputs(modifiedWavelets);
 
   // ==================== Filter Inter Connection =======================
-  m_InverseFFTFilter->SetInput( m_InverseWaveletFilter->GetOutput() );
-  m_ChangeInformationFilter->SetInput( m_InverseFFTFilter->GetOutput() );
-  m_ChangeInformationFilter->SetReferenceImage( m_FFTPadFilter->GetOutput() );
+  m_InverseFFTFilter->SetInput(m_InverseWaveletFilter->GetOutput());
+  m_ChangeInformationFilter->SetInput(m_InverseFFTFilter->GetOutput());
+  m_ChangeInformationFilter->SetReferenceImage(m_FFTPadFilter->GetOutput());
   m_ChangeInformationFilter->UseReferenceImageOn();
   m_ChangeInformationFilter->ChangeAll();
-  m_CastFloatFilter->SetInput( m_ChangeInformationFilter->GetOutput() );
+  m_CastFloatFilter->SetInput(m_ChangeInformationFilter->GetOutput());
 
   // ====================================================================
   // ==================== Graft Output Declaration ======================
   // ====================================================================
-  m_CastFloatFilter->GraftOutput( this->GetOutput() );
+  m_CastFloatFilter->GraftOutput(this->GetOutput());
   m_CastFloatFilter->Update();
-  this->GraftOutput( m_CastFloatFilter->GetOutput() );
-  }
+  this->GraftOutput(m_CastFloatFilter->GetOutput());
+}
 
-template< typename TImageType,
-  typename TWaveletFunction >
+template <typename TImageType, typename TWaveletFunction>
 void
-WaveletCoeffsPhaseAnalyzisImageFilter< TImageType, TWaveletFunction >
-:: PrintSelf( std::ostream & os, Indent indent ) const
+WaveletCoeffsPhaseAnalyzisImageFilter<TImageType, TWaveletFunction>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  os  << indent << " Levels: " << this->m_Levels << std::endl;
-  os  << indent << " HighPassSubBands: " << this->m_HighPassSubBands << std::endl;
-  os  << indent << " OutputIndex: " << this->m_OutputIndex << std::endl;
-  os  << indent << " ApplySoftThreshold: " << m_ApplySoftThreshold << std::endl;
-  os  << indent << " ThresholdNumOfSigmas: " << m_ThresholdNumOfSigmas << std::endl;
+  os << indent << " Levels: " << this->m_Levels << std::endl;
+  os << indent << " HighPassSubBands: " << this->m_HighPassSubBands << std::endl;
+  os << indent << " OutputIndex: " << this->m_OutputIndex << std::endl;
+  os << indent << " ApplySoftThreshold: " << m_ApplySoftThreshold << std::endl;
+  os << indent << " ThresholdNumOfSigmas: " << m_ThresholdNumOfSigmas << std::endl;
 }
 } // end namespace itk
 #endif

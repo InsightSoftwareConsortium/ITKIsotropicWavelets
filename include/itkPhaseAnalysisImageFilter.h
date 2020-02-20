@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -60,20 +60,18 @@ Orientation:
  *
  * \ingroup IsotropicWavelets
  */
-template<typename TInputImage,
-  typename TOutputImage =
-    Image<typename TInputImage::PixelType::ComponentType, TInputImage::ImageDimension> >
-class PhaseAnalysisImageFilter:
-  public ImageToImageFilter< TInputImage, TOutputImage >
+template <typename TInputImage,
+          typename TOutputImage = Image<typename TInputImage::PixelType::ComponentType, TInputImage::ImageDimension>>
+class PhaseAnalysisImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(PhaseAnalysisImageFilter);
 
   /** Standard class type alias. */
   using Self = PhaseAnalysisImageFilter;
-  using Superclass = ImageToImageFilter<TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** ImageDimension constants */
   static constexpr unsigned int ImageDimension = TOutputImage::ImageDimension;
@@ -82,8 +80,7 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(PhaseAnalysisImageFilter,
-               ImageToImageFilter);
+  itkTypeMacro(PhaseAnalysisImageFilter, ImageToImageFilter);
 
   /** Some convenient type alias. */
   using InputImageType = typename Superclass::InputImageType;
@@ -108,78 +105,82 @@ public:
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /// This ensure that PixelType is float||double, and not complex.
-  itkConceptMacro( OutputPixelTypeIsFloatCheck,
-                   ( Concept::IsFloatingPoint< typename TOutputImage::PixelType > ) );
+  itkConceptMacro(OutputPixelTypeIsFloatCheck, (Concept::IsFloatingPoint<typename TOutputImage::PixelType>));
 #endif
-  const OutputImageType * GetOutputPhase() const
+  const OutputImageType *
+  GetOutputPhase() const
   {
-    return itkDynamicCastInDebugMode< const TOutputImage * >( this->GetPrimaryOutput() );
+    return itkDynamicCastInDebugMode<const TOutputImage *>(this->GetPrimaryOutput());
   }
 
-  OutputImageType * GetOutputPhase()
+  OutputImageType *
+  GetOutputPhase()
   {
-    return itkDynamicCastInDebugMode< OutputImageType * >(this->GetOutput(0));
+    return itkDynamicCastInDebugMode<OutputImageType *>(this->GetOutput(0));
   }
 
-  OutputImageType * GetOutputAmplitude()
+  OutputImageType *
+  GetOutputAmplitude()
   {
-    return itkDynamicCastInDebugMode< OutputImageType * >(this->GetOutput(1));
+    return itkDynamicCastInDebugMode<OutputImageType *>(this->GetOutput(1));
   }
 
 protected:
   PhaseAnalysisImageFilter();
-  ~PhaseAnalysisImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  ~PhaseAnalysisImageFilter() override = default;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void BeforeThreadedGenerateData() override;
-  void DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread ) override;
+  void
+  BeforeThreadedGenerateData() override;
+  void
+  DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
 
-  inline OutputImagePixelType ComputeFeatureVectorNormSquare( const InputImagePixelType & inputPixel) const
+  inline OutputImagePixelType
+  ComputeFeatureVectorNormSquare(const InputImagePixelType & inputPixel) const
   {
     const unsigned int & nC = this->GetInput()->GetNumberOfComponentsPerPixel();
     OutputImagePixelType out(0);
 
-    for(unsigned int r = 1; r < nC; r++)
-      {
+    for (unsigned int r = 1; r < nC; r++)
+    {
       out += inputPixel[r] * inputPixel[r];
-      }
+    }
     return out;
   }
 
   /**************** Helpers requiring the square norm of Riesz *******************/
-  inline OutputImagePixelType ComputeAmplitude( const InputImagePixelType & inputPixel,
-                                                const OutputImagePixelType & featureAmpSquare ) const
+  inline OutputImagePixelType
+  ComputeAmplitude(const InputImagePixelType & inputPixel, const OutputImagePixelType & featureAmpSquare) const
   {
-    return sqrt( inputPixel[0] * inputPixel[0] + featureAmpSquare );
+    return sqrt(inputPixel[0] * inputPixel[0] + featureAmpSquare);
   }
 
-  inline OutputImagePixelType ComputePhase( const InputImagePixelType & inputPixel,
-                                            const OutputImagePixelType & featureAmpSquare ) const
+  inline OutputImagePixelType
+  ComputePhase(const InputImagePixelType & inputPixel, const OutputImagePixelType & featureAmpSquare) const
   {
     return atan2(sqrt(featureAmpSquare), inputPixel[0]);
   }
 
   itk::FixedArray<OutputImagePixelType, ImageDimension - 1>
-  ComputePhaseOrientation( const InputImagePixelType & inputPixel,
-                           const OutputImagePixelType & featureAmpSquare ) const
+  ComputePhaseOrientation(const InputImagePixelType & inputPixel, const OutputImagePixelType & featureAmpSquare) const
   {
     // the angles of the polar coordinates of the normed vector:
     // V = (R1*f, ..., Rn*f) / FeatureNorm
-    FixedArray< OutputImagePixelType, ImageDimension - 1> out;
-    out.Fill( NumericTraits< OutputImagePixelType >::ZeroValue() );
-    OutputImagePixelType fNorm     = sqrt(featureAmpSquare);
+    FixedArray<OutputImagePixelType, ImageDimension - 1> out;
+    out.Fill(NumericTraits<OutputImagePixelType>::ZeroValue());
+    OutputImagePixelType fNorm = sqrt(featureAmpSquare);
     OutputImagePixelType f1Unitary = inputPixel[1] / fNorm;
-    for(unsigned int i = 0; i < ImageDimension - 1; i++)
-      {
-      out[i] = atan2(inputPixel[i + 2] / fNorm, f1Unitary)
-        + ( (inputPixel[i + 2] >= 0) ? 0 : itk::Math::pi  );
-      }
+    for (unsigned int i = 0; i < ImageDimension - 1; i++)
+    {
+      out[i] = atan2(inputPixel[i + 2] / fNorm, f1Unitary) + ((inputPixel[i + 2] >= 0) ? 0 : itk::Math::pi);
+    }
     return out;
   }
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkPhaseAnalysisImageFilter.hxx"
+#  include "itkPhaseAnalysisImageFilter.hxx"
 #endif
 
 #endif

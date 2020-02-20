@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -79,7 +79,8 @@ namespace itk
  * the positive frequencies: index <= floor(inputSize/2.0) at the begining of the output, including zero component, and
  * negative frequencies: index > floor(inputSize/2.0) (>= if even) at the end.
  *
- * If inputSize[dim] is even, Nyquist (highest) freq is unique, but shared between negative and positive frequencies. So this freq (index=4) it is copied to the output: index >= floor(inputSize/2.0).
+ * If inputSize[dim] is even, Nyquist (highest) freq is unique, but shared between negative and positive frequencies. So
+ this freq (index=4) it is copied to the output: index >= floor(inputSize/2.0).
  *
  * If the input image is generated from an FFT of a real image, then the input is hermitian;
  * 0 (DC)
@@ -97,9 +98,8 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template< typename TImageType >
-class FrequencyExpandImageFilter:
-  public ImageToImageFilter< TImageType, TImageType >
+template <typename TImageType>
+class FrequencyExpandImageFilter : public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyExpandImageFilter);
@@ -128,12 +128,13 @@ public:
   using ImagePointer = typename ImageType::Pointer;
 
   /** The type of the expand factors representation */
-  using ExpandFactorsType = FixedArray< unsigned int, ImageDimension >;
+  using ExpandFactorsType = FixedArray<unsigned int, ImageDimension>;
 
   /** Set the expand factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
   itkSetMacro(ExpandFactors, ExpandFactorsType);
-  virtual void SetExpandFactors(const unsigned int factor);
+  virtual void
+  SetExpandFactors(const unsigned int factor);
 
   /** Get the expand factors. */
   itkGetConstReferenceMacro(ExpandFactors, ExpandFactorsType);
@@ -144,29 +145,32 @@ public:
    * UpdateOutputInformation() in order to inform the pipeline execution model.
    * The original documentation of this method is below.
    * \sa ProcessObject::GenerateOutputInformaton() */
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
   /** FrequencyExpandImageFilter needs a smaller input requested region than the output
    * requested region.  As such, ShrinkImageFilter needs to provide an
    * implementation for GenerateInputRequestedRegion() in order to inform
    * the pipeline execution model.
    * \sa ProcessObject::GenerateInputRequestedRegion() */
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   // Begin concept checking
-  itkConceptMacro( ImageTypeHasNumericTraitsCheck,
-                   ( Concept::HasNumericTraits< typename TImageType::PixelType > ) );
+  itkConceptMacro(ImageTypeHasNumericTraitsCheck, (Concept::HasNumericTraits<typename TImageType::PixelType>));
   // End concept checking
 #endif
 
 protected:
   FrequencyExpandImageFilter();
-  ~FrequencyExpandImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  ~FrequencyExpandImageFilter() override = default;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
 private:
   ExpandFactorsType m_ExpandFactors;
@@ -174,7 +178,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkFrequencyExpandImageFilter.hxx"
+#  include "itkFrequencyExpandImageFilter.hxx"
 #endif
 
 #endif

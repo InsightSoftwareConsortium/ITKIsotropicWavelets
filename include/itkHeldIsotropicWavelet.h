@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,20 +39,19 @@ namespace itk
  * \ingroup SpatialFunctions
  * \ingroup IsotropicWavelets
  */
-template< typename TFunctionValue = double,
-  unsigned int VImageDimension    = 3,
-  typename TInput = Point< SpacePrecisionType, VImageDimension > >
-class HeldIsotropicWavelet:
-  public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
+template <typename TFunctionValue = double,
+          unsigned int VImageDimension = 3,
+          typename TInput = Point<SpacePrecisionType, VImageDimension>>
+class HeldIsotropicWavelet : public IsotropicWaveletFrequencyFunction<TFunctionValue, VImageDimension, TInput>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(HeldIsotropicWavelet);
 
   /** Standard class type alias. */
   using Self = HeldIsotropicWavelet;
-  using Superclass = IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = IsotropicWaveletFrequencyFunction<TFunctionValue, VImageDimension, TInput>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -67,31 +66,33 @@ public:
   using FunctionValueType = typename Superclass::FunctionValueType;
 
   /** Type used to store gaussian parameters. */
-  using ArrayType = FixedArray< double, VImageDimension >;
+  using ArrayType = FixedArray<double, VImageDimension>;
 
   /** Evaluate the function */
-  FunctionValueType EvaluateMagnitude(const FunctionValueType& freq_norm_in_hz) const override;
+  FunctionValueType
+  EvaluateMagnitude(const FunctionValueType & freq_norm_in_hz) const override;
 
   /** Gets and sets parameters */
   itkSetMacro(PolynomialOrder, unsigned int);
   itkGetConstMacro(PolynomialOrder, unsigned int);
 
-  FunctionValueType ComputePolynom(const FunctionValueType & freq_norm_in_hz,
-                                   const unsigned int & order) const;
+  FunctionValueType
+  ComputePolynom(const FunctionValueType & freq_norm_in_hz, const unsigned int & order) const;
 
 protected:
   HeldIsotropicWavelet();
   ~HeldIsotropicWavelet() override;
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   /** The order of the polynom. */
-  unsigned int m_PolynomialOrder;
+  unsigned int m_PolynomialOrder{ 5 };
 };
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkHeldIsotropicWavelet.hxx"
+#  include "itkHeldIsotropicWavelet.hxx"
 #endif
 
 #endif

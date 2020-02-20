@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,20 +41,17 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template< typename TInputImage,
- typename TOutputImage,
- typename TWaveletFilterBank >
-class WaveletFrequencyForwardUndecimated:
-  public ImageToImageFilter< TInputImage, TOutputImage>
+template <typename TInputImage, typename TOutputImage, typename TWaveletFilterBank>
+class WaveletFrequencyForwardUndecimated : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyForwardUndecimated);
 
   /** Standard typenames type alias. */
   using Self = WaveletFrequencyForwardUndecimated;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Inherit types from Superclass. */
   using InputImageType = typename Superclass::InputImageType;
@@ -82,12 +79,13 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(WaveletFrequencyForwardUndecimated,
-               ImageToImageFilter);
-  virtual void SetLevels(unsigned int n);
+  itkTypeMacro(WaveletFrequencyForwardUndecimated, ImageToImageFilter);
+  virtual void
+  SetLevels(unsigned int n);
 
   itkGetConstReferenceMacro(Levels, unsigned int);
-  virtual void SetHighPassSubBands(unsigned int n);
+  virtual void
+  SetHighPassSubBands(unsigned int n);
 
   itkGetConstReferenceMacro(HighPassSubBands, unsigned int);
   itkGetConstReferenceMacro(TotalOutputs, unsigned int);
@@ -100,16 +98,16 @@ public:
   /** Return modifiable pointer of the wavelet filter bank member. */
   itkGetModifiableObjectMacro(WaveletFilterBank, WaveletFilterBankType);
   /** Return modifiable pointer to the wavelet function, which is a member of wavelet filter bank. */
-  virtual WaveletFunctionType * GetModifiableWaveletFunction()
+  virtual WaveletFunctionType *
+  GetModifiableWaveletFunction()
   {
     return this->GetModifiableWaveletFilterBank()->GetModifiableWaveletFunction();
   }
 
   /** Flag to store the wavelet Filter Bank Pyramid, for all levels and all bands.
    * Access to it with GetWaveletFilterBankPyramid()*/
-  itkSetMacro(StoreWaveletFilterBankPyramid, bool)
-  itkGetMacro(StoreWaveletFilterBankPyramid, bool)
-  itkBooleanMacro(StoreWaveletFilterBankPyramid);
+  itkSetMacro(StoreWaveletFilterBankPyramid, bool) itkGetMacro(StoreWaveletFilterBankPyramid, bool)
+    itkBooleanMacro(StoreWaveletFilterBankPyramid);
 
   itkGetMacro(WaveletFilterBankPyramid, OutputsType);
 
@@ -117,33 +115,42 @@ public:
    * Return J: $ J = \text{min_element}\{J_0,\ldots, J_d\} $;
    * where each $J_i$ is the  number of integer divisions that can be done with the $i$ size and the scale factor.
    */
-  static unsigned int ComputeMaxNumberOfLevels(const typename InputImageType::SizeType & input_size, const unsigned int scaleFactor = 2);
+  static unsigned int
+  ComputeMaxNumberOfLevels(const typename InputImageType::SizeType & input_size, const unsigned int scaleFactor = 2);
 
   /** (Level, band) pair.
    * Level from: [0, m_Levels), and equal to m_Levels only for the low_pass image.
    * band from [0, m_HighPassSubbands) */
   using IndexPairType = std::pair<unsigned int, unsigned int>;
   /** Get the (Level,Band) from a linear index output.
-   * The index corresponding to the low-pass image is the last one, corresponding to the IndexPairType(this->GetLevels(), 0).
+   * The index corresponding to the low-pass image is the last one, corresponding to the
+   * IndexPairType(this->GetLevels(), 0).
    */
-  IndexPairType OutputIndexToLevelBand(unsigned int linear_index);
+  IndexPairType
+  OutputIndexToLevelBand(unsigned int linear_index);
 
   /** Retrieve outputs */
-  OutputsType GetOutputs();
+  OutputsType
+  GetOutputs();
 
-  OutputsType GetOutputsHighPass();
+  OutputsType
+  GetOutputsHighPass();
 
-  OutputImagePointer GetOutputLowPass();
+  OutputImagePointer
+  GetOutputLowPass();
 
-  OutputsType GetOutputsHighPassByLevel(unsigned int level);
+  OutputsType
+  GetOutputsHighPassByLevel(unsigned int level);
 
 protected:
   WaveletFrequencyForwardUndecimated();
-  ~WaveletFrequencyForwardUndecimated() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  ~WaveletFrequencyForwardUndecimated() override = default;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Single-threaded version of GenerateData. */
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
   /************ Information *************/
 
@@ -155,14 +162,16 @@ protected:
    * below.
    * \sa ProcessObject::GenerateOutputInformaton()
    */
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
   /** Given one output whose requested region has been set, this method sets
    * the requested region for the remaining output images.  The original
    * documentation of this method is below.
    * \sa ProcessObject::GenerateOutputRequestedRegion()
    */
-  void GenerateOutputRequestedRegion(DataObject *output) override;
+  void
+  GenerateOutputRequestedRegion(DataObject * output) override;
 
   /** WaveletFrequencyForwardUndecimated requires a larger input requested
    * region than the output requested regions to accommodate the shrinkage and
@@ -171,20 +180,21 @@ protected:
    * original documentation of this method is below.
    * \sa ProcessObject::GenerateInputRequestedRegion()
    */
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
 private:
-  unsigned int             m_Levels;
-  unsigned int             m_HighPassSubBands;
-  unsigned int             m_TotalOutputs;
-  unsigned int             m_ScaleFactor;
+  unsigned int             m_Levels{ 1 };
+  unsigned int             m_HighPassSubBands{ 1 };
+  unsigned int             m_TotalOutputs{ 1 };
+  unsigned int             m_ScaleFactor{ 2 };
   WaveletFilterBankPointer m_WaveletFilterBank;
-  bool                     m_StoreWaveletFilterBankPyramid;
+  bool                     m_StoreWaveletFilterBankPyramid{ false };
   OutputsType              m_WaveletFilterBankPyramid;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkWaveletFrequencyForwardUndecimated.hxx"
+#  include "itkWaveletFrequencyForwardUndecimated.hxx"
 #endif
 
 #endif

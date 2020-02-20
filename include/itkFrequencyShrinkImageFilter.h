@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -73,9 +73,8 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template<typename TImageType>
-class FrequencyShrinkImageFilter:
-  public ImageToImageFilter<TImageType, TImageType>
+template <typename TImageType>
+class FrequencyShrinkImageFilter : public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyShrinkImageFilter);
@@ -106,32 +105,35 @@ public:
   static constexpr unsigned int ImageDimension = TImageType::ImageDimension;
   static constexpr unsigned int OutputImageDimension = TImageType::ImageDimension;
 
-  using ShrinkFactorsType = FixedArray< unsigned int, ImageDimension >;
+  using ShrinkFactorsType = FixedArray<unsigned int, ImageDimension>;
   using FrequencyBandFilterType = FrequencyBandImageFilter<TImageType>;
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
   itkSetMacro(ShrinkFactors, ShrinkFactorsType);
-  void SetShrinkFactors(unsigned int factor);
+  void
+  SetShrinkFactors(unsigned int factor);
 
-  void SetShrinkFactor(unsigned int i, unsigned int factor);
+  void
+  SetShrinkFactor(unsigned int i, unsigned int factor);
 
   /** Get the shrink factors. */
   itkGetConstReferenceMacro(ShrinkFactors, ShrinkFactorsType);
 
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
   /** FrequencyShrinkImageFilter needs a larger input requested region than the output
    * requested region.  As such, FrequencyShrinkImageFilter needs to provide an
    * implementation for GenerateInputRequestedRegion() in order to inform the
    * pipeline execution model.
    * \sa ProcessObject::GenerateInputRequestedRegion() */
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( ImageTypeHasNumericTraitsCheck,
-                   ( Concept::HasNumericTraits< typename TImageType::PixelType > ) );
+  itkConceptMacro(ImageTypeHasNumericTraitsCheck, (Concept::HasNumericTraits<typename TImageType::PixelType>));
   /** End concept checking */
 #endif
 
@@ -143,19 +145,21 @@ public:
 
 protected:
   FrequencyShrinkImageFilter();
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
 private:
   ShrinkFactorsType                         m_ShrinkFactors;
-  bool                                      m_ApplyBandFilter;
+  bool                                      m_ApplyBandFilter{ false };
   typename FrequencyBandFilterType::Pointer m_FrequencyBandFilter;
 };
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkFrequencyShrinkImageFilter.hxx"
+#  include "itkFrequencyShrinkImageFilter.hxx"
 #endif
 
 #endif

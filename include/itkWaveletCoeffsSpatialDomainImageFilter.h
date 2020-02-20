@@ -1,6 +1,6 @@
 /*=========================================================================
  *
- *  Copyright Insight Software Consortium
+ *  Copyright NumFOCUS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -54,10 +54,8 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template< typename TImageType,
-  typename TWaveletFunction >
-class WaveletCoeffsSpatialDomainImageFilter:
-  public ImageToImageFilter< TImageType, TImageType>
+template <typename TImageType, typename TWaveletFunction>
+class WaveletCoeffsSpatialDomainImageFilter : public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletCoeffsSpatialDomainImageFilter);
@@ -81,7 +79,7 @@ public:
   static constexpr unsigned int ImageDimension = ImageType::ImageDimension;
 
   using WaveletScalarType = double;
-  using ImageFloatType = Image< float, ImageDimension >;
+  using ImageFloatType = Image<float, ImageDimension>;
 
   /** Flag to store the number of levels and highpasssubbands. **/
   itkGetMacro(Levels, IntType);
@@ -93,24 +91,27 @@ protected:
   WaveletCoeffsSpatialDomainImageFilter();
 
 protected:
-  using FFTPadType = FFTPadImageFilter< ImageType >;
-  using ZeroDCType = ZeroDCImageFilter< ImageType >;
-  using FFTForwardType = ForwardFFTImageFilter< typename ZeroDCType::OutputImageType >;
+  using FFTPadType = FFTPadImageFilter<ImageType>;
+  using ZeroDCType = ZeroDCImageFilter<ImageType>;
+  using FFTForwardType = ForwardFFTImageFilter<typename ZeroDCType::OutputImageType>;
   using ComplexImageType = typename FFTForwardType::OutputImageType;
 
-  using WaveletFunctionType = SimoncelliIsotropicWavelet< WaveletScalarType, ImageDimension>;
-  using WaveletFilterBankType = WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType >;
+  using WaveletFunctionType = SimoncelliIsotropicWavelet<WaveletScalarType, ImageDimension>;
+  using WaveletFilterBankType = WaveletFrequencyFilterBankGenerator<ComplexImageType, WaveletFunctionType>;
   // using ForwardWaveletType = WaveletFrequencyForward< ComplexImageType, ComplexImageType, WaveletFilterBankType >;
-  using ForwardWaveletType = WaveletFrequencyForwardUndecimated< ComplexImageType, ComplexImageType, WaveletFilterBankType >;
+  using ForwardWaveletType =
+    WaveletFrequencyForwardUndecimated<ComplexImageType, ComplexImageType, WaveletFilterBankType>;
 
-  using InverseFFTType = InverseFFTImageFilter< ComplexImageType, ImageType >;
-  using ChangeInformationType = ChangeInformationImageFilter< ImageType >;
-  using CastFloatType = CastImageFilter< ImageType, ImageFloatType>;
+  using InverseFFTType = InverseFFTImageFilter<ComplexImageType, ImageType>;
+  using ChangeInformationType = ChangeInformationImageFilter<ImageType>;
+  using CastFloatType = CastImageFilter<ImageType, ImageFloatType>;
 
   /** Single-threaded version of GenerateData. */
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
-  void PrintSelf( std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   typename FFTPadType::Pointer            m_FFTPadFilter;
@@ -121,12 +122,12 @@ private:
   typename ChangeInformationType::Pointer m_ChangeInformationFilter;
   typename CastFloatType::Pointer         m_CastFloatFilter;
 
-  unsigned int                            m_Levels;
-  unsigned int                            m_HighPassSubBands;
+  unsigned int m_Levels;
+  unsigned int m_HighPassSubBands;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkWaveletCoeffsSpatialDomainImageFilter.hxx"
+#  include "itkWaveletCoeffsSpatialDomainImageFilter.hxx"
 #endif
 
 #endif
