@@ -38,20 +38,18 @@ namespace itk
  * \sa itkWaveletFrequencyInverse
  * \ingroup IsotropicWavelets
  */
-template<typename TInputImage,
-  typename TOutputImage =
-    Image<typename TInputImage::PixelType::ComponentType, TInputImage::ImageDimension> >
-class PhaseAnalysisSoftThresholdImageFilter:
-  public PhaseAnalysisImageFilter< TInputImage, TOutputImage >
+template <typename TInputImage,
+          typename TOutputImage = Image<typename TInputImage::PixelType::ComponentType, TInputImage::ImageDimension>>
+class PhaseAnalysisSoftThresholdImageFilter : public PhaseAnalysisImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(PhaseAnalysisSoftThresholdImageFilter);
 
   /** Standard class type alias. */
   using Self = PhaseAnalysisSoftThresholdImageFilter;
-  using Superclass = PhaseAnalysisImageFilter<TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = PhaseAnalysisImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** ImageDimension constants */
   static constexpr unsigned int ImageDimension = TOutputImage::ImageDimension;
@@ -60,8 +58,7 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(PhaseAnalysisSoftThresholdImageFilter,
-               PhaseAnalysisImageFilter);
+  itkTypeMacro(PhaseAnalysisSoftThresholdImageFilter, PhaseAnalysisImageFilter);
 
   /** Some convenient type alias. */
   using InputImageType = typename Superclass::InputImageType;
@@ -84,29 +81,33 @@ public:
 
   using OutputImageRegionIterator = typename Superclass::OutputImageRegionIterator;
 
-  itkSetMacro( ApplySoftThreshold, bool );
-  itkGetConstMacro( ApplySoftThreshold, bool );
-  itkBooleanMacro( ApplySoftThreshold );
+  itkSetMacro(ApplySoftThreshold, bool);
+  itkGetConstMacro(ApplySoftThreshold, bool);
+  itkBooleanMacro(ApplySoftThreshold);
 
-  itkSetMacro( NumOfSigmas, OutputImagePixelType );
-  itkGetConstMacro( NumOfSigmas, OutputImagePixelType );
-  itkGetConstMacro( MeanAmp, OutputImagePixelType );
-  itkGetConstMacro( SigmaAmp, OutputImagePixelType );
-  itkGetConstMacro( Threshold, OutputImagePixelType );
+  itkSetMacro(NumOfSigmas, OutputImagePixelType);
+  itkGetConstMacro(NumOfSigmas, OutputImagePixelType);
+  itkGetConstMacro(MeanAmp, OutputImagePixelType);
+  itkGetConstMacro(SigmaAmp, OutputImagePixelType);
+  itkGetConstMacro(Threshold, OutputImagePixelType);
 
-  OutputImageType * GetOutputCosPhase()
+  OutputImageType *
+  GetOutputCosPhase()
   {
-    return itkDynamicCastInDebugMode< OutputImageType * >(this->GetOutput(2));
+    return itkDynamicCastInDebugMode<OutputImageType *>(this->GetOutput(2));
   }
 
 protected:
   PhaseAnalysisSoftThresholdImageFilter();
   ~PhaseAnalysisSoftThresholdImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateData() override;
-  void ThreadedComputeCosineOfPhase(
-      const OutputImageRegionType & outputRegionForThread );
+  void
+  GenerateData() override;
+  void
+  ThreadedComputeCosineOfPhase(const OutputImageRegionType & outputRegionForThread);
+
 private:
   bool                 m_ApplySoftThreshold;
   OutputImagePixelType m_NumOfSigmas;
@@ -116,7 +117,7 @@ private:
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkPhaseAnalysisSoftThresholdImageFilter.hxx"
+#  include "itkPhaseAnalysisSoftThresholdImageFilter.hxx"
 #endif
 
 #endif

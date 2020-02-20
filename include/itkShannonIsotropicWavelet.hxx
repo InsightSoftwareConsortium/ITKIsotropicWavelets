@@ -24,36 +24,31 @@
 
 namespace itk
 {
-template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
-ShannonIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
-::ShannonIsotropicWavelet()
-{
-}
+template <typename TFunctionValue, unsigned int VImageDimension, typename TInput>
+ShannonIsotropicWavelet<TFunctionValue, VImageDimension, TInput>::ShannonIsotropicWavelet()
+{}
 
-template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
-ShannonIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
-::~ShannonIsotropicWavelet()
-{
-}
+template <typename TFunctionValue, unsigned int VImageDimension, typename TInput>
+ShannonIsotropicWavelet<TFunctionValue, VImageDimension, TInput>::~ShannonIsotropicWavelet()
+{}
 
-template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
+template <typename TFunctionValue, unsigned int VImageDimension, typename TInput>
 void
-ShannonIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
-::PrintSelf(std::ostream & os, Indent indent) const
+ShannonIsotropicWavelet<TFunctionValue, VImageDimension, TInput>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 }
 
-template< typename TFunctionValue, unsigned int VImageDimension, typename TInput >
-typename ShannonIsotropicWavelet< TFunctionValue, VImageDimension, TInput >::FunctionValueType
-ShannonIsotropicWavelet< TFunctionValue, VImageDimension, TInput >
-::EvaluateMagnitude(const FunctionValueType & freq_norm_in_hz) const
+template <typename TFunctionValue, unsigned int VImageDimension, typename TInput>
+typename ShannonIsotropicWavelet<TFunctionValue, VImageDimension, TInput>::FunctionValueType
+ShannonIsotropicWavelet<TFunctionValue, VImageDimension, TInput>::EvaluateMagnitude(
+  const FunctionValueType & freq_norm_in_hz) const
 {
   // freq_in_rad_per_sec = freq_norm_in_hz * 2 * pi
-  if ( freq_norm_in_hz >= 0.25 && freq_norm_in_hz <= 0.5 )
-    {
+  if (freq_norm_in_hz >= 0.25 && freq_norm_in_hz <= 0.5)
+  {
     return 1;
-    }
+  }
   return 0;
 }
 } // end namespace itk

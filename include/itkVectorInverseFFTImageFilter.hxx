@@ -25,10 +25,9 @@
 namespace itk
 {
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-VectorInverseFFTImageFilter< TInputImage, TOutputImage >
-::GenerateData()
+VectorInverseFFTImageFilter<TInputImage, TOutputImage>::GenerateData()
 {
   // Create a process accumulator for tracking the progress of this minipipeline
   auto progress = ProgressAccumulator::New();
@@ -38,21 +37,21 @@ VectorInverseFFTImageFilter< TInputImage, TOutputImage >
 
   this->AllocateOutputs();
 
-  using InputSingleImageType = Image< typename InputImageType::PixelType::ComponentType, ImageDimension >;
-  using VectorCastFilterType = VectorIndexSelectionCastImageFilter< InputImageType, InputSingleImageType >;
-  using FFTInverseFilterType = InverseFFTImageFilter< InputSingleImageType >;
+  using InputSingleImageType = Image<typename InputImageType::PixelType::ComponentType, ImageDimension>;
+  using VectorCastFilterType = VectorIndexSelectionCastImageFilter<InputImageType, InputSingleImageType>;
+  using FFTInverseFilterType = InverseFFTImageFilter<InputSingleImageType>;
   using OutputSingleImageType = typename FFTInverseFilterType::OutputImageType;
-  using ComposeFilterType = ComposeImageFilter< OutputSingleImageType, OutputImageType >;
+  using ComposeFilterType = ComposeImageFilter<OutputSingleImageType, OutputImageType>;
 
   auto vectorCastFilter = VectorCastFilterType::New();
   vectorCastFilter->SetInput(this->GetInput());
   progress->RegisterInternalFilter(vectorCastFilter, 1.0 / this->GetInput()->GetNumberOfComponentsPerPixel());
   auto fftInverseFilter = FFTInverseFilterType::New();
-  auto composeFilter    = ComposeFilterType::New();
+  auto composeFilter = ComposeFilterType::New();
 
-  std::vector< typename OutputSingleImageType::Pointer > inverseFFToutputs;
-  for ( unsigned int c = 0; c < this->GetInput()->GetNumberOfComponentsPerPixel(); c++ )
-    {
+  std::vector<typename OutputSingleImageType::Pointer> inverseFFToutputs;
+  for (unsigned int c = 0; c < this->GetInput()->GetNumberOfComponentsPerPixel(); c++)
+  {
     vectorCastFilter->SetIndex(c);
     vectorCastFilter->Update();
     fftInverseFilter->SetInput(vectorCastFilter->GetOutput());
@@ -60,17 +59,16 @@ VectorInverseFFTImageFilter< TInputImage, TOutputImage >
     inverseFFToutputs.push_back(fftInverseFilter->GetOutput());
     inverseFFToutputs.back()->DisconnectPipeline();
     composeFilter->SetInput(c, inverseFFToutputs.back());
-    }
+  }
   composeFilter->GraftOutput(outputPtr);
   composeFilter->Update();
 
   this->GraftOutput(composeFilter->GetOutput());
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-VectorInverseFFTImageFilter< TInputImage, TOutputImage >
-::PrintSelf(std::ostream & os, Indent indent) const
+VectorInverseFFTImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 }

@@ -26,61 +26,56 @@ namespace utils
 long
 Factorial(const long n)
 {
-  if ( n < 1 )
-    {
+  if (n < 1)
+  {
     return 1;
-    }
+  }
   return n * itk::utils::Factorial(n - 1);
 }
 
 unsigned int
-ComputeNumberOfComponents(const unsigned int &order, const unsigned int &dimension )
+ComputeNumberOfComponents(const unsigned int & order, const unsigned int & dimension)
 {
-  return itk::utils::Factorial(order + dimension - 1 )
-    /( itk::utils::Factorial(dimension - 1)*itk::utils::Factorial(order));
+  return itk::utils::Factorial(order + dimension - 1) /
+         (itk::utils::Factorial(dimension - 1) * itk::utils::Factorial(order));
 }
 
 // explicit instantiation of template functions with std::vector<unsigned int>
-template<>
+template <>
 void
 ComputeUniqueIndices<std::vector<unsigned int>, 3>(
-  std::vector<unsigned int> subIndex,
-  std::set< std::vector<unsigned int>,
-            std::greater<std::vector<unsigned int> > > &uniqueIndices,
-  unsigned int init );
+  std::vector<unsigned int>                                                      subIndex,
+  std::set<std::vector<unsigned int>, std::greater<std::vector<unsigned int>>> & uniqueIndices,
+  unsigned int                                                                   init);
 
-template<>
+template <>
 void
 ComputeUniqueIndices<std::vector<unsigned int>, 2>(
-  std::vector<unsigned int> subIndex,
-  std::set< std::vector<unsigned int>,
-            std::greater<std::vector<unsigned int> > > &uniqueIndices,
-  unsigned int init );
+  std::vector<unsigned int>                                                      subIndex,
+  std::set<std::vector<unsigned int>, std::greater<std::vector<unsigned int>>> & uniqueIndices,
+  unsigned int                                                                   init);
 
-template<>
-std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > >
-ComputeAllPermutations<std::vector<unsigned int> >(
-    const std::set< std::vector<unsigned int>,
-                    std::greater<std::vector<unsigned int> > > & uniqueIndices);
+template <>
+std::set<std::vector<unsigned int>, std::greater<std::vector<unsigned int>>>
+ComputeAllPermutations<std::vector<unsigned int>>(
+  const std::set<std::vector<unsigned int>, std::greater<std::vector<unsigned int>>> & uniqueIndices);
 
-template<>
-std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > >
-ComputeAllPossibleIndices<std::vector<unsigned int>, 3>(
-  const unsigned int &order);
+template <>
+std::set<std::vector<unsigned int>, std::greater<std::vector<unsigned int>>>
+ComputeAllPossibleIndices<std::vector<unsigned int>, 3>(const unsigned int & order);
 
-template<>
-std::set< std::vector<unsigned int>, std::greater<std::vector<unsigned int> > >
-ComputeAllPossibleIndices<std::vector<unsigned int>, 2>(
-  const unsigned int &order);
+template <>
+std::set<std::vector<unsigned int>, std::greater<std::vector<unsigned int>>>
+ComputeAllPossibleIndices<std::vector<unsigned int>, 2>(const unsigned int & order);
 
-template<>
+template <>
 bool
-LessOrEqualIndiceComparisson<std::vector<unsigned int>, 3>(
-    const std::vector<unsigned int> & rhs, const std::vector<unsigned int> & lhs);
+LessOrEqualIndiceComparisson<std::vector<unsigned int>, 3>(const std::vector<unsigned int> & rhs,
+                                                           const std::vector<unsigned int> & lhs);
 
-template<>
+template <>
 bool
-LessOrEqualIndiceComparisson<std::vector<unsigned int>, 2>(
-    const std::vector<unsigned int> & rhs, const std::vector<unsigned int> & lhs);
+LessOrEqualIndiceComparisson<std::vector<unsigned int>, 2>(const std::vector<unsigned int> & rhs,
+                                                           const std::vector<unsigned int> & lhs);
 } // end namespace utils
 } // end namespace itk

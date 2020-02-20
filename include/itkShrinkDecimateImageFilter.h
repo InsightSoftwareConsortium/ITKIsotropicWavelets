@@ -38,9 +38,8 @@ namespace itk
  * \ingroup ITKImageGrid
  * \ingroup IsotropicWavelets
  */
-template<typename TInputImage, typename TOutputImage>
-class ShrinkDecimateImageFilter:
-  public ImageToImageFilter<TInputImage, TOutputImage>
+template <typename TInputImage, typename TOutputImage>
+class ShrinkDecimateImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(ShrinkDecimateImageFilter);
@@ -75,58 +74,63 @@ public:
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
   static constexpr unsigned int OutputImageDimension = TOutputImage::ImageDimension;
 
-  using ShrinkFactorsType = FixedArray< unsigned int, ImageDimension >;
+  using ShrinkFactorsType = FixedArray<unsigned int, ImageDimension>;
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
   itkSetMacro(ShrinkFactors, ShrinkFactorsType);
-  void SetShrinkFactors(unsigned int factor);
+  void
+  SetShrinkFactors(unsigned int factor);
 
-  void SetShrinkFactor(unsigned int i, unsigned int factor);
+  void
+  SetShrinkFactor(unsigned int i, unsigned int factor);
 
   /** Get the shrink factors. */
   itkGetConstReferenceMacro(ShrinkFactors, ShrinkFactorsType);
 
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
   /** ShrinkDecimateImageFilter needs a larger input requested region than the output
    * requested region.  As such, ShrinkDecimateImageFilter needs to provide an
    * implementation for GenerateInputRequestedRegion() in order to inform the
    * pipeline execution model.
    * \sa ProcessObject::GenerateInputRequestedRegion() */
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro(InputConvertibleToOutputCheck,
-                  (Concept::Convertible<typename TInputImage::PixelType, typename TOutputImage::PixelType> ));
-  itkConceptMacro(SameDimensionCheck,
-                  (Concept::SameDimension<ImageDimension, OutputImageDimension> ));
+                  (Concept::Convertible<typename TInputImage::PixelType, typename TOutputImage::PixelType>));
+  itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<ImageDimension, OutputImageDimension>));
   /** End concept checking */
 #endif
 
 protected:
   ShrinkDecimateImageFilter();
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void DynamicThreadedGenerateData( const OutputImageRegionType& outputRegionForThread ) override;
+  void
+  DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
 
 private:
   ShrinkFactorsType m_ShrinkFactors;
 
   /** Round different pixel types. */
-  template< class TOutputType, class TInputType >
-  typename EnableIfC<std::numeric_limits<TOutputType>::is_integer,  TOutputType>::Type
-  RoundIfInteger( TInputType input )
+  template <class TOutputType, class TInputType>
+  typename EnableIfC<std::numeric_limits<TOutputType>::is_integer, TOutputType>::Type
+  RoundIfInteger(TInputType input)
   {
-    return Math::Round< TOutputType >( input );
+    return Math::Round<TOutputType>(input);
   }
 
   // For Non-fundamental types numeric_limits is not specialized, and
   // is_integer defaults to false.
-  template< class TOutputType, class TInputType >
-  typename DisableIfC<std::numeric_limits<TOutputType>::is_integer,  TOutputType>::Type
-  RoundIfInteger( const TInputType & input, ...)
+  template <class TOutputType, class TInputType>
+  typename DisableIfC<std::numeric_limits<TOutputType>::is_integer, TOutputType>::Type
+  RoundIfInteger(const TInputType & input, ...)
   {
     return static_cast<TOutputType>(input);
   }
@@ -134,7 +138,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkShrinkDecimateImageFilter.hxx"
+#  include "itkShrinkDecimateImageFilter.hxx"
 #endif
 
 #endif

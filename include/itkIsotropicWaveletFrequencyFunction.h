@@ -38,7 +38,8 @@ namespace itk
  *   SubBandFilter
  *
  * Note that for Isotropic Wavelet, forward and inverse responses are usually the same.
- *  Data member m_HighPassSubBand refers to the numbers of bands in the highpass filter. Default to 1, just one highpass filter, so no band analysis.
+ *  Data member m_HighPassSubBand refers to the numbers of bands in the highpass filter. Default to 1, just one highpass
+ filter, so no band analysis.
  *
  *  If using EvaluateAlgoYYYSubBandFilter(unsigned int k). Implement it like this:
  *  k = 0 return low-pass response.
@@ -50,20 +51,19 @@ namespace itk
  * \ingroup SpatialFunctions
  * \ingroup IsotropicWavelets
  */
-template< typename TFunctionValue = double,
-  unsigned int VImageDimension    = 3,
-  typename TInput = Point< SpacePrecisionType, VImageDimension > >
-class IsotropicWaveletFrequencyFunction:
-  public IsotropicFrequencyFunction< TFunctionValue, VImageDimension, TInput >
+template <typename TFunctionValue = double,
+          unsigned int VImageDimension = 3,
+          typename TInput = Point<SpacePrecisionType, VImageDimension>>
+class IsotropicWaveletFrequencyFunction : public IsotropicFrequencyFunction<TFunctionValue, VImageDimension, TInput>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(IsotropicWaveletFrequencyFunction);
 
   /** Standard class type alias. */
   using Self = IsotropicWaveletFrequencyFunction;
-  using Superclass = IsotropicFrequencyFunction< TFunctionValue, VImageDimension, TInput >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = IsotropicFrequencyFunction<TFunctionValue, VImageDimension, TInput>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(IsotropicWaveletFrequencyFunction, IsotropicFrequencyFunction);
@@ -76,36 +76,42 @@ public:
   using OutputType = typename Superclass::OutputType;
 
   /** Evaluate Magnitude of frequency point. Evaluate function calls this. */
-  FunctionValueType EvaluateMagnitude(const TFunctionValue& freq_norm_in_hz) const override = 0;
+  FunctionValueType
+  EvaluateMagnitude(const TFunctionValue & freq_norm_in_hz) const override = 0;
 
   /**** Forward/Analysis ***/
   /** Evaluate the low filter response. */
-  virtual FunctionValueType EvaluateForwardLowPassFilter(const FunctionValueType& freq_in_hz) const;
+  virtual FunctionValueType
+  EvaluateForwardLowPassFilter(const FunctionValueType & freq_in_hz) const;
 
   /** Evaluate the highfilter response. */
-  virtual FunctionValueType EvaluateForwardHighPassFilter(const FunctionValueType& freq_in_hz) const;
+  virtual FunctionValueType
+  EvaluateForwardHighPassFilter(const FunctionValueType & freq_in_hz) const;
 
   /** Evaluate the sub-band response.
    * j evaluates LowFilter, j=m_SubBand evaluates HighFilter */
-  virtual FunctionValueType EvaluateForwardSubBand( const FunctionValueType& freq_in_hz,
-                                                    unsigned int j) const;
+  virtual FunctionValueType
+  EvaluateForwardSubBand(const FunctionValueType & freq_in_hz, unsigned int j) const;
 
   /**** Inverse/Synthesis ***/
   /** Evaluate the low filter response. */
-  virtual FunctionValueType EvaluateInverseLowPassFilter(const FunctionValueType& freq_in_hz) const;
+  virtual FunctionValueType
+  EvaluateInverseLowPassFilter(const FunctionValueType & freq_in_hz) const;
 
   /** Evaluate the highfilter response. */
-  virtual FunctionValueType EvaluateInverseHighPassFilter(const FunctionValueType& freq_in_hz) const;
+  virtual FunctionValueType
+  EvaluateInverseHighPassFilter(const FunctionValueType & freq_in_hz) const;
 
   /** Evaluate the sub-band response.
    * j evaluates LowFilter, j=m_SubBand evaluates HighFilter */
-  virtual FunctionValueType EvaluateInverseSubBand( const FunctionValueType& freq_in_hz,
-                                                    unsigned int j) const;
+  virtual FunctionValueType
+  EvaluateInverseSubBand(const FunctionValueType & freq_in_hz, unsigned int j) const;
 
   /** Number of HighPassSubBands in the high filter decomposition.
    * Default to the minimal value: 1. */
   itkGetConstMacro(HighPassSubBands, unsigned int);
-  virtual void SetHighPassSubBands(const unsigned int & high_pass_bands);
+  virtual void
+  SetHighPassSubBands(const unsigned int & high_pass_bands);
 
   /** Cut off frequency for low and high pass frequency.
    * Default to 0.25 Hz ( pi/2 rad/s ) but can be changed in child classes. */
@@ -114,7 +120,8 @@ public:
 protected:
   IsotropicWaveletFrequencyFunction();
   ~IsotropicWaveletFrequencyFunction() override;
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   unsigned int      m_HighPassSubBands;
   FunctionValueType m_FreqCutOff;
@@ -122,7 +129,7 @@ protected:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkIsotropicWaveletFrequencyFunction.hxx"
+#  include "itkIsotropicWaveletFrequencyFunction.hxx"
 #endif
 
 #endif

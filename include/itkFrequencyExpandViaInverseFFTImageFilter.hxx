@@ -25,76 +25,71 @@ namespace itk
 /**
  * Default constructor
  */
-template< typename TImageType >
-FrequencyExpandViaInverseFFTImageFilter< TImageType >
-::FrequencyExpandViaInverseFFTImageFilter()
+template <typename TImageType>
+FrequencyExpandViaInverseFFTImageFilter<TImageType>::FrequencyExpandViaInverseFFTImageFilter()
 {
   // Set default factors to 1
-  for ( unsigned int j = 0; j < ImageDimension; j++ )
-    {
+  for (unsigned int j = 0; j < ImageDimension; j++)
+  {
     m_ExpandFactors[j] = 1;
-    }
+  }
   m_InverseFFT = InverseFFTFilterType::New();
   m_ForwardFFT = ForwardFFTFilterType::New();
-  m_Expander   = ExpandFilterType::New();
+  m_Expander = ExpandFilterType::New();
   m_ChangeInformation = ChangeInformationFilterType::New();
 }
 
 /**
  * Standard "PrintSelf" method
  */
-template< typename TImageType >
+template <typename TImageType>
 void
-FrequencyExpandViaInverseFFTImageFilter< TImageType >
-::PrintSelf(std::ostream & os, Indent indent) const
+FrequencyExpandViaInverseFFTImageFilter<TImageType>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 
   unsigned int j;
   os << indent << "ExpandFactors: [";
-  for ( j = 0; j < ImageDimension - 1; j++ )
-    {
+  for (j = 0; j < ImageDimension - 1; j++)
+  {
     os << m_ExpandFactors[j] << ", ";
-    }
+  }
   os << m_ExpandFactors[j] << "]" << std::endl;
 }
 
 /**
  * Set expand factors from a single unsigned int
  */
-template< typename TImageType >
+template <typename TImageType>
 void
-FrequencyExpandViaInverseFFTImageFilter< TImageType >
-::SetExpandFactors(
-  const unsigned int factor)
+FrequencyExpandViaInverseFFTImageFilter<TImageType>::SetExpandFactors(const unsigned int factor)
 {
   unsigned int j;
 
-  for ( j = 0; j < ImageDimension; j++ )
+  for (j = 0; j < ImageDimension; j++)
+  {
+    if (factor != m_ExpandFactors[j])
     {
-    if ( factor != m_ExpandFactors[j] )
-      {
       break;
-      }
     }
-  if ( j < ImageDimension )
-    {
+  }
+  if (j < ImageDimension)
+  {
     this->Modified();
-    for ( j = 0; j < ImageDimension; j++ )
-      {
+    for (j = 0; j < ImageDimension; j++)
+    {
       m_ExpandFactors[j] = factor;
-      if ( m_ExpandFactors[j] < 1 )
-        {
+      if (m_ExpandFactors[j] < 1)
+      {
         m_ExpandFactors[j] = 1;
-        }
       }
     }
+  }
 }
 
-template< typename TImageType >
+template <typename TImageType>
 void
-FrequencyExpandViaInverseFFTImageFilter< TImageType >
-::GenerateData()
+FrequencyExpandViaInverseFFTImageFilter<TImageType>::GenerateData()
 {
   typename ImageType::Pointer outputPtr = this->GetOutput();
 
@@ -126,53 +121,46 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
 /**
  * GenerateInputRequesteRegion
  */
-template< typename TImageType >
+template <typename TImageType>
 void
-FrequencyExpandViaInverseFFTImageFilter< TImageType >
-::GenerateInputRequestedRegion()
+FrequencyExpandViaInverseFFTImageFilter<TImageType>::GenerateInputRequestedRegion()
 {
   // Call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
 
   // Get pointers to the input and output
-  auto * inputPtr = const_cast< TImageType * >( this->GetInput() );
+  auto *             inputPtr = const_cast<TImageType *>(this->GetInput());
   const TImageType * outputPtr = this->GetOutput();
 
-  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != nullptr );
-  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr );
+  itkAssertInDebugAndIgnoreInReleaseMacro(inputPtr != nullptr);
+  itkAssertInDebugAndIgnoreInReleaseMacro(outputPtr);
 
   // We need to compute the input requested region (size and start index)
-  unsigned int i;
-  const typename TImageType::SizeType & outputRequestedRegionSize =
-    outputPtr->GetRequestedRegion().GetSize();
-  const typename TImageType::IndexType & outputRequestedRegionStartIndex =
-    outputPtr->GetRequestedRegion().GetIndex();
+  unsigned int                           i;
+  const typename TImageType::SizeType &  outputRequestedRegionSize = outputPtr->GetRequestedRegion().GetSize();
+  const typename TImageType::IndexType & outputRequestedRegionStartIndex = outputPtr->GetRequestedRegion().GetIndex();
 
-  typename TImageType::SizeType inputRequestedRegionSize;
+  typename TImageType::SizeType  inputRequestedRegionSize;
   typename TImageType::IndexType inputRequestedRegionStartIndex;
   /**
    * inputRequestedSize = (outputRequestedSize / ExpandFactor) + 1)
    * The extra 1 above is to take care of edge effects when streaming.
    */
-  for ( i = 0; i < TImageType::ImageDimension; i++ )
-    {
-    inputRequestedRegionSize[i] =
-      static_cast<SizeValueType>(
-          std::ceil( static_cast<double>(outputRequestedRegionSize[i])
-            / static_cast<double>(m_ExpandFactors[i]) ) + 1 );
+  for (i = 0; i < TImageType::ImageDimension; i++)
+  {
+    inputRequestedRegionSize[i] = static_cast<SizeValueType>(
+      std::ceil(static_cast<double>(outputRequestedRegionSize[i]) / static_cast<double>(m_ExpandFactors[i])) + 1);
 
-    inputRequestedRegionStartIndex[i] =
-      static_cast<SizeValueType>(
-          std::floor( static_cast<double>(outputRequestedRegionStartIndex[i])
-            / static_cast<double>(m_ExpandFactors[i]) ) );
-    }
+    inputRequestedRegionStartIndex[i] = static_cast<SizeValueType>(
+      std::floor(static_cast<double>(outputRequestedRegionStartIndex[i]) / static_cast<double>(m_ExpandFactors[i])));
+  }
 
   typename TImageType::RegionType inputRequestedRegion;
   inputRequestedRegion.SetSize(inputRequestedRegionSize);
   inputRequestedRegion.SetIndex(inputRequestedRegionStartIndex);
 
   // Make sure the requested region is within largest possible.
-  inputRequestedRegion.Crop( inputPtr->GetLargestPossibleRegion() );
+  inputRequestedRegion.Crop(inputPtr->GetLargestPossibleRegion());
 
   // Set the input requested region.
   inputPtr->SetRequestedRegion(inputRequestedRegion);
@@ -181,43 +169,38 @@ FrequencyExpandViaInverseFFTImageFilter< TImageType >
 /**
  * GenerateOutputInformation
  */
-template< typename TImageType >
+template <typename TImageType>
 void
-FrequencyExpandViaInverseFFTImageFilter< TImageType >
-::GenerateOutputInformation()
+FrequencyExpandViaInverseFFTImageFilter<TImageType>::GenerateOutputInformation()
 {
   // Call the superclass' implementation of this method
   Superclass::GenerateOutputInformation();
 
   // Get pointers to the input and output
   const TImageType * inputPtr = this->GetInput();
-  TImageType * outputPtr = this->GetOutput();
+  TImageType *       outputPtr = this->GetOutput();
 
-  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr );
-  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != nullptr );
+  itkAssertInDebugAndIgnoreInReleaseMacro(inputPtr);
+  itkAssertInDebugAndIgnoreInReleaseMacro(outputPtr != nullptr);
 
   // We need to compute the output spacing, the output image size, and the
   // output image start index
-  const typename TImageType::SpacingType &
-  inputSpacing = inputPtr->GetSpacing();
-  const typename TImageType::SizeType & inputSize =
-    inputPtr->GetLargestPossibleRegion().GetSize();
-  const typename TImageType::IndexType & inputStartIndex =
-    inputPtr->GetLargestPossibleRegion().GetIndex();
-  const typename TImageType::PointType &
-  inputOrigin = inputPtr->GetOrigin();
+  const typename TImageType::SpacingType & inputSpacing = inputPtr->GetSpacing();
+  const typename TImageType::SizeType &    inputSize = inputPtr->GetLargestPossibleRegion().GetSize();
+  const typename TImageType::IndexType &   inputStartIndex = inputPtr->GetLargestPossibleRegion().GetIndex();
+  const typename TImageType::PointType &   inputOrigin = inputPtr->GetOrigin();
 
   typename TImageType::SpacingType outputSpacing;
-  typename TImageType::SizeType outputSize;
-  typename TImageType::IndexType outputStartIndex;
-  typename TImageType::PointType outputOrigin;
+  typename TImageType::SizeType    outputSize;
+  typename TImageType::IndexType   outputStartIndex;
+  typename TImageType::PointType   outputOrigin;
 
-  for ( unsigned int i = 0; i < TImageType::ImageDimension; i++ )
-    {
-    outputSpacing[i]    = inputSpacing[i] / m_ExpandFactors[i];
-    outputSize[i]       = inputSize[i] * static_cast< SizeValueType >(m_ExpandFactors[i]);
+  for (unsigned int i = 0; i < TImageType::ImageDimension; i++)
+  {
+    outputSpacing[i] = inputSpacing[i] / m_ExpandFactors[i];
+    outputSize[i] = inputSize[i] * static_cast<SizeValueType>(m_ExpandFactors[i]);
     outputStartIndex[i] = inputStartIndex[i];
-    }
+  }
 
   outputOrigin = inputOrigin;
 

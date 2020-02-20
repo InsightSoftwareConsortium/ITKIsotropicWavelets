@@ -22,72 +22,68 @@
 
 namespace itk
 {
-template< class TImageType >
-FrequencyShrinkViaInverseFFTImageFilter< TImageType >
-::FrequencyShrinkViaInverseFFTImageFilter()
+template <class TImageType>
+FrequencyShrinkViaInverseFFTImageFilter<TImageType>::FrequencyShrinkViaInverseFFTImageFilter()
 {
-  for ( unsigned int j = 0; j < ImageDimension; j++ )
-    {
+  for (unsigned int j = 0; j < ImageDimension; j++)
+  {
     m_ShrinkFactors[j] = 1;
-    }
+  }
   m_InverseFFT = InverseFFTFilterType::New();
   m_ForwardFFT = ForwardFFTFilterType::New();
-  m_Shrinker   = ShrinkFilterType::New();
+  m_Shrinker = ShrinkFilterType::New();
   m_ChangeInformation = ChangeInformationFilterType::New();
 }
 
-template< class TImageType >
+template <class TImageType>
 void
-FrequencyShrinkViaInverseFFTImageFilter< TImageType >
-::PrintSelf(std::ostream & os, Indent indent) const
+FrequencyShrinkViaInverseFFTImageFilter<TImageType>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 
   os << indent << "Shrink Factor: ";
-  for ( unsigned int j = 0; j < ImageDimension; j++ )
-    {
+  for (unsigned int j = 0; j < ImageDimension; j++)
+  {
     os << m_ShrinkFactors[j] << " ";
-    }
+  }
   os << std::endl;
 }
 
-template< class TImageType >
+template <class TImageType>
 void
-FrequencyShrinkViaInverseFFTImageFilter< TImageType >
-::SetShrinkFactors(unsigned int factor)
+FrequencyShrinkViaInverseFFTImageFilter<TImageType>::SetShrinkFactors(unsigned int factor)
 {
   unsigned int j;
 
-  for ( j = 0; j < ImageDimension; j++ )
+  for (j = 0; j < ImageDimension; j++)
+  {
+    if (factor != m_ShrinkFactors[j])
     {
-    if ( factor != m_ShrinkFactors[j] )
-      {
       break;
-      }
     }
-  if ( j < ImageDimension )
-    {
+  }
+  if (j < ImageDimension)
+  {
     this->Modified();
-    for ( j = 0; j < ImageDimension; j++ )
-      {
+    for (j = 0; j < ImageDimension; j++)
+    {
       m_ShrinkFactors[j] = factor;
-      if ( m_ShrinkFactors[j] < 1 )
-        {
+      if (m_ShrinkFactors[j] < 1)
+      {
         m_ShrinkFactors[j] = 1;
-        }
       }
     }
+  }
 }
 
-template< class TImageType >
+template <class TImageType>
 void
-FrequencyShrinkViaInverseFFTImageFilter< TImageType >
-::SetShrinkFactor(unsigned int i, unsigned int factor)
+FrequencyShrinkViaInverseFFTImageFilter<TImageType>::SetShrinkFactor(unsigned int i, unsigned int factor)
 {
-  if ( m_ShrinkFactors[i] == factor )
-    {
+  if (m_ShrinkFactors[i] == factor)
+  {
     return;
-    }
+  }
 
   this->Modified();
   m_ShrinkFactors[i] = factor;
@@ -96,10 +92,9 @@ FrequencyShrinkViaInverseFFTImageFilter< TImageType >
 /**
  * Perform an expensive
  */
-template< class TImageType >
+template <class TImageType>
 void
-FrequencyShrinkViaInverseFFTImageFilter< TImageType >
-::GenerateData()
+FrequencyShrinkViaInverseFFTImageFilter<TImageType>::GenerateData()
 {
   // Get the input and output pointers
   typename ImageType::Pointer outputPtr = this->GetOutput();
@@ -121,71 +116,63 @@ FrequencyShrinkViaInverseFFTImageFilter< TImageType >
   this->GraftOutput(m_ChangeInformation->GetOutput());
 }
 
-template< class TImageType >
+template <class TImageType>
 void
-FrequencyShrinkViaInverseFFTImageFilter< TImageType >
-::GenerateInputRequestedRegion()
+FrequencyShrinkViaInverseFFTImageFilter<TImageType>::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  auto * inputPtr = const_cast< TImageType * >(this->GetInput() );
+  auto * inputPtr = const_cast<TImageType *>(this->GetInput());
 
-  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr != nullptr );
+  itkAssertInDebugAndIgnoreInReleaseMacro(inputPtr != nullptr);
 
   // The filter chops high frequencys [0 1...H,H-1 H-2...1].
   // We need the whole input image, indepently of the RequestedRegion.
-  inputPtr->SetRequestedRegion( inputPtr->GetLargestPossibleRegion() );
+  inputPtr->SetRequestedRegion(inputPtr->GetLargestPossibleRegion());
 }
 
-template< class TImageType >
+template <class TImageType>
 void
-FrequencyShrinkViaInverseFFTImageFilter< TImageType >
-::GenerateOutputInformation()
+FrequencyShrinkViaInverseFFTImageFilter<TImageType>::GenerateOutputInformation()
 {
   // Call the superclass' implementation of this method
   Superclass::GenerateOutputInformation();
 
   // Get pointers to the input and output
   const TImageType * inputPtr = this->GetInput();
-  TImageType * outputPtr = this->GetOutput();
+  TImageType *       outputPtr = this->GetOutput();
 
-  itkAssertInDebugAndIgnoreInReleaseMacro( inputPtr );
-  itkAssertInDebugAndIgnoreInReleaseMacro( outputPtr != nullptr );
+  itkAssertInDebugAndIgnoreInReleaseMacro(inputPtr);
+  itkAssertInDebugAndIgnoreInReleaseMacro(outputPtr != nullptr);
 
   // Compute the output spacing, the output image size, and the
   // output image start index
-  const typename TImageType::SpacingType & inputSpacing =
-    inputPtr->GetSpacing();
-  const typename TImageType::SizeType & inputSize =
-    inputPtr->GetLargestPossibleRegion().GetSize();
-  const typename TImageType::IndexType & inputStartIndex =
-    inputPtr->GetLargestPossibleRegion().GetIndex();
-  const typename TImageType::PointType & inputOrigin =
-    inputPtr->GetOrigin();
+  const typename TImageType::SpacingType & inputSpacing = inputPtr->GetSpacing();
+  const typename TImageType::SizeType &    inputSize = inputPtr->GetLargestPossibleRegion().GetSize();
+  const typename TImageType::IndexType &   inputStartIndex = inputPtr->GetLargestPossibleRegion().GetIndex();
+  const typename TImageType::PointType &   inputOrigin = inputPtr->GetOrigin();
 
   // ContinuousIndex<double,ImageDimension> inputIndexOutputOrigin;
 
   typename TImageType::SpacingType outputSpacing(inputSpacing);
-  typename TImageType::SizeType outputSize;
-  typename TImageType::PointType outputOrigin;
-  typename TImageType::IndexType outputStartIndex;
+  typename TImageType::SizeType    outputSize;
+  typename TImageType::PointType   outputOrigin;
+  typename TImageType::IndexType   outputStartIndex;
   // TODO Check if you want to modify metada in this filter.
-  for ( unsigned int i = 0; i < TImageType::ImageDimension; i++ )
-    {
+  for (unsigned int i = 0; i < TImageType::ImageDimension; i++)
+  {
     outputSpacing[i] *= m_ShrinkFactors[i];
     outputStartIndex[i] = inputStartIndex[i];
-    outputSize[i] = Math::Floor< SizeValueType >(
-        static_cast< double >( inputSize[i] )
-        / static_cast< double >(m_ShrinkFactors[i])
-        );
+    outputSize[i] =
+      Math::Floor<SizeValueType>(static_cast<double>(inputSize[i]) / static_cast<double>(m_ShrinkFactors[i]));
 
-    if ( outputSize[i] < 1 )
-      {
+    if (outputSize[i] < 1)
+    {
       itkExceptionMacro("InputImage is too small! An output pixel does not map to a whole input bin.");
-      }
     }
+  }
 
   // inputPtr->TransformContinuousIndexToPhysicalPoint(inputIndexOutputOrigin, outputOrigin);
   outputOrigin = inputOrigin;

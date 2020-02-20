@@ -32,7 +32,8 @@ namespace itk
 namespace utils
 {
 /// Factorial
-IsotropicWavelets_EXPORT long Factorial(long n);
+IsotropicWavelets_EXPORT long
+Factorial(long n);
 
 /**
  * Compute number of components p(N, d), where N = Order, d = Dimension.
@@ -43,9 +44,8 @@ IsotropicWavelets_EXPORT long Factorial(long n);
  *
  * @return NumberOfComponents given the order for the ImageDimension.
  */
-IsotropicWavelets_EXPORT
-unsigned int ComputeNumberOfComponents( const unsigned int & order,
-    const unsigned int & dimension );
+IsotropicWavelets_EXPORT unsigned int
+ComputeNumberOfComponents(const unsigned int & order, const unsigned int & dimension);
 
 /**
  * Compute all possible unique indices given the subIndex: (X, 0, ..., 0).
@@ -58,67 +58,66 @@ unsigned int ComputeNumberOfComponents( const unsigned int & order,
  * @param uniqueIndices Reference to set that store results.
  * @param init position to evaluate  subIndex. Needed for recursion purposes.
  */
-template< typename TIndicesArrayType, unsigned int VImageDimension >
-ITK_TEMPLATE_EXPORT
-void ComputeUniqueIndices( TIndicesArrayType subIndex,
-  std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > & uniqueIndices,
-  unsigned int init = 0 )
+template <typename TIndicesArrayType, unsigned int VImageDimension>
+ITK_TEMPLATE_EXPORT void
+ComputeUniqueIndices(TIndicesArrayType                                              subIndex,
+                     std::set<TIndicesArrayType, std::greater<TIndicesArrayType>> & uniqueIndices,
+                     unsigned int                                                   init = 0)
 {
-  auto subIndiceSize = static_cast< unsigned int >( subIndex.size() );
+  auto subIndiceSize = static_cast<unsigned int>(subIndex.size());
 
-  if ( init == subIndiceSize - 1 )
-    {
+  if (init == subIndiceSize - 1)
+  {
     return;
-    }
+  }
 
   // If OK, store it.
-  if ( std::distance(subIndex.begin(),
-         std::max_element(subIndex.begin(), subIndex.end(), std::greater< unsigned int >())) <= VImageDimension - 1 )
-    {
+  if (std::distance(subIndex.begin(),
+                    std::max_element(subIndex.begin(), subIndex.end(), std::greater<unsigned int>())) <=
+      VImageDimension - 1)
+  {
     TIndicesArrayType subIndiceCopy = subIndex;
     std::sort(subIndiceCopy.rbegin(), subIndiceCopy.rend());
     uniqueIndices.insert(subIndiceCopy);
-    }
+  }
   else
-    {
+  {
     // Process remaining index positions in this branch.
-    itk::utils::ComputeUniqueIndices< TIndicesArrayType, VImageDimension >(subIndex, uniqueIndices, init + 1);
+    itk::utils::ComputeUniqueIndices<TIndicesArrayType, VImageDimension>(subIndex, uniqueIndices, init + 1);
     return;
-    }
+  }
 
-  unsigned int first  = --subIndex[init];
+  unsigned int first = --subIndex[init];
   ++subIndex[init + 1];
   // Stop
-  if ( first == 0 )
-    {
+  if (first == 0)
+  {
     return;
-    }
+  }
   // Process modified subIndex.
-  itk::utils::ComputeUniqueIndices< TIndicesArrayType, VImageDimension >(subIndex, uniqueIndices, init);
+  itk::utils::ComputeUniqueIndices<TIndicesArrayType, VImageDimension>(subIndex, uniqueIndices, init);
   // Process modified init.
-  itk::utils::ComputeUniqueIndices< TIndicesArrayType, VImageDimension >(subIndex, uniqueIndices, init + 1);
+  itk::utils::ComputeUniqueIndices<TIndicesArrayType, VImageDimension>(subIndex, uniqueIndices, init + 1);
 }
 
 /**
  * Compute all the permutations from a set of uniqueIndices.
  */
-template< typename TIndicesArrayType >
-ITK_TEMPLATE_EXPORT
-std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >
-ComputeAllPermutations(
-  const std::set< TIndicesArrayType, std::greater< TIndicesArrayType > > & uniqueIndices)
+template <typename TIndicesArrayType>
+ITK_TEMPLATE_EXPORT std::set<TIndicesArrayType, std::greater<TIndicesArrayType>>
+                    ComputeAllPermutations(const std::set<TIndicesArrayType, std::greater<TIndicesArrayType>> & uniqueIndices)
 {
-  using SetType = std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >;
+  using SetType = std::set<TIndicesArrayType, std::greater<TIndicesArrayType>>;
   SetType out;
-  for ( auto it = uniqueIndices.begin(); it != uniqueIndices.end(); ++it )
-    {
+  for (auto it = uniqueIndices.begin(); it != uniqueIndices.end(); ++it)
+  {
     out.insert(*it);
     TIndicesArrayType permutation = *it;
-    while ( std::prev_permutation(permutation.begin(), permutation.end()) )
-      {
+    while (std::prev_permutation(permutation.begin(), permutation.end()))
+    {
       out.insert(permutation);
-      }
     }
+  }
   return out;
 }
 
@@ -128,33 +127,29 @@ ComputeAllPermutations(
  * \f[ \sum_{i}^{ImageDimension} \text{index}[i] = \text{order} \f]
  * where \f$ \text{index}[i]>=0 \f$
  */
-template< typename TIndicesArrayType, unsigned int VImageDimension >
-ITK_TEMPLATE_EXPORT
-std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >
-ComputeAllPossibleIndices(const unsigned int & order)
+template <typename TIndicesArrayType, unsigned int VImageDimension>
+ITK_TEMPLATE_EXPORT std::set<TIndicesArrayType, std::greater<TIndicesArrayType>>
+                    ComputeAllPossibleIndices(const unsigned int & order)
 {
-  using SetType = std::set< TIndicesArrayType, std::greater< TIndicesArrayType > >;
-  SetType uniqueIndices;
+  using SetType = std::set<TIndicesArrayType, std::greater<TIndicesArrayType>>;
+  SetType           uniqueIndices;
   TIndicesArrayType index(VImageDimension);
   index[0] = order;
-  itk::utils::ComputeUniqueIndices< TIndicesArrayType, VImageDimension >(
-    index, uniqueIndices, 0);
-  return itk::utils::ComputeAllPermutations< TIndicesArrayType >(uniqueIndices);
+  itk::utils::ComputeUniqueIndices<TIndicesArrayType, VImageDimension>(index, uniqueIndices, 0);
+  return itk::utils::ComputeAllPermutations<TIndicesArrayType>(uniqueIndices);
 }
 
-template< typename TIndicesArrayType, unsigned int VImageDimension >
-ITK_TEMPLATE_EXPORT
-bool LessOrEqualIndiceComparisson(
-  const TIndicesArrayType& rhs,
-  const TIndicesArrayType& lhs)
+template <typename TIndicesArrayType, unsigned int VImageDimension>
+ITK_TEMPLATE_EXPORT bool
+LessOrEqualIndiceComparisson(const TIndicesArrayType & rhs, const TIndicesArrayType & lhs)
 {
-  for ( unsigned int i = 0; i < VImageDimension; ++i )
+  for (unsigned int i = 0; i < VImageDimension; ++i)
+  {
+    if (rhs[i] > lhs[i])
     {
-    if ( rhs[i] > lhs[i] )
-      {
       return false;
-      }
     }
+  }
   return true;
 }
 } // end namespace utils

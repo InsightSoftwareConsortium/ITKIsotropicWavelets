@@ -35,180 +35,175 @@
 #include <cmath>
 
 #ifdef ITK_VISUALIZE_TESTS
-#include "itkComplexToRealImageFilter.h"
-#include "itkNumberToString.h"
-#include "itkViewImage.h"
+#  include "itkComplexToRealImageFilter.h"
+#  include "itkNumberToString.h"
+#  include "itkViewImage.h"
 #endif
 
-template< unsigned int VDimension, typename TWaveletFunction >
-int runWaveletFrequencyInverseUndecimatedTest( const std::string& inputImage,
-  const std::string& outputImage,
-  const unsigned int& inputLevels,
-  const unsigned int& inputBands,
-  bool inputUseWaveletFilterBankPyramid)
+template <unsigned int VDimension, typename TWaveletFunction>
+int
+runWaveletFrequencyInverseUndecimatedTest(const std::string &  inputImage,
+                                          const std::string &  outputImage,
+                                          const unsigned int & inputLevels,
+                                          const unsigned int & inputBands,
+                                          bool                 inputUseWaveletFilterBankPyramid)
 {
-  bool testPassed = true;
+  bool               testPassed = true;
   const unsigned int Dimension = VDimension;
 
   using PixelType = float;
-  using ImageType = itk::Image< PixelType, Dimension >;
-  using ReaderType = itk::ImageFileReader< ImageType >;
+  using ImageType = itk::Image<PixelType, Dimension>;
+  using ReaderType = itk::ImageFileReader<ImageType>;
 
   auto reader = ReaderType::New();
-  reader->SetFileName( inputImage );
+  reader->SetFileName(inputImage);
   reader->Update();
   reader->UpdateLargestPossibleRegion();
 
   // Perform FFT on input image.
-  using FFTFilterType = itk::ForwardFFTImageFilter< ImageType >;
+  using FFTFilterType = itk::ForwardFFTImageFilter<ImageType>;
   auto fftFilter = FFTFilterType::New();
-  fftFilter->SetInput( reader->GetOutput() );
+  fftFilter->SetInput(reader->GetOutput());
 
   using ComplexImageType = typename FFTFilterType::OutputImageType;
 
   // Set the WaveletFunctionType and the WaveletFilterBank
   using WaveletFunctionType = TWaveletFunction;
-  using WaveletFilterBankType = itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, WaveletFunctionType >;
-  using ForwardWaveletType = itk::WaveletFrequencyForwardUndecimated< ComplexImageType, ComplexImageType, WaveletFilterBankType >;
+  using WaveletFilterBankType = itk::WaveletFrequencyFilterBankGenerator<ComplexImageType, WaveletFunctionType>;
+  using ForwardWaveletType =
+    itk::WaveletFrequencyForwardUndecimated<ComplexImageType, ComplexImageType, WaveletFilterBankType>;
 
   auto forwardWavelet = ForwardWaveletType::New();
 
-  forwardWavelet->SetHighPassSubBands( inputBands );
-  forwardWavelet->SetLevels( inputLevels );
-  forwardWavelet->SetInput( fftFilter->GetOutput() );
+  forwardWavelet->SetHighPassSubBands(inputBands);
+  forwardWavelet->SetLevels(inputLevels);
+  forwardWavelet->SetInput(fftFilter->GetOutput());
   forwardWavelet->StoreWaveletFilterBankPyramidOn();
   forwardWavelet->Update();
 
   unsigned int noutputs = forwardWavelet->GetNumberOfOutputs();
 
   std::cout << "Number of inputs: " << noutputs << std::endl;
-  for ( unsigned int i = 0; i < noutputs; ++i )
-    {
+  for (unsigned int i = 0; i < noutputs; ++i)
+  {
     std::cout << "Input number: " << i << std::endl;
     std::cout << "Region: " << forwardWavelet->GetOutput(i)->GetLargestPossibleRegion() << std::endl;
     std::cout << "Spacing: " << forwardWavelet->GetOutput(i)->GetSpacing() << std::endl;
-    }
+  }
 
   // Inverse Wavelet Transform
-  using InverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType, WaveletFilterBankType >;
+  using InverseWaveletType =
+    itk::WaveletFrequencyInverseUndecimated<ComplexImageType, ComplexImageType, WaveletFilterBankType>;
   auto inverseWavelet = InverseWaveletType::New();
 
-  inverseWavelet->SetHighPassSubBands( inputBands );
-  inverseWavelet->SetLevels( inputLevels );
-  inverseWavelet->SetInputs( forwardWavelet->GetOutputs() );
-  inverseWavelet->SetUseWaveletFilterBankPyramid( inputUseWaveletFilterBankPyramid );
-  inverseWavelet->SetWaveletFilterBankPyramid( forwardWavelet->GetWaveletFilterBankPyramid() );
+  inverseWavelet->SetHighPassSubBands(inputBands);
+  inverseWavelet->SetLevels(inputLevels);
+  inverseWavelet->SetInputs(forwardWavelet->GetOutputs());
+  inverseWavelet->SetUseWaveletFilterBankPyramid(inputUseWaveletFilterBankPyramid);
+  inverseWavelet->SetWaveletFilterBankPyramid(forwardWavelet->GetWaveletFilterBankPyramid());
   inverseWavelet->DebugOn();
   inverseWavelet->Update();
 
   // Check Metadata: Spacing, Origin
-  typename ComplexImageType::SpacingType outputSpacing =
-    inverseWavelet->GetOutput()->GetSpacing();
+  typename ComplexImageType::SpacingType outputSpacing = inverseWavelet->GetOutput()->GetSpacing();
   typename ComplexImageType::SpacingType expectedSpacing;
   expectedSpacing.Fill(1.0);
-  typename ComplexImageType::PointType outputOrigin =
-    inverseWavelet->GetOutput()->GetOrigin();
+  typename ComplexImageType::PointType outputOrigin = inverseWavelet->GetOutput()->GetOrigin();
   typename ComplexImageType::PointType expectedOrigin;
   expectedOrigin.Fill(0.0);
-  typename ComplexImageType::SizeType outputSize =
-    inverseWavelet->GetOutput()->GetLargestPossibleRegion().GetSize();
-  typename ComplexImageType::SizeType expectedSize =
-    fftFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
+  typename ComplexImageType::SizeType outputSize = inverseWavelet->GetOutput()->GetLargestPossibleRegion().GetSize();
+  typename ComplexImageType::SizeType expectedSize = fftFilter->GetOutput()->GetLargestPossibleRegion().GetSize();
 
-  if ( outputSpacing != expectedSpacing )
-    {
-    std::cout << "outputSpacing is wrong: " << outputSpacing
-              << " expectedSpacing: " << expectedSpacing
-              << std::endl;
+  if (outputSpacing != expectedSpacing)
+  {
+    std::cout << "outputSpacing is wrong: " << outputSpacing << " expectedSpacing: " << expectedSpacing << std::endl;
     testPassed = false;
-    }
-  if ( outputOrigin != expectedOrigin )
-    {
-    std::cout << "outputOrigin is wrong: " << outputOrigin
-              << " expectedOrigin: " << expectedOrigin
-              << std::endl;
+  }
+  if (outputOrigin != expectedOrigin)
+  {
+    std::cout << "outputOrigin is wrong: " << outputOrigin << " expectedOrigin: " << expectedOrigin << std::endl;
     testPassed = false;
-    }
-  if ( outputSize != expectedSize )
-    {
-    std::cout << "outputSize is wrong: " << outputSize
-              << " expectedSize: " << expectedSize
-              << std::endl;
+  }
+  if (outputSize != expectedSize)
+  {
+    std::cout << "outputSize is wrong: " << outputSize << " expectedSize: " << expectedSize << std::endl;
     testPassed = false;
-    }
+  }
 
-  using InverseFFTFilterType = itk::InverseFFTImageFilter< ComplexImageType, ImageType >;
+  using InverseFFTFilterType = itk::InverseFFTImageFilter<ComplexImageType, ImageType>;
   auto inverseFFT = InverseFFTFilterType::New();
-  inverseFFT->SetInput( inverseWavelet->GetOutput() );
+  inverseFFT->SetInput(inverseWavelet->GetOutput());
   inverseFFT->Update();
 
   // Write output image
-  using WriterType = itk::ImageFileWriter< ImageType >;
+  using WriterType = itk::ImageFileWriter<ImageType>;
   auto writer = WriterType::New();
-  writer->SetFileName( outputImage );
-  writer->SetInput( inverseFFT->GetOutput() );
+  writer->SetFileName(outputImage);
+  writer->SetInput(inverseFFT->GetOutput());
 
-  TRY_EXPECT_NO_EXCEPTION( writer->Update() );
+  TRY_EXPECT_NO_EXCEPTION(writer->Update());
 
 #ifdef ITK_VISUALIZE_TESTS
-  itk::ViewImage<ImageType>::View( reader->GetOutput(), "Original" );
-  itk::ViewImage<ImageType>::View( inverseFFT->GetOutput(), "InverseWavelet" );
+  itk::ViewImage<ImageType>::View(reader->GetOutput(), "Original");
+  itk::ViewImage<ImageType>::View(inverseFFT->GetOutput(), "InverseWavelet");
 #endif
 
   // TODO move it from here to Forward test.
 #ifdef ITK_VISUALIZE_TESTS
-  std::vector< typename ComplexImageType::Pointer > waveletFilterBankPyramid =
+  std::vector<typename ComplexImageType::Pointer> waveletFilterBankPyramid =
     forwardWavelet->GetWaveletFilterBankPyramid();
-  using ComplexToRealFilterType = itk::ComplexToRealImageFilter< ComplexImageType, ImageType >;
+  using ComplexToRealFilterType = itk::ComplexToRealImageFilter<ComplexImageType, ImageType>;
   auto complexToRealFilter = ComplexToRealFilterType::New();
 
-  itk::NumberToString< unsigned int > n2s;
+  itk::NumberToString<unsigned int> n2s;
   std::cout << "Size FilterBankPyramid:" << waveletFilterBankPyramid.size() << std::endl;
-  for ( unsigned int i = 0; i < waveletFilterBankPyramid.size(); ++i )
-    {
-    complexToRealFilter->SetInput( waveletFilterBankPyramid[i]);
+  for (unsigned int i = 0; i < waveletFilterBankPyramid.size(); ++i)
+  {
+    complexToRealFilter->SetInput(waveletFilterBankPyramid[i]);
     complexToRealFilter->UpdateLargestPossibleRegion();
-    itk::ViewImage<ImageType>::View( complexToRealFilter->GetOutput(), "FilterBankPyramid #" + n2s(i) );
-    }
+    itk::ViewImage<ImageType>::View(complexToRealFilter->GetOutput(), "FilterBankPyramid #" + n2s(i));
+  }
 #endif
 
-  if ( testPassed )
-    {
+  if (testPassed)
+  {
     return EXIT_SUCCESS;
-    }
+  }
   else
-    {
+  {
     return EXIT_FAILURE;
-    }
+  }
 }
 
 int
-itkWaveletFrequencyInverseUndecimatedTest(int argc, char *argv[])
+itkWaveletFrequencyInverseUndecimatedTest(int argc, char * argv[])
 {
-  if ( argc != 8 )
-    {
+  if (argc != 8)
+  {
     std::cerr << "Usage: " << argv[0]
-              << " inputImage outputImage inputLevels inputBands waveletFunction reuseFilterBankPyramid|noFilterBankPyramid dimension" << std::endl;
+              << " inputImage outputImage inputLevels inputBands waveletFunction "
+                 "reuseFilterBankPyramid|noFilterBankPyramid dimension"
+              << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  const std::string inputImage  = argv[1];
-  const std::string outputImage = argv[2];
-  const unsigned int inputLevels = std::stoi( argv[3] );
-  const unsigned int inputBands  = std::stoi( argv[4] );
-  const std::string waveletFunction = argv[5];
-  const std::string inputUseWaveletFilterBankPyramid = argv[6];
-  bool useWaveletFilterBankPyramid = false;
+  const std::string  inputImage = argv[1];
+  const std::string  outputImage = argv[2];
+  const unsigned int inputLevels = std::stoi(argv[3]);
+  const unsigned int inputBands = std::stoi(argv[4]);
+  const std::string  waveletFunction = argv[5];
+  const std::string  inputUseWaveletFilterBankPyramid = argv[6];
+  bool               useWaveletFilterBankPyramid = false;
   if (inputUseWaveletFilterBankPyramid == "reuseFilterBankPyramid")
-    {
+  {
     useWaveletFilterBankPyramid = true;
-    }
+  }
   else if (inputUseWaveletFilterBankPyramid == "noFilterBankPyramid")
-    {
+  {
     useWaveletFilterBankPyramid = false;
-    }
+  }
 
-  unsigned int dimension = std::stoi( argv[7] );
+  unsigned int dimension = std::stoi(argv[7]);
 
   // const unsigned int ImageDimension = 3;
   // using PixelType = double;
@@ -241,91 +236,100 @@ itkWaveletFrequencyInverseUndecimatedTest(int argc, char *argv[])
   //   IsotropicWaveletFrequencyFunction );
   //
   //
-  using HeldWavelet = itk::HeldIsotropicWavelet< >;
-  using VowWavelet = itk::VowIsotropicWavelet< >;
-  using SimoncelliWavelet = itk::SimoncelliIsotropicWavelet< >;
-  using ShannonWavelet = itk::ShannonIsotropicWavelet< >;
+  using HeldWavelet = itk::HeldIsotropicWavelet<>;
+  using VowWavelet = itk::VowIsotropicWavelet<>;
+  using SimoncelliWavelet = itk::SimoncelliIsotropicWavelet<>;
+  using ShannonWavelet = itk::ShannonIsotropicWavelet<>;
   //
   //
   // using HeldWaveletFilterBankType = itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, HeldWavelet >;
   // using VowWaveletFilterBankType = itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, VowWavelet >;
-  // using SimoncelliWaveletFilterBankType = itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, SimoncelliWavelet >;
-  // using ShannonWaveletFilterBankType = itk::WaveletFrequencyFilterBankGenerator< ComplexImageType, ShannonWavelet >;
+  // using SimoncelliWaveletFilterBankType = itk::WaveletFrequencyFilterBankGenerator< ComplexImageType,
+  // SimoncelliWavelet >; using ShannonWaveletFilterBankType = itk::WaveletFrequencyFilterBankGenerator<
+  // ComplexImageType, ShannonWavelet >;
   //
-  // using HeldInverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType, HeldWaveletFilterBankType >;
-  // auto heldInverseWavelet = HeldInverseWaveletType::New();
+  // using HeldInverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType,
+  // HeldWaveletFilterBankType >; auto heldInverseWavelet = HeldInverseWaveletType::New();
   // EXERCISE_BASIC_OBJECT_METHODS( heldInverseWavelet, WaveletFrequencyInverseUndecimated,
   //   ImageToImageFilter );
   //
-  // using VowInverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType, VowWaveletFilterBankType >;
-  // auto vowInverseWavelet = VowInverseWaveletType::New();
-  // EXERCISE_BASIC_OBJECT_METHODS( vowInverseWavelet, WaveletFrequencyInverseUndecimated,
+  // using VowInverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType,
+  // VowWaveletFilterBankType >; auto vowInverseWavelet = VowInverseWaveletType::New(); EXERCISE_BASIC_OBJECT_METHODS(
+  // vowInverseWavelet, WaveletFrequencyInverseUndecimated,
   //   ImageToImageFilter );
   //
-  // using SimoncelliInverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType, SimoncelliWaveletFilterBankType >;
-  // auto simoncelliInverseWavelet = SimoncelliInverseWaveletType::New();
+  // using SimoncelliInverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType,
+  // SimoncelliWaveletFilterBankType >; auto simoncelliInverseWavelet = SimoncelliInverseWaveletType::New();
   // EXERCISE_BASIC_OBJECT_METHODS( simoncelliInverseWavelet, WaveletFrequencyInverseUndecimated,
   //   ImageToImageFilter );
   //
-  // using ShannonInverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType, ShannonWaveletFilterBankType >;
-  // auto shannonInverseWavelet = ShannonInverseWaveletType::New();
+  // using ShannonInverseWaveletType = itk::WaveletFrequencyInverseUndecimated< ComplexImageType, ComplexImageType,
+  // ShannonWaveletFilterBankType >; auto shannonInverseWavelet = ShannonInverseWaveletType::New();
   // EXERCISE_BASIC_OBJECT_METHODS( shannonInverseWavelet, WaveletFrequencyInverseUndecimated,
   //   ImageToImageFilter );
 
-  if ( dimension == 2 )
+  if (dimension == 2)
+  {
+    if (waveletFunction == "Held")
     {
-    if ( waveletFunction == "Held" )
-      {
-      return runWaveletFrequencyInverseUndecimatedTest< 2, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid );
-      }
-    else if ( waveletFunction == "Vow" )
-      {
-      return runWaveletFrequencyInverseUndecimatedTest< 2, VowWavelet >( inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid );
-      }
-    else if ( waveletFunction == "Simoncelli" )
-      {
-      return runWaveletFrequencyInverseUndecimatedTest< 2, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid );
-      }
-    else if ( waveletFunction == "Shannon" )
-      {
-      return runWaveletFrequencyInverseUndecimatedTest< 2, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid );
-      }
+      return runWaveletFrequencyInverseUndecimatedTest<2, HeldWavelet>(
+        inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid);
+    }
+    else if (waveletFunction == "Vow")
+    {
+      return runWaveletFrequencyInverseUndecimatedTest<2, VowWavelet>(
+        inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid);
+    }
+    else if (waveletFunction == "Simoncelli")
+    {
+      return runWaveletFrequencyInverseUndecimatedTest<2, SimoncelliWavelet>(
+        inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid);
+    }
+    else if (waveletFunction == "Shannon")
+    {
+      return runWaveletFrequencyInverseUndecimatedTest<2, ShannonWavelet>(
+        inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid);
+    }
     else
-      {
+    {
       std::cerr << "Test failed!" << std::endl;
       std::cerr << argv[5] << " wavelet type not supported." << std::endl;
       return EXIT_FAILURE;
-      }
     }
-  else if ( dimension == 3 )
+  }
+  else if (dimension == 3)
+  {
+    if (waveletFunction == "Held")
     {
-    if ( waveletFunction == "Held" )
-      {
-      return runWaveletFrequencyInverseUndecimatedTest< 3, HeldWavelet >( inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid );
-      }
-    else if ( waveletFunction == "Vow" )
-      {
-      return runWaveletFrequencyInverseUndecimatedTest< 3, VowWavelet >( inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid );
-      }
-    else if ( waveletFunction == "Simoncelli" )
-      {
-      return runWaveletFrequencyInverseUndecimatedTest< 3, SimoncelliWavelet >( inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid );
-      }
-    else if ( waveletFunction == "Shannon" )
-      {
-      return runWaveletFrequencyInverseUndecimatedTest< 3, ShannonWavelet >( inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid );
-      }
+      return runWaveletFrequencyInverseUndecimatedTest<3, HeldWavelet>(
+        inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid);
+    }
+    else if (waveletFunction == "Vow")
+    {
+      return runWaveletFrequencyInverseUndecimatedTest<3, VowWavelet>(
+        inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid);
+    }
+    else if (waveletFunction == "Simoncelli")
+    {
+      return runWaveletFrequencyInverseUndecimatedTest<3, SimoncelliWavelet>(
+        inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid);
+    }
+    else if (waveletFunction == "Shannon")
+    {
+      return runWaveletFrequencyInverseUndecimatedTest<3, ShannonWavelet>(
+        inputImage, outputImage, inputLevels, inputBands, useWaveletFilterBankPyramid);
+    }
     else
-      {
+    {
       std::cerr << "Test failed!" << std::endl;
       std::cerr << argv[5] << " wavelet type not supported." << std::endl;
       return EXIT_FAILURE;
-      }
     }
+  }
   else
-    {
+  {
     std::cerr << "Test failed!" << std::endl;
     std::cerr << "Error: only 2 or 3 dimensions allowed, " << dimension << " selected." << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 }

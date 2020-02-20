@@ -41,10 +41,8 @@
 
 namespace itk
 {
-template< typename TImageType,
-  typename TWaveletFunction >
-WaveletCoeffsSpatialDomainImageFilter< TImageType, TWaveletFunction >
-:: WaveletCoeffsSpatialDomainImageFilter()
+template <typename TImageType, typename TWaveletFunction>
+WaveletCoeffsSpatialDomainImageFilter<TImageType, TWaveletFunction>::WaveletCoeffsSpatialDomainImageFilter()
 {
   m_Levels = 4;
   m_HighPassSubBands = 3;
@@ -59,42 +57,40 @@ WaveletCoeffsSpatialDomainImageFilter< TImageType, TWaveletFunction >
   m_CastFloatFilter = CastFloatType::New();
 }
 
-template< typename TImageType,
-  typename TWaveletFunction >
+template <typename TImageType, typename TWaveletFunction>
 void
-WaveletCoeffsSpatialDomainImageFilter< TImageType, TWaveletFunction >
-:: GenerateData()
+WaveletCoeffsSpatialDomainImageFilter<TImageType, TWaveletFunction>::GenerateData()
 {
 
   typename ImageType::Pointer input = ImageType::New();
-  input->Graft(const_cast<ImageType*> ( this->GetInput() ));
-  m_FFTPadFilter->SetInput( input );
+  input->Graft(const_cast<ImageType *>(this->GetInput()));
+  m_FFTPadFilter->SetInput(input);
 
-  m_ZeroDCFilter->SetInput( m_FFTPadFilter->GetOutput() );
-  m_ForwardFFTFilter->SetInput( m_ZeroDCFilter->GetOutput() );
-  m_ForwardWaveletFilter->SetInput( m_ForwardFFTFilter->GetOutput() );
+  m_ZeroDCFilter->SetInput(m_FFTPadFilter->GetOutput());
+  m_ForwardFFTFilter->SetInput(m_ZeroDCFilter->GetOutput());
+  m_ForwardWaveletFilter->SetInput(m_ForwardFFTFilter->GetOutput());
 
-  m_ForwardWaveletFilter->SetHighPassSubBands( this->m_HighPassSubBands );
-  m_ForwardWaveletFilter->SetLevels( this->m_Levels );
+  m_ForwardWaveletFilter->SetHighPassSubBands(this->m_HighPassSubBands);
+  m_ForwardWaveletFilter->SetLevels(this->m_Levels);
 
   unsigned int k = (this->m_Levels * this->m_HighPassSubBands);
   this->SetNumberOfRequiredOutputs(k + 1);
   this->Modified();
-  for ( unsigned int i = 0; i < k + 1; ++i )
-    {
+  for (unsigned int i = 0; i < k + 1; ++i)
+  {
     this->SetNthOutput(i, this->MakeOutput(i));
-    }
+  }
 
-  for ( unsigned int i = 0; i < k + 1; ++i )
-    {
-    m_InverseFFTFilter->SetInput( m_ForwardWaveletFilter->GetOutput(i) ); // This API is strange.
-    m_ChangeInformationFilter->SetInput( m_InverseFFTFilter->GetOutput() );
+  for (unsigned int i = 0; i < k + 1; ++i)
+  {
+    m_InverseFFTFilter->SetInput(m_ForwardWaveletFilter->GetOutput(i)); // This API is strange.
+    m_ChangeInformationFilter->SetInput(m_InverseFFTFilter->GetOutput());
 
-    m_ChangeInformationFilter->SetReferenceImage( m_FFTPadFilter->GetOutput() );
+    m_ChangeInformationFilter->SetReferenceImage(m_FFTPadFilter->GetOutput());
     m_ChangeInformationFilter->UseReferenceImageOn();
     m_ChangeInformationFilter->ChangeAll();
 
-    m_CastFloatFilter->SetInput( m_ChangeInformationFilter->GetOutput() );
+    m_CastFloatFilter->SetInput(m_ChangeInformationFilter->GetOutput());
 
     typename ImageType::Pointer modifiedWavelets;
     // TODO Warning: InPlace here deletes buffered region of input.
@@ -105,19 +101,17 @@ WaveletCoeffsSpatialDomainImageFilter< TImageType, TWaveletFunction >
 
     modifiedWavelets->DisconnectPipeline();
 
-    this->GraftNthOutput(i, modifiedWavelets );
-    }
+    this->GraftNthOutput(i, modifiedWavelets);
+  }
 }
 
-template< typename TImageType,
-  typename TWaveletFunction >
-  void
-  WaveletCoeffsSpatialDomainImageFilter< TImageType, TWaveletFunction >
-  :: PrintSelf( std::ostream & os, Indent indent ) const
+template <typename TImageType, typename TWaveletFunction>
+void
+WaveletCoeffsSpatialDomainImageFilter<TImageType, TWaveletFunction>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  os  << indent << " Levels: " << this->m_Levels << std::endl;
-  os  << indent << " HighPassSubBands: " << this->m_HighPassSubBands << std::endl;
+  os << indent << " Levels: " << this->m_Levels << std::endl;
+  os << indent << " HighPassSubBands: " << this->m_HighPassSubBands << std::endl;
 }
 } // end namespace itk
 #endif

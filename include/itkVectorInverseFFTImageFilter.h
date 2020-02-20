@@ -39,11 +39,10 @@ namespace itk
  * \ingroup ITKFFT
  * \ingroup IsotropicWavelets
  */
-template< typename TInputImage,
-  typename TOutputImage =
-    VectorImage< typename TInputImage::PixelType::ComponentType::value_type, TInputImage::ImageDimension> >
-class VectorInverseFFTImageFilter:
-  public ImageToImageFilter< TInputImage, TOutputImage >
+template <typename TInputImage,
+          typename TOutputImage =
+            VectorImage<typename TInputImage::PixelType::ComponentType::value_type, TInputImage::ImageDimension>>
+class VectorInverseFFTImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(VectorInverseFFTImageFilter);
@@ -55,9 +54,9 @@ public:
   using OutputPixelType = typename OutputImageType::PixelType;
 
   using Self = VectorInverseFFTImageFilter;
-  using Superclass = ImageToImageFilter< InputImageType, OutputImageType >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<InputImageType, OutputImageType>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -72,13 +71,15 @@ protected:
   VectorInverseFFTImageFilter() {}
   ~VectorInverseFFTImageFilter() override {}
 
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkVectorInverseFFTImageFilter.hxx"
+#  include "itkVectorInverseFFTImageFilter.hxx"
 #endif
 
 #endif

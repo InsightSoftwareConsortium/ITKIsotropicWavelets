@@ -28,18 +28,16 @@ namespace itk
 /**
  * Default constructor
  */
-template< typename TImageType >
-ZeroDCImageFilter< TImageType >
-::ZeroDCImageFilter()
+template <typename TImageType>
+ZeroDCImageFilter<TImageType>::ZeroDCImageFilter()
 {
   m_StatisticsFilter = StatisticsFilterType::New();
-  m_SubtractFilter   = SubtractFilterType::New();
+  m_SubtractFilter = SubtractFilterType::New();
 }
 
-template< typename TImageType >
+template <typename TImageType>
 void
-ZeroDCImageFilter< TImageType >
-::GenerateData()
+ZeroDCImageFilter<TImageType>::GenerateData()
 {
   ImagePointer outputPtr = this->GetOutput();
 
@@ -61,15 +59,14 @@ ZeroDCImageFilter< TImageType >
   /**********************************************/
 }
 
-template< typename TImageType >
+template <typename TImageType>
 void
-ZeroDCImageFilter< TImageType >
-::PrintSelf(std::ostream & os, Indent indent) const
+ZeroDCImageFilter<TImageType>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 
-  itkPrintSelfObjectMacro( StatisticsFilter );
-  itkPrintSelfObjectMacro( SubtractFilter );
+  itkPrintSelfObjectMacro(StatisticsFilter);
+  itkPrintSelfObjectMacro(SubtractFilter);
 }
 } // end namespace itk
 

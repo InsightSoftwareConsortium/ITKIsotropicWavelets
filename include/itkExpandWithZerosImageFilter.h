@@ -59,18 +59,17 @@ namespace itk
  * \ingroup ITKImageGrid
  * \ingroup IsotropicWavelets
  */
-template< typename TInputImage, typename TOutputImage >
-class ExpandWithZerosImageFilter:
-  public ImageToImageFilter< TInputImage, TOutputImage >
+template <typename TInputImage, typename TOutputImage>
+class ExpandWithZerosImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(ExpandWithZerosImageFilter);
 
   /** Standard class type alias. */
   using Self = ExpandWithZerosImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -94,12 +93,13 @@ public:
   using OutputImagePointer = typename OutputImageType::Pointer;
 
   /** The type of the expand factors representation */
-  using ExpandFactorsType = FixedArray< unsigned int, ImageDimension >;
+  using ExpandFactorsType = FixedArray<unsigned int, ImageDimension>;
 
   /** Set the expand factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
   itkSetMacro(ExpandFactors, ExpandFactorsType);
-  virtual void SetExpandFactors(const unsigned int factor);
+  virtual void
+  SetExpandFactors(const unsigned int factor);
 
   /** Get the expand factors. */
   itkGetConstReferenceMacro(ExpandFactors, ExpandFactorsType);
@@ -110,28 +110,29 @@ public:
    * UpdateOutputInformation() in order to inform the pipeline execution model.
    * The original documentation of this method is below.
    * \sa ProcessObject::GenerateOutputInformaton() */
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
   /** ExpandWithZerosImageFilter needs a smaller input requested region than the output
    * requested region.  As such, ShrinkImageFilter needs to provide an
    * implementation for GenerateInputRequestedRegion() in order to inform
    * the pipeline execution model.
    * \sa ProcessObject::GenerateInputRequestedRegion() */
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   // Begin concept checking
-  itkConceptMacro( InputHasNumericTraitsCheck,
-                   ( Concept::HasNumericTraits< typename TInputImage::PixelType > ) );
-  itkConceptMacro( OutputHasNumericTraitsCheck,
-                   ( Concept::HasNumericTraits< OutputPixelType > ) );
+  itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<typename TInputImage::PixelType>));
+  itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<OutputPixelType>));
   // End concept checking
 #endif
 
 protected:
   ExpandWithZerosImageFilter();
   ~ExpandWithZerosImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** ExpandWithZerosImageFilter is implemented as a multithreaded filter.  Therefore,
    * this implementation provides a DynamicThreadedGenerateData() routine which
@@ -143,11 +144,13 @@ protected:
    * \sa ImageToImageFilter::DynamicThreadedGenerateData(),
    *     ImageToImageFilter::GenerateData() */
 
-  void DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread ) override;
+  void
+  DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
 
   /** This method is used to set the state of the filter before
    * multi-threading. */
-  void BeforeThreadedGenerateData() override;
+  void
+  BeforeThreadedGenerateData() override;
 
 private:
   ExpandFactorsType m_ExpandFactors;
@@ -155,7 +158,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkExpandWithZerosImageFilter.hxx"
+#  include "itkExpandWithZerosImageFilter.hxx"
 #endif
 
 #endif

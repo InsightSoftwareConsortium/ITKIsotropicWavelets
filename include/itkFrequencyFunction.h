@@ -29,20 +29,19 @@ namespace itk
  * \ingroup SpatialFunctions
  * \ingroup IsotropicWavelets
  */
-template< typename TFunctionValue = double,
-  unsigned int VImageDimension    = 3,
-  typename TInput = Point< SpacePrecisionType, VImageDimension > >
-class FrequencyFunction:
-  public SpatialFunction< TFunctionValue, VImageDimension, TInput >
+template <typename TFunctionValue = double,
+          unsigned int VImageDimension = 3,
+          typename TInput = Point<SpacePrecisionType, VImageDimension>>
+class FrequencyFunction : public SpatialFunction<TFunctionValue, VImageDimension, TInput>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(FrequencyFunction);
 
   /** Standard class type alias. */
   using Self = FrequencyFunction;
-  using Superclass = SpatialFunction< TFunctionValue, VImageDimension, TInput >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = SpatialFunction<TFunctionValue, VImageDimension, TInput>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(FrequencyFunction, SpatialFunction);
@@ -58,17 +57,20 @@ public:
    * The evaluate function require frequency in Hertz (1/s)
    * \f$ w[Hz] = \frac{ w[rad/s]}{2\pi}\f$
    */
-  inline FunctionValueType RadPerSecToHertz(const TFunctionValue& w_rad_per_sec) const
+  inline FunctionValueType
+  RadPerSecToHertz(const TFunctionValue & w_rad_per_sec) const
   {
     return w_rad_per_sec / (2 * itk::Math::pi);
   };
   /** Evaluate the function at a given frequency point. */
-  FunctionValueType Evaluate(const TInput & frequency_point) const override = 0;
+  FunctionValueType
+  Evaluate(const TInput & frequency_point) const override = 0;
 
 protected:
-  FrequencyFunction() {};
-  ~FrequencyFunction() override {};
-  void PrintSelf(std::ostream & os, Indent indent) const override
+  FrequencyFunction(){};
+  ~FrequencyFunction() override{};
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override
   {
     Superclass::PrintSelf(os, indent);
   }

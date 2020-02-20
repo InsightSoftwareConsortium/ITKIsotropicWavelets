@@ -36,11 +36,10 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template<typename TOutputImage,
-  typename TRieszFunction = itk::RieszFrequencyFunction<std::complex<double>, TOutputImage::ImageDimension>,
-  typename TFrequencyRegionIterator = FrequencyFFTLayoutImageRegionIteratorWithIndex< TOutputImage> >
-class RieszFrequencyFilterBankGenerator:
-  public itk::GenerateImageSource< TOutputImage >
+template <typename TOutputImage,
+          typename TRieszFunction = itk::RieszFrequencyFunction<std::complex<double>, TOutputImage::ImageDimension>,
+          typename TFrequencyRegionIterator = FrequencyFFTLayoutImageRegionIteratorWithIndex<TOutputImage>>
+class RieszFrequencyFilterBankGenerator : public itk::GenerateImageSource<TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(RieszFrequencyFilterBankGenerator);
@@ -76,47 +75,53 @@ public:
 
   /** Get Outputs *****/
   /** Return vector of images from all directions */
-  OutputsType GetOutputs();
+  OutputsType
+  GetOutputs();
 
-// #ifdef ITK_USE_CONCEPT_CHECKING
-//   itkConceptMacro( OutputPixelTypeIsFloatCheck,
-//                    ( Concept::IsFloatingPoint< typename OutputImageType::PixelType > ) );
-// #endif
+  // #ifdef ITK_USE_CONCEPT_CHECKING
+  //   itkConceptMacro( OutputPixelTypeIsFloatCheck,
+  //                    ( Concept::IsFloatingPoint< typename OutputImageType::PixelType > ) );
+  // #endif
 
   /** Order of the generalized riesz transform. */
-  virtual void SetOrder(const unsigned int inputOrder)
-    {
+  virtual void
+  SetOrder(const unsigned int inputOrder)
+  {
     // Precondition
     if (inputOrder < 1)
-      {
-      itkExceptionMacro(<<"Error: inputOrder = " << inputOrder << ". It has to be greater than 0.");
-      }
+    {
+      itkExceptionMacro(<< "Error: inputOrder = " << inputOrder << ". It has to be greater than 0.");
+    }
 
-    if ( this->m_Order != inputOrder )
-      {
+    if (this->m_Order != inputOrder)
+    {
       this->m_Order = inputOrder;
       this->m_Evaluator->SetOrder(inputOrder);
 
       this->SetNumberOfRequiredOutputs(this->m_Evaluator->ComputeNumberOfComponents(inputOrder));
       for (unsigned int comp = 0; comp < this->GetNumberOfRequiredOutputs(); ++comp)
-        {
+      {
         this->SetNthOutput(comp, this->MakeOutput(comp));
-        }
-      this->Modified();
       }
+      this->Modified();
     }
+  }
   itkGetConstReferenceMacro(Order, unsigned int);
 
   /** Modifiable pointer to the Generalized RieszFunction */
   itkGetModifiableObjectMacro(Evaluator, RieszFunctionType);
+
 protected:
   RieszFrequencyFilterBankGenerator();
   ~RieszFrequencyFilterBankGenerator() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Generate data */
-  void BeforeThreadedGenerateData() override;
-  void DynamicThreadedGenerateData(const OutputImageRegionType & threadRegion) override;
+  void
+  BeforeThreadedGenerateData() override;
+  void
+  DynamicThreadedGenerateData(const OutputImageRegionType & threadRegion) override;
 
 private:
   unsigned int         m_Order;
@@ -124,7 +129,7 @@ private:
 }; // end of class
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkRieszFrequencyFilterBankGenerator.hxx"
+#  include "itkRieszFrequencyFilterBankGenerator.hxx"
 #endif
 
 #endif

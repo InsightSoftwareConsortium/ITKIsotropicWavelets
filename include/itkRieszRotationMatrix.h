@@ -43,32 +43,34 @@ namespace itk
  * \ingroup IsotropicWavelets
  */
 
-template<typename T = double, unsigned int VImageDimension = 3>
-class RieszRotationMatrix:
-  public itk::VariableSizeMatrix< T >
+template <typename T = double, unsigned int VImageDimension = 3>
+class RieszRotationMatrix : public itk::VariableSizeMatrix<T>
 {
 public:
   /** Standard type alias */
   using Self = RieszRotationMatrix;
-  using Superclass = itk::VariableSizeMatrix< T >;
+  using Superclass = itk::VariableSizeMatrix<T>;
 
   /** Component value type */
   using ValueType = typename Superclass::ValueType;
   using InternalMatrixType = typename Superclass::InternalMatrixType;
-  using SpatialRotationMatrixType = itk::Matrix< T, VImageDimension, VImageDimension >;
+  using SpatialRotationMatrixType = itk::Matrix<T, VImageDimension, VImageDimension>;
 
   /** Matrix by std::vector<TImage> multiplication.
    * To perform the rotation with the output of
    * \ref RieszFrequencyFilterBankGenerator.
    */
   template <typename TImage>
-  std::vector< typename TImage::Pointer > MultiplyWithVectorOfImages(const std::vector< typename TImage::Pointer > & vect) const;
+  std::vector<typename TImage::Pointer>
+  MultiplyWithVectorOfImages(const std::vector<typename TImage::Pointer> & vect) const;
 
   template <typename TInputValue>
-  std::vector< TInputValue > MultiplyWithVector(const std::vector< TInputValue > & vect) const;
+  std::vector<TInputValue>
+  MultiplyWithVector(const std::vector<TInputValue> & vect) const;
 
   template <typename TInputValue>
-  VariableSizeMatrix< TInputValue > MultiplyWithColumnMatrix(const VariableSizeMatrix< TInputValue > & vect) const;
+  VariableSizeMatrix<TInputValue>
+  MultiplyWithColumnMatrix(const VariableSizeMatrix<TInputValue> & vect) const;
 
   /**
    * Multi-index notation
@@ -84,7 +86,8 @@ public:
    * ( 2, 0, 0, )( 1, 1, 0, )( 1, 0, 1, )( 0, 2, 0, )( 0, 1, 1, )( 0, 0, 2, )
 
    */
-  const InternalMatrixType & ComputeSteerableMatrix();
+  const InternalMatrixType &
+  ComputeSteerableMatrix();
 
   /// Typedefs for IndicesMatrix
   using IndicesArrayType = std::vector<unsigned int>;
@@ -116,15 +119,15 @@ public:
    *
    * @return the matrix with the n,m multiindex
    */
-  IndicesMatrix GenerateIndicesMatrix();
+  IndicesMatrix
+  GenerateIndicesMatrix();
 
   /** Default constructor. */
   RieszRotationMatrix();
   /** Copy constructor. */
   RieszRotationMatrix(const Self & matrix);
   /** Compute constructor. */
-  RieszRotationMatrix(const SpatialRotationMatrixType & spatialRotationMatrix,
-    const unsigned int & order);
+  RieszRotationMatrix(const SpatialRotationMatrixType & spatialRotationMatrix, const unsigned int & order);
 
   /**
    * Get/Set the order of the Riesz transform.
@@ -133,16 +136,18 @@ public:
    * \sa GetComponents
    * \sa RieszFrequencyFunction
    */
-  inline const unsigned int & GetOrder() const
-    {
+  inline const unsigned int &
+  GetOrder() const
+  {
     return this->m_Order;
-    }
-  inline void SetOrder(const unsigned int & order)
-    {
+  }
+  inline void
+  SetOrder(const unsigned int & order)
+  {
     this->m_Order = order;
     this->m_Components = itk::utils::ComputeNumberOfComponents(this->m_Order, VImageDimension);
     this->SetSize(this->m_Components, this->m_Components);
-    }
+  }
 
   /**
    * Get the number of componets M of the steerable matrix.
@@ -152,21 +157,24 @@ public:
    *
    * \sa RieszFrequencyFunction
    */
-  inline const unsigned int & GetComponents() const
-    {
+  inline const unsigned int &
+  GetComponents() const
+  {
     return this->m_Components;
-    }
+  }
 
   /// Get/Set the spatial rotation matrix from which the steerable matrix is composed.
-  inline const SpatialRotationMatrixType & GetSpatialRotationMatrix() const
-    {
+  inline const SpatialRotationMatrixType &
+  GetSpatialRotationMatrix() const
+  {
     return this->m_SpatialRotationMatrix;
-    }
+  }
 
-  inline void SetSpatialRotationMatrix(const SpatialRotationMatrixType & spatialRotationMatrix)
-    {
+  inline void
+  SetSpatialRotationMatrix(const SpatialRotationMatrixType & spatialRotationMatrix)
+  {
     this->m_SpatialRotationMatrix = spatialRotationMatrix;
-    }
+  }
 
   /**
    * Round the computed result S[i][j] to zero if it is close enough to zero. How close is controlled by this value.
@@ -180,37 +188,42 @@ public:
    *
    * \sa itk::Math::FloatAlmostEqual
    */
-  inline const ValueType & GetMaxAbsoluteDifferenceCloseToZero() const
-    {
+  inline const ValueType &
+  GetMaxAbsoluteDifferenceCloseToZero() const
+  {
     return this->m_MaxAbsoluteDifferenceCloseToZero;
-    }
-  inline void SetMaxAbsoluteDifferenceCloseToZero(const ValueType & maxAbsoluteDifference)
-    {
+  }
+  inline void
+  SetMaxAbsoluteDifferenceCloseToZero(const ValueType & maxAbsoluteDifference)
+  {
     this->m_MaxAbsoluteDifferenceCloseToZero = maxAbsoluteDifference;
-    }
+  }
   // ------- Debug Macro ------
   /// Get/Set Debug flag to print extra information.
-  inline const bool & GetDebug() const
-    {
+  inline const bool &
+  GetDebug() const
+  {
     return this->m_Debug;
-    }
-  inline void SetDebug(const bool & boolean)
-    {
+  }
+  inline void
+  SetDebug(const bool & boolean)
+  {
     this->m_Debug = boolean;
-    }
-  inline void SetDebugOn()
-    {
+  }
+  inline void
+  SetDebugOn()
+  {
     this->m_Debug = true;
-    }
-  inline void SetDebugOff()
-    {
+  }
+  inline void
+  SetDebugOff()
+  {
     this->m_Debug = false;
-    }
+  }
 
 #ifdef ITK_USE_STRICT_CONCEPT_CHECKING
   // Begin concept checking
-  itkConceptMacro( ValueTypeIsFloatCheck,
-                   ( Concept::IsFloatingPoint< ValueType > ) );
+  itkConceptMacro(ValueTypeIsFloatCheck, (Concept::IsFloatingPoint<ValueType>));
   // End concept checking
 #endif
 
@@ -224,7 +237,7 @@ private:
 }; // end of class
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkRieszRotationMatrix.hxx"
+#  include "itkRieszRotationMatrix.hxx"
 #endif
 
 #endif

@@ -29,16 +29,16 @@ namespace itk
  *
  * The DC component corresponds to the zero index after a forward Fourier transform (FFT) of the image.
  *
- * There are a few methods to set DC to zero, the one implemented here is to subtract the mean value of the input image to all the pixels.
+ * There are a few methods to set DC to zero, the one implemented here is to subtract the mean value of the input image
+ * to all the pixels.
  *
  * Note that this filter works on the spatial domain, and has to be called before the FFT.
  *
  * \sa ForwardFFTImageFilter
  * \ingroup IsotropicWavelets
  */
-template< typename TImageType >
-class ZeroDCImageFilter:
-  public ImageToImageFilter< TImageType, TImageType >
+template <typename TImageType>
+class ZeroDCImageFilter : public ImageToImageFilter<TImageType, TImageType>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(ZeroDCImageFilter);
@@ -68,14 +68,14 @@ public:
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   // Begin concept checking
-  itkConceptMacro( ImageTypeHasNumericTraitsCheck,
-                   ( Concept::HasNumericTraits< typename TImageType::PixelType > ) );
+  itkConceptMacro(ImageTypeHasNumericTraitsCheck, (Concept::HasNumericTraits<typename TImageType::PixelType>));
   // End concept checking
 #endif
   using StatisticsFilterType = itk::StatisticsImageFilter<TImageType>;
   using SubtractFilterType = itk::SubtractImageFilter<ImageType>;
   using RealType = typename StatisticsFilterType::RealType;
-  RealType GetMean() const
+  RealType
+  GetMean() const
   {
     return m_StatisticsFilter->GetMean();
   }
@@ -84,9 +84,11 @@ protected:
   ZeroDCImageFilter();
   ~ZeroDCImageFilter() override {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
 private:
   typename StatisticsFilterType::Pointer m_StatisticsFilter;
@@ -95,7 +97,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkZeroDCImageFilter.hxx"
+#  include "itkZeroDCImageFilter.hxx"
 #endif
 
 #endif

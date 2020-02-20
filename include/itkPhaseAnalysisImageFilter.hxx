@@ -21,71 +21,73 @@
 
 namespace itk
 {
-template< typename TInputImage, typename TOutputImage >
-PhaseAnalysisImageFilter< TInputImage, TOutputImage >
-::PhaseAnalysisImageFilter()
+template <typename TInputImage, typename TOutputImage>
+PhaseAnalysisImageFilter<TInputImage, TOutputImage>::PhaseAnalysisImageFilter()
 {
   this->SetNumberOfRequiredInputs(1);
   this->SetNumberOfRequiredOutputs(2);
-  for ( unsigned int n_output = 0; n_output < 2; ++n_output )
-    {
+  for (unsigned int n_output = 0; n_output < 2; ++n_output)
+  {
     this->SetNthOutput(n_output, this->MakeOutput(n_output));
-    }
+  }
 
   this->DynamicMultiThreadingOn();
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-PhaseAnalysisImageFilter< TInputImage, TOutputImage >
-::PrintSelf(std::ostream & os, Indent indent) const
+PhaseAnalysisImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-PhaseAnalysisImageFilter< TInputImage, TOutputImage >
-::BeforeThreadedGenerateData()
+PhaseAnalysisImageFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateData()
 {
   unsigned int nC = this->GetInput()->GetNumberOfComponentsPerPixel();
 
-  if ( nC < 2 )
-    {
-    itkExceptionMacro(
-        << "Number of components of input image (" << nC
-        << ") is less than 2. PhaseAnalysis require at least 2 components.");
-    }
+  if (nC < 2)
+  {
+    itkExceptionMacro(<< "Number of components of input image (" << nC
+                      << ") is less than 2. PhaseAnalysis require at least 2 components.");
+  }
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-PhaseAnalysisImageFilter< TInputImage, TOutputImage >
-::DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread )
+PhaseAnalysisImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
+  const OutputImageRegionType & outputRegionForThread)
 {
-  typename OutputImageType::Pointer phasePtr     = this->GetOutputPhase();
+  typename OutputImageType::Pointer phasePtr = this->GetOutputPhase();
   typename OutputImageType::Pointer amplitudePtr = this->GetOutputAmplitude();
 
-  OutputImageRegionIterator ampIt(amplitudePtr, outputRegionForThread);
-  OutputImageRegionIterator phaseIt(phasePtr, outputRegionForThread);
+  OutputImageRegionIterator     ampIt(amplitudePtr, outputRegionForThread);
+  OutputImageRegionIterator     phaseIt(phasePtr, outputRegionForThread);
   InputImageRegionConstIterator inputIt(this->GetInput(), outputRegionForThread);
 
-  InputImagePixelType vecValue;
+  InputImagePixelType  vecValue;
   OutputImagePixelType featureAmpSquare;
-  inputIt.GoToBegin(); ampIt.GoToBegin(); phaseIt.GoToBegin();
-  while ( !inputIt.IsAtEnd() )
+  inputIt.GoToBegin();
+  ampIt.GoToBegin();
+  phaseIt.GoToBegin();
+  while (!inputIt.IsAtEnd())
+  {
+    while (!inputIt.IsAtEndOfLine())
     {
-    while ( !inputIt.IsAtEndOfLine() )
-      {
       vecValue = inputIt.Get();
       featureAmpSquare = this->ComputeFeatureVectorNormSquare(vecValue);
       ampIt.Set(this->ComputeAmplitude(vecValue, featureAmpSquare));
       phaseIt.Set(this->ComputePhase(vecValue, featureAmpSquare));
-      ++inputIt; ++ampIt; ++phaseIt;
-      }
-
-    inputIt.NextLine(); ampIt.NextLine(); phaseIt.NextLine();
+      ++inputIt;
+      ++ampIt;
+      ++phaseIt;
     }
+
+    inputIt.NextLine();
+    ampIt.NextLine();
+    phaseIt.NextLine();
+  }
 }
 
 // template< typename TInputImage, typename TOutputImage >

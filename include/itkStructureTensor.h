@@ -28,7 +28,8 @@
 namespace itk
 {
 /** \class StructureTensor
- * Given an array of inputs, StructureTensor computes the linear combination (or direction) of inputs that maximizes the response for each location in the image.
+ * Given an array of inputs, StructureTensor computes the linear combination (or direction) of inputs that maximizes the
+response for each location in the image.
  * Instead of only measuring the response at the pixel of interest, it takes into account a local neighborhood.
  *
  * Implementation based on article:
@@ -38,27 +39,29 @@ namespace itk
  * DOI: 10.1109/TIP.2011.2138147
  *
 \f[
- \mathbf{u}({\mathbf{x}_0}) = \arg \max_{\Vert\mathbf{u}\Vert =1 }  \int_{\mathbb{R}^d} g(\mathbf{x} - \mathbf{x}_0) \left| \mathbf{I}_{\mathbf{u}}(\mathbf{x})\right|^2
-\f]
-\f[
- \left| \mathbf{I}_{\mathbf{u}}(\mathbf{x})\right|^2 =
+ \mathbf{u}({\mathbf{x}_0}) = \arg \max_{\Vert\mathbf{u}\Vert =1 }  \int_{\mathbb{R}^d} g(\mathbf{x} - \mathbf{x}_0)
+\left| \mathbf{I}_{\mathbf{u}}(\mathbf{x})\right|^2 \f] \f[ \left| \mathbf{I}_{\mathbf{u}}(\mathbf{x})\right|^2 =
  \mathbf{u}^T \cdot \mathbf{I}(\mathbf{x}) \cdot (\mathbf{I}(\mathbf{x}))^T \cdot \mathbf{u}
 \f]
  * \f$ \mathbf{I}\f$ is the required std::vector of input images. These images might be the output
- * after applying a directional filter to an image (for example, directional derivatives from an image, or the basis of a steerable filter, such as a RieszImageFilter).
+ * after applying a directional filter to an image (for example, directional derivatives from an image, or the basis of
+a steerable filter, such as a RieszImageFilter).
  * Instead of just select the max response at every pixel, it uses the response over
  * a local neighborhood that is specified using an isotropic Gaussian window \f$g(\mathbf{x}\f$.
  * This approach is more robust against noise. The user can control the radius and sigma of this gaussian kernel.
  * Estimation of the local orientation this way results in an eigen system with matrix:
  * \f[
- [\mathbf{J}(\mathbf{x}_0)]_{mn} = \sum_{\mathbf{x} \in \mathbb{Z}^d} g(\mathbf{x} - \mathbf{x}_0) I_m[\mathbf{x}]I_n[\mathbf{x}]
+ [\mathbf{J}(\mathbf{x}_0)]_{mn} = \sum_{\mathbf{x} \in \mathbb{Z}^d} g(\mathbf{x} - \mathbf{x}_0)
+I_m[\mathbf{x}]I_n[\mathbf{x}]
  * \f]
  * where \f$I_m, I_n \f$ are input images, \f$ m,n \in {0,N-1} \f$ and \f$N\f$ is the total number of inputs.
  * \f$g\f$ is a gaussian kernel of radius SetGaussianWindowRadius()
  *
  * The solution of the EigenSystem defined by \f$\mathbf{J}\f$ are the N EigenValues and EigenVectors.
- * The output of StructureTensor is a 2D Matrix of size (N,N+1), where the submatrix (N,N) are the EigenVectors, and the last column (N+1) are the EigenValues.
- * The orientation that maximixes the response: \f$u\f$ is the EigenVector with largest EigenValue, which is is the Nth column of the output matrix.
+ * The output of StructureTensor is a 2D Matrix of size (N,N+1), where the submatrix (N,N) are the EigenVectors, and the
+last column (N+1) are the EigenValues.
+ * The orientation that maximixes the response: \f$u\f$ is the EigenVector with largest EigenValue, which is is the Nth
+column of the output matrix.
  * We can use the calculated direction \f$u\f$ to get a new image with max response from the inputs at each pixel.
  * \see ComputeProjectionImageWithLargestResponse(),
  * or any other direction from other eigen vectors with \see ComputeProjectionImage(unsigned int eigen_index)
@@ -75,12 +78,9 @@ and
  *
  * \ingroup IsotropicWavelets
  */
-template<typename TInputImage,
-         typename TOutputImage = itk::Image<
-           itk::VariableSizeMatrix<double>,
-           TInputImage::ImageDimension> >
-class StructureTensor:
-  public ImageToImageFilter< TInputImage, TOutputImage >
+template <typename TInputImage,
+          typename TOutputImage = itk::Image<itk::VariableSizeMatrix<double>, TInputImage::ImageDimension>>
+class StructureTensor : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(StructureTensor);
@@ -88,9 +88,9 @@ public:
   /** Some convenient type alias. */
   /** Standard class type alias. */
   using Self = StructureTensor;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** ImageDimension constants */
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
@@ -99,8 +99,7 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(StructureTensor,
-               ImageToImageFilter);
+  itkTypeMacro(StructureTensor, ImageToImageFilter);
 
   /** Some convenient type alias. */
   using InputImageType = typename Superclass::InputImageType;
@@ -124,56 +123,58 @@ public:
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   // This ensure that PixelType is float||double, and not complex.
-  itkConceptMacro( InputPixelTypeIsFloatCheck,
-                 ( Concept::IsFloatingPoint< typename TInputImage::PixelType > ) );
+  itkConceptMacro(InputPixelTypeIsFloatCheck, (Concept::IsFloatingPoint<typename TInputImage::PixelType>));
 #endif
   using EigenMatrixImageType = OutputImageType;
   using EigenMatrixType = OutputImagePixelType;
   using EigenValuesType = itk::Array<typename OutputImagePixelType::ValueType>;
   using SymmetricEigenAnalysisType = itk::SymmetricEigenAnalysis<EigenMatrixType, EigenValuesType>;
-  using GaussianSourceType = GaussianImageSource< FloatImageType >;
+  using GaussianSourceType = GaussianImageSource<FloatImageType>;
 
   using InputsType = typename std::vector<InputImagePointer>;
   // using InputsType = typename itk::VectorContainer<int, InputImagePointer>;
   //
-  void SetInputs(const InputsType & inputs);
+  void
+  SetInputs(const InputsType & inputs);
 
   /**
-  * Set/Get Radius of the gaussian window.
-  * The window determines the size of the local neighborhood of each pixel.
-  */
-  itkSetMacro( GaussianWindowRadius, FloatType );
-  itkGetConstMacro( GaussianWindowRadius, FloatType );
+   * Set/Get Radius of the gaussian window.
+   * The window determines the size of the local neighborhood of each pixel.
+   */
+  itkSetMacro(GaussianWindowRadius, FloatType);
+  itkGetConstMacro(GaussianWindowRadius, FloatType);
   /**
-  * Set/Get Sigma of the GaussianSource.
-  * \sa GaussianImageSource
-  */
-  itkSetMacro( GaussianWindowSigma, FloatType );
-  itkGetConstMacro( GaussianWindowSigma, FloatType );
+   * Set/Get Sigma of the GaussianSource.
+   * \sa GaussianImageSource
+   */
+  itkSetMacro(GaussianWindowSigma, FloatType);
+  itkGetConstMacro(GaussianWindowSigma, FloatType);
   /**
-  * Pointer to the GaussianSource.
-  * \sa GaussianImageSource
-  */
-  itkGetModifiableObjectMacro( GaussianSource, GaussianSourceType );
+   * Pointer to the GaussianSource.
+   * \sa GaussianImageSource
+   */
+  itkGetModifiableObjectMacro(GaussianSource, GaussianSourceType);
 
   /**
-  * Compute a new image which is a linear combination of the inputs.
-  * The weights of the linear combination are given by the eigenVector
-  * associated to the input eigen_number.
-  *
-  * @param eigen_number column of the eigenVector, note that the largest eigenValue is in Nth column.
-  *
-  * @return Image where pixels are filled with the linear combination of inputs associated to the input eigen number.
-  */
-  InputImagePointer ComputeProjectionImage(unsigned int eigen_number) const;
+   * Compute a new image which is a linear combination of the inputs.
+   * The weights of the linear combination are given by the eigenVector
+   * associated to the input eigen_number.
+   *
+   * @param eigen_number column of the eigenVector, note that the largest eigenValue is in Nth column.
+   *
+   * @return Image where pixels are filled with the linear combination of inputs associated to the input eigen number.
+   */
+  InputImagePointer
+  ComputeProjectionImage(unsigned int eigen_number) const;
 
   /**
-  * Call ComputeProjectionImage with the position of the largest eigenValue (Nth column).
-  *
-  * @return Image where pixels are filled with the linear combination of inputs associated to the largest eigen value.
-  * \sa ComputeProjectionImage
-  */
-  InputImagePointer ComputeProjectionImageWithLargestResponse() const;
+   * Call ComputeProjectionImage with the position of the largest eigenValue (Nth column).
+   *
+   * @return Image where pixels are filled with the linear combination of inputs associated to the largest eigen value.
+   * \sa ComputeProjectionImage
+   */
+  InputImagePointer
+  ComputeProjectionImageWithLargestResponse() const;
 
   /**
    * At each pixel, coherency is calculated based on the relative value of eigenValues.
@@ -183,7 +184,8 @@ public:
    *
    * @return Image filled with the coherency at each pixel.
    */
-  InputImagePointer ComputeCoherencyImage() const;
+  InputImagePointer
+  ComputeCoherencyImage() const;
 
   /**
    * From the output matrix at each index, computes the rotation matrix,
@@ -198,21 +200,25 @@ public:
    *
    * @return rotationMatrix
    */
-  EigenMatrixType GetRotationMatrixFromOutputMatrix(
-      const EigenMatrixType & outputMatrix,
-      bool reOrderLargestEigenvectorInFirstRow = false) const;
+  EigenMatrixType
+  GetRotationMatrixFromOutputMatrix(const EigenMatrixType & outputMatrix,
+                                    bool                    reOrderLargestEigenvectorInFirstRow = false) const;
 
 protected:
   StructureTensor();
   ~StructureTensor() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void BeforeThreadedGenerateData() override;
+  void
+  BeforeThreadedGenerateData() override;
 
-  void DynamicThreadedGenerateData( const OutputImageRegionType & outputRegionForThread ) override;
+  void
+  DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
 
   /** Assuming that row>=column */
-  static unsigned int LowerTriangleToLinearIndex(unsigned int r, unsigned int c)
+  static unsigned int
+  LowerTriangleToLinearIndex(unsigned int r, unsigned int c)
   {
     return r + (c + 1) * c / 2;
   }
@@ -225,7 +231,7 @@ private:
 };
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkStructureTensor.hxx"
+#  include "itkStructureTensor.hxx"
 #endif
 
 #endif

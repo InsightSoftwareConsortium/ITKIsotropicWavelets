@@ -30,13 +30,11 @@ namespace itk
    h(\omega) =
      \begin{cases}
      \begin{aligned}
-       &\sqrt{\frac{1}{2} + \frac{\tan(\kappa(1+2\log_2\frac{2\omega}{\pi})}{2\tan(\kappa)}} , &\omega \in [\frac{\pi}{4} , \frac{\pi}{2} [ \\
-       &\sqrt{\frac{1}{2} - \frac{\tan(\kappa(1+2\log_2\frac{\omega}{\pi}))}{2\tan(\kappa)}} , &\omega \in [\frac{\pi}{2} , \pi ] \\
-       &0, &\text{otherwise}
-     \end{aligned}
-     \end{cases}
- \f}
- where \f$\kappa \in [0, \frac{\pi}{2}] \text{ is found to be } 0.75 \f$
+       &\sqrt{\frac{1}{2} + \frac{\tan(\kappa(1+2\log_2\frac{2\omega}{\pi})}{2\tan(\kappa)}} , &\omega \in
+ [\frac{\pi}{4} , \frac{\pi}{2} [ \\
+       &\sqrt{\frac{1}{2} - \frac{\tan(\kappa(1+2\log_2\frac{\omega}{\pi}))}{2\tan(\kappa)}} , &\omega \in
+ [\frac{\pi}{2} , \pi ] \\ &0, &\text{otherwise} \end{aligned} \end{cases} \f} where \f$\kappa \in [0, \frac{\pi}{2}]
+ \text{ is found to be } 0.75 \f$
  *
  * Where q(t) is a m grade polynomial (m can be chosen) which elements are
  * calculated so the wavelet has desirable properties.
@@ -45,20 +43,19 @@ namespace itk
  * \ingroup SpatialFunctions
  * \ingroup IsotropicWavelets
  */
-template< typename TFunctionValue = double,
-  unsigned int VImageDimension    = 3,
-  typename TInput = Point< SpacePrecisionType, VImageDimension > >
-class VowIsotropicWavelet:
-  public IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >
+template <typename TFunctionValue = double,
+          unsigned int VImageDimension = 3,
+          typename TInput = Point<SpacePrecisionType, VImageDimension>>
+class VowIsotropicWavelet : public IsotropicWaveletFrequencyFunction<TFunctionValue, VImageDimension, TInput>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(VowIsotropicWavelet);
 
   /** Standard class type alias. */
   using Self = VowIsotropicWavelet;
-  using Superclass = IsotropicWaveletFrequencyFunction< TFunctionValue, VImageDimension, TInput >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = IsotropicWaveletFrequencyFunction<TFunctionValue, VImageDimension, TInput>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -73,10 +70,11 @@ public:
   using FunctionValueType = typename Superclass::FunctionValueType;
 
   /** Type used to store gaussian parameters. */
-  using ArrayType = FixedArray< double, VImageDimension >;
+  using ArrayType = FixedArray<double, VImageDimension>;
 
   /** Evaluate the function */
-  FunctionValueType EvaluateMagnitude(const FunctionValueType& freq_norm_in_hz) const override;
+  FunctionValueType
+  EvaluateMagnitude(const FunctionValueType & freq_norm_in_hz) const override;
 
   /** Gets and sets parameters */
   itkSetMacro(Kappa, TFunctionValue);
@@ -85,7 +83,8 @@ public:
 protected:
   VowIsotropicWavelet();
   ~VowIsotropicWavelet() override;
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   /** kappa value, default is optimal:0.75 */
@@ -94,7 +93,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkVowIsotropicWavelet.hxx"
+#  include "itkVowIsotropicWavelet.hxx"
 #endif
 
 #endif

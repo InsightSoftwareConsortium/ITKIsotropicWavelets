@@ -22,7 +22,7 @@
 #include <string>
 
 int
-itkVowIsotropicWaveletTest( int, char *[] )
+itkVowIsotropicWaveletTest(int, char *[])
 {
   bool testPassed = true;
 
@@ -33,28 +33,28 @@ itkVowIsotropicWaveletTest( int, char *[] )
   constexpr unsigned int D2 = 2;
   constexpr unsigned int D1 = 1;
 
-  using Default = itk::VowIsotropicWavelet< >;
+  using Default = itk::VowIsotropicWavelet<>;
   Default::New();
 
-  using Point3D = itk::Point< itk::SpacePrecisionType, D3 >;
-  using Point2D = itk::Point< itk::SpacePrecisionType, D2 >;
-  using Point1D = itk::Point< itk::SpacePrecisionType, D1 >;
+  using Point3D = itk::Point<itk::SpacePrecisionType, D3>;
+  using Point2D = itk::Point<itk::SpacePrecisionType, D2>;
+  using Point1D = itk::Point<itk::SpacePrecisionType, D1>;
 
-  using Wavelet3D = itk::VowIsotropicWavelet< Double, D3, Point3D >;
-  using Wavelet2D = itk::VowIsotropicWavelet< Double, D2, Point2D >;
-  using Wavelet1D = itk::VowIsotropicWavelet< Double, D1, Point1D >;
+  using Wavelet3D = itk::VowIsotropicWavelet<Double, D3, Point3D>;
+  using Wavelet2D = itk::VowIsotropicWavelet<Double, D2, Point2D>;
+  using Wavelet1D = itk::VowIsotropicWavelet<Double, D1, Point1D>;
   Wavelet3D::New();
   Wavelet2D::New();
   Wavelet1D::New();
 
-  using Wavelet3DFloat = itk::VowIsotropicWavelet< Float, D3, Point3D >;
-  using Wavelet2DFloat = itk::VowIsotropicWavelet< Float, D2, Point2D >;
-  using Wavelet1DFloat = itk::VowIsotropicWavelet< Float, D1, Point1D >;
+  using Wavelet3DFloat = itk::VowIsotropicWavelet<Float, D3, Point3D>;
+  using Wavelet2DFloat = itk::VowIsotropicWavelet<Float, D2, Point2D>;
+  using Wavelet1DFloat = itk::VowIsotropicWavelet<Float, D1, Point1D>;
   Wavelet3DFloat::New();
   Wavelet2DFloat::New();
   Wavelet1DFloat::New();
 
-  auto wavelet2Dfloat = Wavelet2DFloat::New();
+  auto    wavelet2Dfloat = Wavelet2DFloat::New();
   Point2D point2D;
   point2D[0] = 0.2;
   point2D[1] = 0.2;
@@ -62,22 +62,22 @@ itkVowIsotropicWaveletTest( int, char *[] )
   std::cout << "freq2D: " << freq2D << std::endl;
   // Check that inherits from IsotropicFrequencyFunction
   unsigned int defaultBands = wavelet2Dfloat->GetHighPassSubBands();
-  if ( defaultBands != 1 )
-    {
+  if (defaultBands != 1)
+  {
     testPassed = false;
-    }
+  }
 
   // Specific methods for this type:
   Wavelet2DFloat::FunctionValueType differentKappa = 0.750001;
   wavelet2Dfloat->SetKappa(differentKappa);
   TEST_SET_GET_VALUE(differentKappa, wavelet2Dfloat->GetKappa());
 
-  if ( testPassed )
-    {
+  if (testPassed)
+  {
     return EXIT_SUCCESS;
-    }
+  }
   else
-    {
+  {
     return EXIT_FAILURE;
-    }
+  }
 }

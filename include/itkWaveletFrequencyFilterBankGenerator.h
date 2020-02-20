@@ -29,7 +29,8 @@ namespace itk
  * This implementation generates a pair of low-pass / high-pass wavelet filter.
  * Or if HighPassSubBands > 1 multiple high-pass-subbands instead of only one.
  *
- * It does not generate a pyramid of filters, that is done by the \sa WaveletFrequencyForward, so here there is no parameter involving number of levels/scales.
+ * It does not generate a pyramid of filters, that is done by the \sa WaveletFrequencyForward, so here there is no
+ * parameter involving number of levels/scales.
  *
  * The minimum output are two images, one low-pass and other high-pass,
  * and again if HighPassSubBands > 1, multiple high-sub-bands.
@@ -46,11 +47,10 @@ namespace itk
  *
  * \ingroup IsotropicWavelets
  */
-template<typename TOutputImage,
-  typename TWaveletFunction,
-  typename TFrequencyRegionIterator = FrequencyFFTLayoutImageRegionIteratorWithIndex< TOutputImage> >
-class WaveletFrequencyFilterBankGenerator:
-  public itk::GenerateImageSource< TOutputImage >
+template <typename TOutputImage,
+          typename TWaveletFunction,
+          typename TFrequencyRegionIterator = FrequencyFFTLayoutImageRegionIteratorWithIndex<TOutputImage>>
+class WaveletFrequencyFilterBankGenerator : public itk::GenerateImageSource<TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(WaveletFrequencyFilterBankGenerator);
@@ -85,19 +85,21 @@ public:
 
   /** Number of M-Bands decomposition of the high pass filters */
   itkGetMacro(HighPassSubBands, unsigned int);
-  void SetHighPassSubBands(unsigned int k);
+  void
+  SetHighPassSubBands(unsigned int k);
 
   /** Flag to call generate inverse(reconstruction) filter bank instead
    * of forward (analysis) */
   itkGetMacro(InverseBank, bool);
   itkSetMacro(InverseBank, bool);
-  itkBooleanMacro( InverseBank );
+  itkBooleanMacro(InverseBank);
 
   /** Level to scale the wavelet function. Used in undecimated wavelet.
    * /sa WaveletFrequencyForwardUndecimated
    */
   itkGetMacro(Level, unsigned int);
-  virtual void SetLevel(const unsigned int & level)
+  virtual void
+  SetLevel(const unsigned int & level)
   {
     this->m_Level = level;
     this->m_LevelFactor = std::pow(static_cast<double>(this->m_ScaleFactor), static_cast<int>(level));
@@ -108,31 +110,39 @@ public:
   itkGetModifiableObjectMacro(WaveletFunction, WaveletFunctionType);
 
   /** Get Outputs *****/
-  OutputImagePointer GetOutputLowPass();
+  OutputImagePointer
+  GetOutputLowPass();
 
-  OutputImagePointer GetOutputHighPass();
+  OutputImagePointer
+  GetOutputHighPass();
 
-  OutputImagePointer GetOutputSubBand(unsigned int k);
+  OutputImagePointer
+  GetOutputSubBand(unsigned int k);
 
   /** Returns all the outputs, starting at low-pass to highest subband*/
-  OutputsType GetOutputsAll();
+  OutputsType
+  GetOutputsAll();
 
   /** Returns all the high pass subbands in ascending order, but not the low pass*/
-  OutputsType GetOutputsHighPassBands();
+  OutputsType
+  GetOutputsHighPassBands();
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /// This ensure that OutputPixelType is complex<float||double>
-  itkConceptMacro( OutputPixelTypeIsComplexAndFloatCheck,
-                   ( Concept::IsFloatingPoint< typename OutputImageType::PixelType::value_type > ) );
+  itkConceptMacro(OutputPixelTypeIsComplexAndFloatCheck,
+                  (Concept::IsFloatingPoint<typename OutputImageType::PixelType::value_type>));
 #endif
 
 protected:
   WaveletFrequencyFilterBankGenerator();
   ~WaveletFrequencyFilterBankGenerator() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void BeforeThreadedGenerateData() override;
-  void DynamicThreadedGenerateData(const OutputImageRegionType & threadRegion) override;
+  void
+  BeforeThreadedGenerateData() override;
+  void
+  DynamicThreadedGenerateData(const OutputImageRegionType & threadRegion) override;
 
 private:
   unsigned int           m_HighPassSubBands;
@@ -140,13 +150,13 @@ private:
   WaveletFunctionPointer m_WaveletFunction;
   unsigned int           m_Level;
   /** Default to 2 (Dyadic). No modifiable, but allow future extensions */
-  unsigned int           m_ScaleFactor;
+  unsigned int m_ScaleFactor;
   /** m_ScaleFactor^m_Level */
-  double                 m_LevelFactor;
+  double m_LevelFactor;
 }; // end of class
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkWaveletFrequencyFilterBankGenerator.hxx"
+#  include "itkWaveletFrequencyFilterBankGenerator.hxx"
 #endif
 
 #endif
