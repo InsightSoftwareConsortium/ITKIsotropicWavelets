@@ -114,7 +114,7 @@ public:
 
   /** Flag to store the wavelet Filter Bank Pyramid, for all levels and all bands.
    * Access to it with GetWaveletFilterBankPyramid()*/
-  itkSetMacro(StoreWaveletFilterBankPyramid, bool) itkGetMacro(StoreWaveletFilterBankPyramid, bool)
+  itkSetMacro(StoreWaveletFilterBankPyramid, bool); itkGetMacro(StoreWaveletFilterBankPyramid, bool);
     itkBooleanMacro(StoreWaveletFilterBankPyramid);
 
   itkGetMacro(WaveletFilterBankPyramid, OutputsType);
