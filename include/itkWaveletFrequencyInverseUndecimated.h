@@ -84,17 +84,17 @@ public:
 
   /** Shrink/Expand factor at each level.
    * Set to 2 (dyadic), not modifiable, but providing future flexibility */
-  itkGetConstReferenceMacro(ScaleFactor, unsigned int)
+  itkGetConstReferenceMacro(ScaleFactor, unsigned int);
 
     /**
      * If On, applies to each input the appropiate Level-Band multiplicative factor. Needed for perfect reconstruction.
      * It has to be turned off for some applications (phase analysis for example) */
-    itkGetConstReferenceMacro(ApplyReconstructionFactors, bool) itkSetMacro(ApplyReconstructionFactors, bool)
+    itkGetConstReferenceMacro(ApplyReconstructionFactors, bool); itkSetMacro(ApplyReconstructionFactors, bool);
       itkBooleanMacro(ApplyReconstructionFactors);
 
   /** Flag to use external WaveletFilterBankPyramid generated in ForwardWavelet.
    * Requires to use SetWaveletFilterBankPyramid. */
-  itkGetConstReferenceMacro(UseWaveletFilterBankPyramid, bool) itkSetMacro(UseWaveletFilterBankPyramid, bool)
+  itkGetConstReferenceMacro(UseWaveletFilterBankPyramid, bool); itkSetMacro(UseWaveletFilterBankPyramid, bool);
     itkBooleanMacro(UseWaveletFilterBankPyramid);
 
   /**
