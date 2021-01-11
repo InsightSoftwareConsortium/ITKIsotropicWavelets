@@ -250,12 +250,14 @@ itkFrequencyExpandAndShrinkTest(int argc, char * argv[])
   using ExpandViaInverseFFTType = itk::FrequencyExpandViaInverseFFTImageFilter<ComplexImageType>;
   auto expandViaInverseFFTFilter = ExpandViaInverseFFTType::New();
 
-  ITK_EXERCISE_BASIC_OBJECT_METHODS(expandViaInverseFFTFilter, FrequencyExpandViaInverseFFTImageFilter, ImageToImageFilter);
+  ITK_EXERCISE_BASIC_OBJECT_METHODS(
+    expandViaInverseFFTFilter, FrequencyExpandViaInverseFFTImageFilter, ImageToImageFilter);
 
   using ShrinkViaInverseFFTType = itk::FrequencyShrinkViaInverseFFTImageFilter<ComplexImageType>;
   auto shrinkViaInverseFFTFilter = ShrinkViaInverseFFTType::New();
 
-  ITK_EXERCISE_BASIC_OBJECT_METHODS(shrinkViaInverseFFTFilter, FrequencyShrinkViaInverseFFTImageFilter, ImageToImageFilter);
+  ITK_EXERCISE_BASIC_OBJECT_METHODS(
+    shrinkViaInverseFFTFilter, FrequencyShrinkViaInverseFFTImageFilter, ImageToImageFilter);
 
   unsigned int dimension = 3;
   if (argc == 4)
