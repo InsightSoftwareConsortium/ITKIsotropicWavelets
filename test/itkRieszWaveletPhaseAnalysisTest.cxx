@@ -283,7 +283,8 @@ itkRieszWaveletPhaseAnalysisTest(int argc, char * argv[])
     simoncellidIsotropicWavelet, SimoncelliIsotropicWavelet, IsotropicWaveletFrequencyFunction);
 
   auto shannonIsotropicWavelet = ShannonIsotropicWaveletType::New();
-  ITK_EXERCISE_BASIC_OBJECT_METHODS(shannonIsotropicWavelet, ShannonIsotropicWavelet, IsotropicWaveletFrequencyFunction);
+  ITK_EXERCISE_BASIC_OBJECT_METHODS(
+    shannonIsotropicWavelet, ShannonIsotropicWavelet, IsotropicWaveletFrequencyFunction);
 
   using HeldWavelet = itk::HeldIsotropicWavelet<>;
   using VowWavelet = itk::VowIsotropicWavelet<>;

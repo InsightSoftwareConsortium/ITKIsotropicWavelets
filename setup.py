@@ -54,6 +54,6 @@ setup(
     keywords='ITK InsightToolkit Wavelet Pyramid Steerable Riesz',
     url=r'https://github.com/InsightSoftwareConsortium/ITKIsotropicWavelets',
     install_requires=[
-        r'itk>=5.1.1',
+        r'itk>=5.2rc1',
     ]
     )
