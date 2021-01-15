@@ -164,7 +164,7 @@ runRieszWaveletPhaseAnalysis( const std::string& inputImage,
   inverseWavelet->SetHighPassSubBands( highSubBands );
   inverseWavelet->SetLevels( levels );
   inverseWavelet->SetInputs( modifiedWavelets );
-  // The coefficients are now phases, do not apply reconstrucction factors.
+  // The coefficients are now phases, do not apply reconstruction factors.
   inverseWavelet->ApplyReconstructionFactorsOff();
   inverseWavelet->Update();
 
