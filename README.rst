@@ -110,7 +110,7 @@ Components
    - Reproduces Held work as a brightness equalizator / local phase
      detector.
 
-- [x] Simoncelli, Shannon, Held and Vow Isotropoic Wavelets.
+- [x] Simoncelli, Shannon, Held and Vow Isotropic Wavelets.
 - [x] Shrinker and Expander in spatial domain with no interpolation.
 - [x] StructureTensor.
 - [x] Simple test to every wavelet (Vow, Held, Simoncelli, Shannon),
