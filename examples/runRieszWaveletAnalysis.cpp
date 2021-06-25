@@ -74,10 +74,14 @@ runRieszWaveletPhaseAnalysis( const std::string& inputImage,
   reader->SetFileName( inputImage );
   reader->Update();
 
+  using BoundaryConditionType = itk::ConstantBoundaryCondition<ImageType>;
+  BoundaryConditionType bounds;
+  bounds.SetConstant(itk::NumericTraits<typename ImageType::PixelType>::ZeroValue());
+ 
   using FFTPadFilterType = itk::FFTPadImageFilter<ImageType>;
   auto fftPadFilter = FFTPadFilterType::New();
   fftPadFilter->SetInput(reader->GetOutput());
-  fftPadFilter->SetBoundaryCondition(0);
+  fftPadFilter->SetBoundaryCondition(&bounds);
   fftPadFilter->Update();
 
   auto sizeOriginal = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
