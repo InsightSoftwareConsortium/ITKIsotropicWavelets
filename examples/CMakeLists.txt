@@ -16,3 +16,9 @@ include_directories(SYSTEM ${ITK_INCLUDE_DIRS})
 
 add_executable(runWaveletCoeffsSpatialDomainImageFilter_example runWaveletCoeffsSpatialDomainImageFilter_example.cxx)
 target_link_libraries(runWaveletCoeffsSpatialDomainImageFilter_example PUBLIC ${ITK_LIBRARIES})
+
+add_executable(runWaveletCoeffsPhaseAnalyzisImageFilter_example runWaveletCoeffsPhaseAnalyzisImageFilter_example.cxx)
+target_link_libraries(runWaveletCoeffsPhaseAnalyzisImageFilter_example PUBLIC ${ITK_LIBRARIES})
+
+add_executable(runRieszWaveletAnalysis runRieszWaveletAnalysis.cpp)
+target_link_libraries(runRieszWaveletAnalysis PUBLIC ${ITK_LIBRARIES})
