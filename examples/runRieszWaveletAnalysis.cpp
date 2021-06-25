@@ -18,6 +18,7 @@
 
 #include "itkForwardFFTImageFilter.h"
 #include "itkInverseFFTImageFilter.h"
+#include "itkConstantBoundaryCondition.h"
 #include "itkFFTPadImageFilter.h"
 #include "itkWaveletFrequencyForward.h"
 #include "itkWaveletFrequencyInverse.h"
