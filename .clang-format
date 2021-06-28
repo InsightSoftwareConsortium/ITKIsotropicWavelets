@@ -6,7 +6,7 @@
 ## The clang-format binaries can be downloaded as part of the clang binary distributions
 ## from http://releases.llvm.org/download.html
 ##
-## Use the script Utilities/Maintenance/clang-format.bash to facilitate
+## Use the script Utilities/Maintenance/clang-format.bash to faciliate
 ## maintaining a consistent code style.
 ##
 ## EXAMPLE apply code style enforcement before commit:
