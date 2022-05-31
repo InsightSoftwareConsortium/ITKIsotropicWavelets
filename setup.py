@@ -30,7 +30,7 @@ setup(
                      'Please refer to:'
                      'P. Hernandez-Cerdan, “Isotropic and Steerable Wavelets in N Dimensions.\n'
                      'A multiresolution analysis framework”, Insight Journal, January-December 2016 '
-                     'http://hdl.handle.net/10380/3558.',
+                     'https://hdl.handle.net/10380/3558.',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
