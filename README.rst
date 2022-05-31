@@ -36,13 +36,13 @@ impulse responses can be rotated to any spatial orientation, reducing
 computation time when detecting directional features.
 
 
-For more information, see the `Insight Journal article <http://hdl.handle.net/10380/3558>`_::
+For more information, see the `Insight Journal article <https://hdl.handle.net/10380/3558>`_::
 
   Hernandez-Cerdan P.
   Isotropic and Steerable Wavelets in N Dimensions. A multiresolution analysis framework
   The Insight Journal. January-December. 2016.
-  http://hdl.handle.net/10380/3588
-  http://www.insight-journal.org/browse/publication/986
+  https://hdl.handle.net/10380/3588
+  https://www.insight-journal.org/browse/publication/986
 
 
 Cite with::
