@@ -61,9 +61,9 @@ to use this module.
 Since ITK version **4.13**, this module is available as a *Remote* module
 in the ITK source code. 
 
-Build it with the ``CMake`` option: ``Module_IsotropicWavelet``, this can be
+Build it with the ``CMake`` option: ``Module_IsotropicWavelets``, this can be
 switched on with a ``CMake`` graphical interface ``ccmake`` or directly from the
-command line with: ``-DModule_IsotropicWavelet:BOOL=ON``
+command line with: ``-DModule_IsotropicWavelets:BOOL=ON``
 
 For **older** ITK versions (>4.10 required if ``BUILD_TEST=ON``), add it
 manually as an *External* or *Remote* module to the ITK source code.
