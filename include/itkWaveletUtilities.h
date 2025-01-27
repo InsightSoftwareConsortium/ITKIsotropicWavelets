@@ -60,7 +60,7 @@ using IndexPairType = std::pair<unsigned int, unsigned int>;
  * Note that bands and levels are always >= 1. The level/bands returned here corresponds to an index.
  */
 IsotropicWavelets_EXPORT IndexPairType
-                         IndexToLevelBandSteerablePyramid(unsigned int linearIndex, unsigned int levels, unsigned int bands);
+IndexToLevelBandSteerablePyramid(unsigned int linearIndex, unsigned int levels, unsigned int bands);
 
 /** Compute max number of levels depending on the size of the image.
  * Return J: $ J = \text{min_element}\{J_0,\ldots, J_d\} $;

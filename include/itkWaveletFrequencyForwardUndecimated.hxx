@@ -375,7 +375,7 @@ WaveletFrequencyForwardUndecimated<TInputImage, TOutputImage, TWaveletFilterBank
         }
       }
     } // end update inputPerLevel
-  }   // end level
+  } // end level
 }
 } // end namespace itk
 #endif

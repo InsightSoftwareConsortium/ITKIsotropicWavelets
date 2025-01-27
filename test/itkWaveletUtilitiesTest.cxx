@@ -43,10 +43,11 @@ IndexToLevelBandTest(const unsigned int & linearIndex,
   }
 }
 
-void printComputeMaxNumberOfLevelsError(itk::Size<3> inputSize,
-                                        unsigned int scaleFactor,
-                                        unsigned int expected,
-                                        unsigned int result)
+void
+printComputeMaxNumberOfLevelsError(itk::Size<3> inputSize,
+                                   unsigned int scaleFactor,
+                                   unsigned int expected,
+                                   unsigned int result)
 {
   std::cerr << "Error in ComputeMaxNumberOfLevels with" << std::endl;
   std::cerr << "scaleFactor = " << scaleFactor << std::endl;

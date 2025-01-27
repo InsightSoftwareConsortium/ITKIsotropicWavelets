@@ -105,7 +105,7 @@ ComputeUniqueIndices(TIndicesArrayType                                          
  */
 template <typename TIndicesArrayType>
 ITK_TEMPLATE_EXPORT std::set<TIndicesArrayType, std::greater<TIndicesArrayType>>
-                    ComputeAllPermutations(const std::set<TIndicesArrayType, std::greater<TIndicesArrayType>> & uniqueIndices)
+ComputeAllPermutations(const std::set<TIndicesArrayType, std::greater<TIndicesArrayType>> & uniqueIndices)
 {
   using SetType = std::set<TIndicesArrayType, std::greater<TIndicesArrayType>>;
   SetType out;
