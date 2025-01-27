@@ -284,7 +284,7 @@ RieszRotationMatrix<VImageDimension>::ComputeSteerableMatrix()
               tmpValidIndices.push_back(tmp);
             }
           } // end new k indices
-        }   // end partial valid index
+        } // end partial valid index
         kValidIndices = tmpValidIndices;
       } // end combinations
 
@@ -402,8 +402,8 @@ RieszRotationMatrix<VImageDimension>::ComputeSteerableMatrix()
           std::cout << std::endl;
         }
       } // end Debug
-    }   // end j
-  }     // end i
+    } // end j
+  } // end i
 
   // ----- PRINT ---- //
   // Print allIndicesPairs
