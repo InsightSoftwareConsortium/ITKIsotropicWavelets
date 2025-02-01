@@ -75,7 +75,7 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(WaveletFrequencyInverse, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(WaveletFrequencyInverse);
 
   /** Number of levels/scales. Maximum depends on size of image */
   void
@@ -175,7 +175,7 @@ protected:
   /** Input images do not occupy the same physical space.
    * Remove the check. */
   void
-  VerifyInputInformation() ITKv5_CONST override{};
+  VerifyInputInformation() const override {};
 
 private:
   unsigned int             m_Levels{ 1 };

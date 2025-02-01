@@ -543,7 +543,7 @@ WaveletFrequencyForward<TInputImage, TOutputImage, TWaveletFilterBank, TFrequenc
         }
       }
     } // end update inputPerLevel
-  }   // end level
+  } // end level
 }
 } // end namespace itk
 #endif
