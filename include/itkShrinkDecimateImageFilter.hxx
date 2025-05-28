@@ -171,7 +171,7 @@ ShrinkDecimateImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegi
   InputIndexType   inputRequestedRegionIndex;
   OutputOffsetType offsetIndex;
 
-  typename TInputImage::SizeType   inputRequestedRegionSize;
+  typename TInputImage::SizeType inputRequestedRegionSize;
 
   // Use this index to compute the offset everywhere in this class
   OutputIndexType outputIndex = outputPtr->GetLargestPossibleRegion().GetIndex();
@@ -180,7 +180,7 @@ ShrinkDecimateImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegi
   // inputIndex on all points in our region
   typename TOutputImage::PointType tempPoint;
   outputPtr->TransformIndexToPhysicalPoint(outputIndex, tempPoint);
-  InputIndexType inputIndex { inputPtr->TransformPhysicalPointToIndex(tempPoint) };
+  InputIndexType inputIndex{ inputPtr->TransformPhysicalPointToIndex(tempPoint) };
 
   // Given that the size is scaled by a constant factor eq:
   // inputIndex = outputIndex * factorSize
