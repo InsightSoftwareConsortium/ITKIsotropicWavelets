@@ -90,22 +90,31 @@ itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2.tiff
   2 "Held")
 # 2D:
-itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2D1
-  COMMAND IsotropicWaveletsTestDriver
-    itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_Lch_512x512.tiff}
-    ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2D1.tiff
-    1 "Held" 2)
-  itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2D2
-  COMMAND IsotropicWaveletsTestDriver
-  itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_Lch_512x512.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2D2.tiff
-  2 "Held" 2)
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2D1
+#   COMMAND IsotropicWaveletsTestDriver
+#     itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_Lch_512x512.tiff}
+#     ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2D1.tiff
+#     1 "Held" 2)
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+#   itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorTest2D2
+#   COMMAND IsotropicWaveletsTestDriver
+#   itkWaveletFrequencyFilterBankGeneratorTest DATA{Input/checkershadow_Lch_512x512.tiff}
+#   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorTest2D2.tiff
+#   2 "Held" 2)
 # Generator + Downsample
-itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorDownsampleTest2D
-  COMMAND IsotropicWaveletsTestDriver
-  itkWaveletFrequencyFilterBankGeneratorDownsampleTest DATA{Input/checkershadow_Lch_512x512.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorDownsampleTest2D.tiff
-    2 "Held" 2)
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkWaveletFrequencyFilterBankGeneratorDownsampleTest2D
+#   COMMAND IsotropicWaveletsTestDriver
+#   itkWaveletFrequencyFilterBankGeneratorDownsampleTest DATA{Input/checkershadow_Lch_512x512.tiff}
+#   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyFilterBankGeneratorDownsampleTest2D.tiff
+#     2 "Held" 2)
 ## Riesz Related
 # RieszFunction
 itk_add_test(NAME itkRieszFrequencyFunctionTest2D
@@ -163,11 +172,14 @@ itk_add_test(NAME itkWaveletFrequencyForwardTest
   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyForwardTest.tiff
   1 1 "Vow" )
 
-itk_add_test(NAME itkWaveletFrequencyForwardTest2D
-  COMMAND IsotropicWaveletsTestDriver
-  itkWaveletFrequencyForwardTest DATA{Input/checkershadow_Lch_512x512.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyForwardTest2D.tiff
-  1 1 "Held" 2)
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkWaveletFrequencyForwardTest2D
+#   COMMAND IsotropicWaveletsTestDriver
+#   itkWaveletFrequencyForwardTest DATA{Input/checkershadow_Lch_512x512.tiff}
+#   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyForwardTest2D.tiff
+#   1 1 "Held" 2)
 # Wavelet Forward Undecimated
 itk_add_test(NAME itkWaveletFrequencyForwardUndecimatedTest
   COMMAND IsotropicWaveletsTestDriver
@@ -211,27 +223,33 @@ itk_add_test(NAME itkWaveletFrequencyInverseUndecimatedTest
   3
   )
 #2D
-itk_add_test(NAME itkWaveletFrequencyInverseTest2D
-  COMMAND IsotropicWaveletsTestDriver
-    --compare DATA{Input/checkershadow_Lch_512x512.tiff}
-    ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2D.tiff
-  itkWaveletFrequencyInverseTest
-  DATA{Input/checkershadow_Lch_512x512.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2D.tiff
-  1 1
-  "Held"
-  2)
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkWaveletFrequencyInverseTest2D
+#   COMMAND IsotropicWaveletsTestDriver
+#     --compare DATA{Input/checkershadow_Lch_512x512.tiff}
+#     ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2D.tiff
+#   itkWaveletFrequencyInverseTest
+#   DATA{Input/checkershadow_Lch_512x512.tiff}
+#   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2D.tiff
+#   1 1
+#   "Held"
+#   2)
 
-itk_add_test(NAME itkWaveletFrequencyInverseTest2DMultiLevelMultiBand
-  COMMAND IsotropicWaveletsTestDriver
-    --compare DATA{Input/checkershadow_Lch_512x512.tiff}
-    ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2DMultiLevelMultiBand.tiff
-  itkWaveletFrequencyInverseTest
-  DATA{Input/checkershadow_Lch_512x512.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2DMultiLevelMultiBand.tiff
-  5 5
-  "Held"
-  2)
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkWaveletFrequencyInverseTest2DMultiLevelMultiBand
+#   COMMAND IsotropicWaveletsTestDriver
+#     --compare DATA{Input/checkershadow_Lch_512x512.tiff}
+#     ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2DMultiLevelMultiBand.tiff
+#   itkWaveletFrequencyInverseTest
+#   DATA{Input/checkershadow_Lch_512x512.tiff}
+#   ${ITK_TEST_OUTPUT_DIR}/itkWaveletFrequencyInverseTest2DMultiLevelMultiBand.tiff
+#   5 5
+#   "Held"
+#   2)
 # WaveletUtilities
 itk_add_test(NAME itkWaveletUtilitiesTest
   COMMAND IsotropicWaveletsTestDriver
@@ -244,11 +262,14 @@ itk_add_test(NAME itkStructureTensorWithGeneralizedRieszTest
   itkStructureTensorWithGeneralizedRieszTest DATA{Input/collagen_32x32x16.tiff}
   ${ITK_TEST_OUTPUT_DIR}/itkStructureTensorWithGeneralizedRieszTest.tiff
   1 1 ${DefaultWavelet} 1 Apply 3 )
-itk_add_test(NAME itkStructureTensorWithGeneralizedRieszTest2D
-  COMMAND IsotropicWaveletsTestDriver
-  itkStructureTensorWithGeneralizedRieszTest DATA{Input/checkershadow_Lch_512x512.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkStructureTensorWithGeneralizedRieszTest2D.tiff
-  1 1 ${DefaultWavelet} 2 Apply 2 )
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkStructureTensorWithGeneralizedRieszTest2D
+#   COMMAND IsotropicWaveletsTestDriver
+#   itkStructureTensorWithGeneralizedRieszTest DATA{Input/checkershadow_Lch_512x512.tiff}
+#   ${ITK_TEST_OUTPUT_DIR}/itkStructureTensorWithGeneralizedRieszTest2D.tiff
+#   1 1 ${DefaultWavelet} 2 Apply 2 )
 # RieszWavelet Phase Analysis
 itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest
   COMMAND IsotropicWaveletsTestDriver
@@ -261,16 +282,22 @@ itk_add_test(NAME itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand
   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTestMultiLevelMultiBand.tiff
   1 4 ${DefaultWavelet} 3 Apply )
 ###
-itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2D
-  COMMAND IsotropicWaveletsTestDriver
-  itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2D.tiff
-  1 1 ${DefaultWavelet} 2 Apply )
-itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand
-  COMMAND IsotropicWaveletsTestDriver
-  itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
-  ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand.tiff
-  9 2 ${DefaultWavelet} 2 Apply )
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2D
+#   COMMAND IsotropicWaveletsTestDriver
+#   itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
+#   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2D.tiff
+#   1 1 ${DefaultWavelet} 2 Apply )
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand
+#   COMMAND IsotropicWaveletsTestDriver
+#   itkRieszWaveletPhaseAnalysisTest DATA{Input/checkershadow_Lch_512x512.tiff}
+#   ${ITK_TEST_OUTPUT_DIR}/itkRieszWaveletPhaseAnalysisTest2DMultiLevelMultiBand.tiff
+#   9 2 ${DefaultWavelet} 2 Apply )
 #IsotropicWaveletFrequencyFunctionTest
 itk_add_test(NAME itkIsotropicWaveletFrequencyFunctionHeldTest
   COMMAND IsotropicWaveletsTestDriver itkIsotropicWaveletFrequencyFunctionTest
@@ -307,11 +334,14 @@ itk_add_test(NAME itkShrinkDecimateImageFilterTest2D
 itk_add_test(NAME itkShrinkDecimateImageFilterTest3D
   COMMAND IsotropicWaveletsTestDriver itkShrinkDecimateImageFilterTest 3)
 ### FrequencyExpandAndShrink
-itk_add_test(NAME itkFrequencyExpandAndShrinkTest2D
-  COMMAND IsotropicWaveletsTestDriver itkFrequencyExpandAndShrinkTest
-      DATA{Input/checkershadow_Lch_512x512.tiff}
-      ${ITK_TEST_OUTPUT_DIR}/itkFrequencyExpandAndShrinkTest2D.tiff
-      2)
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkFrequencyExpandAndShrinkTest2D
+#   COMMAND IsotropicWaveletsTestDriver itkFrequencyExpandAndShrinkTest
+#       DATA{Input/checkershadow_Lch_512x512.tiff}
+#       ${ITK_TEST_OUTPUT_DIR}/itkFrequencyExpandAndShrinkTest2D.tiff
+#       2)
 itk_add_test(NAME itkFrequencyExpandAndShrinkTest3D
   COMMAND IsotropicWaveletsTestDriver itkFrequencyExpandAndShrinkTest
      DATA{Input/collagen_32x32x16.tiff}
@@ -338,20 +368,26 @@ itk_add_test(NAME itkFrequencyShrinkEvenTest
     DATA{Input/collagen_32x32x16.tiff}
     ${ITK_TEST_OUTPUT_DIR}/itkFrequencyShrinkEvenTest.tiff
     )
-  itk_add_test(NAME itkFrequencyShrinkEvenTest2D
-  COMMAND IsotropicWaveletsTestDriver
-  itkFrequencyShrinkTest
-    DATA{Input/checkershadow_Lch_512x512.tiff}
-    ${ITK_TEST_OUTPUT_DIR}/itkFrequencyShrinkEvenTest2D.tiff
-    2
-    )
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+#   itk_add_test(NAME itkFrequencyShrinkEvenTest2D
+#   COMMAND IsotropicWaveletsTestDriver
+#   itkFrequencyShrinkTest
+#     DATA{Input/checkershadow_Lch_512x512.tiff}
+#     ${ITK_TEST_OUTPUT_DIR}/itkFrequencyShrinkEvenTest2D.tiff
+#     2
+#     )
 ## ZeroDC
-itk_add_test(NAME itkZeroDCImageFilterTest
-  COMMAND IsotropicWaveletsTestDriver
-  itkZeroDCImageFilterTest
-  DATA{Input/checkershadow_Lch_512x512.tiff}
-    2
-    )
+# DISABLED: checkershadow_Lch_512x512.tiff is orphaned (404 from gh-pages,
+# Girder, and itk.org). TODO: re-enable when a replacement baseline is
+# added to ITKTestingData.
+# itk_add_test(NAME itkZeroDCImageFilterTest
+#   COMMAND IsotropicWaveletsTestDriver
+#   itkZeroDCImageFilterTest
+#   DATA{Input/checkershadow_Lch_512x512.tiff}
+#     2
+#     )
 ## WaveletCoeffsPhaseAnalyzis
 itk_add_test(NAME itkWaveletCoeffsPhaseAnalyzisImageFilterTest
   COMMAND IsotropicWaveletsTestDriver
